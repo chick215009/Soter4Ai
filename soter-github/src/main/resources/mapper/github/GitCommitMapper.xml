@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.nju.github.mapper.GitCommitMapper">
+    
+    <resultMap type="GitCommit" id="GitCommitResult">
+        <result property="id"    column="id"    />
+        <result property="sha"    column="sha"    />
+        <result property="message"    column="message"    />
+        <result property="date"    column="date"    />
+        <result property="htmlUrl"    column="html_url"    />
+        <result property="treeSha"    column="tree_sha"    />
+        <result property="treeUrl"    column="tree_url"    />
+        <result property="username"    column="username"    />
+        <result property="repoName"    column="repo_name"    />
+    </resultMap>
+
+    <sql id="selectGitCommitVo">
+        select id, sha, message, date, html_url, tree_sha, tree_url, username, repo_name from git_commit
+    </sql>
+
+    <select id="selectGitCommitList" parameterType="GitCommit" resultMap="GitCommitResult">
+        <include refid="selectGitCommitVo"/>
+        <where>  
+            <if test="sha != null  and sha != ''"> and sha = #{sha}</if>
+            <if test="date != null "> and date = #{date}</if>
+            <if test="username != null  and username != ''"> and username like concat('%', #{username}, '%')</if>
+            <if test="repoName != null  and repoName != ''"> and repo_name like concat('%', #{repoName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectGitCommitById" parameterType="Long" resultMap="GitCommitResult">
+        <include refid="selectGitCommitVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertGitCommit" parameterType="GitCommit" useGeneratedKeys="true" keyProperty="id">
+        insert into git_commit
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sha != null">sha,</if>
+            <if test="message != null">message,</if>
+            <if test="date != null">date,</if>
+            <if test="htmlUrl != null">html_url,</if>
+            <if test="treeSha != null">tree_sha,</if>
+            <if test="treeUrl != null">tree_url,</if>
+            <if test="username != null">username,</if>
+            <if test="repoName != null">repo_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sha != null">#{sha},</if>
+            <if test="message != null">#{message},</if>
+            <if test="date != null">#{date},</if>
+            <if test="htmlUrl != null">#{htmlUrl},</if>
+            <if test="treeSha != null">#{treeSha},</if>
+            <if test="treeUrl != null">#{treeUrl},</if>
+            <if test="username != null">#{username},</if>
+            <if test="repoName != null">#{repoName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateGitCommit" parameterType="GitCommit">
+        update git_commit
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sha != null">sha = #{sha},</if>
+            <if test="message != null">message = #{message},</if>
+            <if test="date != null">date = #{date},</if>
+            <if test="htmlUrl != null">html_url = #{htmlUrl},</if>
+            <if test="treeSha != null">tree_sha = #{treeSha},</if>
+            <if test="treeUrl != null">tree_url = #{treeUrl},</if>
+            <if test="username != null">username = #{username},</if>
+            <if test="repoName != null">repo_name = #{repoName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGitCommitById" parameterType="Long">
+        delete from git_commit where id = #{id}
+    </delete>
+
+    <delete id="deleteGitCommitByIds" parameterType="String">
+        delete from git_commit where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
