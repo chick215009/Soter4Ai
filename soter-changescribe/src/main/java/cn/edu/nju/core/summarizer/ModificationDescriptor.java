@@ -149,6 +149,72 @@ public class ModificationDescriptor {
         }
     }
 
+    public String describe() {
+        StringBuilder desc = new StringBuilder();
+        try{
+            StringBuilder localDescription = new StringBuilder(Constants.EMPTY_STRING);
+
+            addedRemovedFunctionalities = new ArrayList<SourceCodeChange>();
+            if(changes != null) {
+                for(SourceCodeChange change : changes) {
+
+                    StringBuilder descTmp = new StringBuilder(Constants.EMPTY_STRING);
+                    if(change instanceof Update) {
+                        Update update = (Update) change;
+                        if(isStructuralChange(update.getChangeType())) {
+                            describeUpdate(descTmp, change, update);
+                        }
+
+                    } else if(change instanceof Insert) {
+                        Insert insert = (Insert) change;
+                        if(isStructuralChange(insert.getChangeType())) {
+                            describeInsert(descTmp, insert);
+                        }
+                    } else if(change instanceof Delete) {
+                        Delete delete = (Delete) change;
+                        if(isStructuralChange(delete.getChangeType())) {
+                            describeDelete(descTmp, delete);
+                        }
+                    } else if(change instanceof Move) {
+                    }
+
+                    if(!descTmp.toString().equals(Constants.EMPTY_STRING) && (change instanceof Update || change instanceof Insert || change instanceof Delete)) {
+
+                        if(!localDescription.toString().toLowerCase().contains(descTmp.toString().toLowerCase())) {
+                            desc.append(Constants.TAB);
+
+                            desc.append(descTmp.toString());
+                            localDescription.append(descTmp.toString());
+
+                            if(!descTmp.toString().equals(Constants.EMPTY_STRING) && (change instanceof Update || change instanceof Insert || change instanceof Delete)) {
+                                desc.append(Constants.NEW_LINE);
+                            }
+                        }
+                    }
+                }
+                if(addedRemovedFunctionalities != null && addedRemovedFunctionalities.size() > 0) {
+                    describeCollateralChanges(desc);
+                }
+                if(!localDescription.toString().equals(Constants.EMPTY_STRING)) {
+                    if(changes != null && changes.size() > 0) {
+                        desc.insert(0,  "Modifications to " + file.getName() + "\n\n");
+//                    desc.insert(0, "Modifications to " + file.getName() + "\n\n");
+                        desc.append(Constants.NEW_LINE);
+                        desc.append(Constants.NEW_LINE);
+                    }
+                    desc.append(Constants.NEW_LINE);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return desc.toString();
+
+    }
+
     public void describeDelete(StringBuilder desc, Delete delete) throws IOException, ClassNotFoundException {
         if(delete.getChangeType() == ChangeType.STATEMENT_DELETE) {
             String statementType = delete.getChangedEntity().getType().name().toLowerCase().replace("statement", Constants.EMPTY_STRING).replace("_", " ");

@@ -6,7 +6,7 @@ import org.eclipse.jdt.core.ICompilationUnit;
 
 public class CommitStereotypeDescriptor {
 
-    public static String describe(ICompilationUnit cu, StereotypedCommit stereotypedCommit) {
+    public static String describe( StereotypedCommit stereotypedCommit) {
         StringBuilder description = new StringBuilder();
 
         if(stereotypedCommit.getStereotypes().get(0) == CommitStereotype.STRUCTURE_MODIFIER) {

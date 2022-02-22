@@ -92,15 +92,16 @@ public class StereotypedMethod extends MethodStereotypeRules implements
 
 	public void findStereotypes() {
 		this.report.append(Constants.NEW_LINE + this.getKey());
-		try { 
+		try {
 			this.methodAnalyzer = new MethodAnalyzer(this.method);
 			this.primaryStereotype = this.findPrimaryStereotype();
-			if (!this.primaryStereotype.getCategory().equals(MethodStereotype.Category.COLLABORATIONAL)
-					&& !this.primaryStereotype.getCategory().equals(MethodStereotype.Category.DEGENERATE)) {
-				this.secondaryStereotype = this.findSecondaryStereotype();
-				if (this.secondaryStereotype != null) {
-				}
-			}
+//			if (!this.primaryStereotype.getCategory().equals(MethodStereotype.Category.COLLABORATIONAL)
+//					&& !this.primaryStereotype.getCategory().equals(MethodStereotype.Category.DEGENERATE)) {
+//				this.secondaryStereotype = this.findSecondaryStereotype();
+//				if (this.secondaryStereotype != null) {
+//				}
+//			}
+			this.secondaryStereotype = this.findSecondaryStereotype();
 		} catch (NullPointerException ex) {
 			this.primaryStereotype = MethodStereotype.INCIDENTAL;
 			//TODO DELETE
@@ -322,7 +323,7 @@ public class StereotypedMethod extends MethodStereotypeRules implements
 		}
 		return qName.toString();
 	}
-	
+
 	public String getFullyQualifiedName() {
 		final StringBuilder qName = new StringBuilder();
 		if (this.method != null && this.method.resolveBinding() != null) {
@@ -352,7 +353,7 @@ public class StereotypedMethod extends MethodStereotypeRules implements
 				qName.append(((TypeDeclaration) this.method.getParent()).getName());
 				qName.append(".");
 			}
-			
+
 			qName.append(this.method.getName().getFullyQualifiedName());
 			qName.append("(");
 			@SuppressWarnings("rawtypes")
@@ -367,7 +368,7 @@ public class StereotypedMethod extends MethodStereotypeRules implements
 				i++;
 			}
 			qName.append(")");
-			
+
 		}
 		return qName.toString();
 	}

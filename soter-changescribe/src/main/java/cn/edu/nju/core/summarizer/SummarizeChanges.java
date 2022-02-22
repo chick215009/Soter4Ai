@@ -740,7 +740,7 @@ public class SummarizeChanges {
 //            analyzeResultVO.setCommitStereotype(stereotype.name());
             summaryEntity.setCommitStereotype(stereotype.name());
             if (stereotype != null) {
-                result = CommitStereotypeDescriptor.describe(stereotypeIdentifier.getCompilationUnit(), stereotypedCommit);
+                result = CommitStereotypeDescriptor.describe(stereotypedCommit);
             }
         }
 

@@ -15,8 +15,6 @@ public class SummaryEntity {
     private Boolean isInitialCommit;
     private List<String> properties;
     private String commitStereotype;
-    private String commitStereotypeDescribe;
-    private List<MethodStatistic> methodStatisticList;
     private String methodStatisticJson;
 
     public SummaryEntity() {
@@ -26,8 +24,6 @@ public class SummaryEntity {
         this.isInitialCommit = false;
         this.properties = new ArrayList<>();
         this.commitStereotype = "";
-        this.commitStereotypeDescribe = "";
-        this.methodStatisticList = new ArrayList<>();
         this.methodStatisticJson = "";
     }
 }

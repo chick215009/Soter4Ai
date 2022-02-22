@@ -66,7 +66,7 @@ public class StereotypeIdentifier {
 		this.parser = new JParser(changedFile);
 		this.stereotypedElements = new LinkedList<>();
 		this.builder = new StringBuilder();
-		this.typeReferenceStatistic = new HashSet();
+//		this.typeReferenceStatistic = new HashSet();
 	}
 
 	public void setParameters(final ICompilationUnit unit,
