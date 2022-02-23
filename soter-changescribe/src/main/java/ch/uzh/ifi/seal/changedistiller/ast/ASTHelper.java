@@ -9,9 +9,9 @@ package ch.uzh.ifi.seal.changedistiller.ast;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,17 +20,17 @@ package ch.uzh.ifi.seal.changedistiller.ast;
  * #L%
  */
 
-import ch.uzh.ifi.seal.changedistiller.model.classifiers.EntityType;
-import ch.uzh.ifi.seal.changedistiller.model.entities.*;
 import ch.uzh.ifi.seal.changedistiller.structuredifferencing.StructureNode;
 import ch.uzh.ifi.seal.changedistiller.treedifferencing.Node;
+import ch.uzh.ifi.seal.changedistiller.model.classifiers.EntityType;
+import ch.uzh.ifi.seal.changedistiller.model.entities.*;
 
 /**
  * Handles language specific ASTs and provides access to their content. An AST helper is associated to a file.
- * 
+ *
  * @param <T>
  *            subtype of {@link StructureNode} with which the AST helper works
- * 
+ *
  * @author Beat Fluri
  * @author Giacomo Ghezzi
  */
@@ -38,14 +38,14 @@ public interface ASTHelper<T extends StructureNode> {
 
     /**
      * Creates and returns a {@link StructureNode} tree of the associated file.
-     * 
+     *
      * @return the structure node tree of the associated file
      */
     T createStructureTree();
 
     /**
      * Creates and returns the declaration {@link Node} tree for the {@link StructureNode}.
-     * 
+     *
      * @param node
      *            to create the declaration tree
      * @return the declaration tree for the structure node
@@ -54,7 +54,7 @@ public interface ASTHelper<T extends StructureNode> {
 
     /**
      * Creates and returns the method body {@link Node} tree for the {@link StructureNode}.
-     * 
+     *
      * @param node
      *            to create the method body tree
      * @return the method body tree for the structure node
@@ -64,7 +64,7 @@ public interface ASTHelper<T extends StructureNode> {
     /**
      * Converts and returns the type of the AST entity that is associated to the {@link StructureNode} to an
      * {@link EntityType}.
-     * 
+     *
      * @param node
      *            to convert its type
      * @return the entity type of the AST entity associated to the structure node
@@ -73,7 +73,7 @@ public interface ASTHelper<T extends StructureNode> {
 
     /**
      * Creates and returns the {@link SourceCodeEntity} for the {@link StructureNode}.
-     * 
+     *
      * @param node
      *            to create the source code entity for
      * @return the source code entity for the node
@@ -82,7 +82,7 @@ public interface ASTHelper<T extends StructureNode> {
 
     /**
      * Creates and returns the {@link StructureEntityVersion} for the {@link StructureNode}.
-     * 
+     *
      * @param node
      *            to create the structure entity version for
      * @param version
@@ -92,7 +92,7 @@ public interface ASTHelper<T extends StructureNode> {
     StructureEntityVersion createStructureEntityVersion(T node, String version);
     /**
      * Creates and returns the {@link StructureEntityVersion} for the {@link StructureNode}.
-     * 
+     *
      * @param node
      *            to create the structure entity version for
      * @return the structure entity version for the node
@@ -102,7 +102,7 @@ public interface ASTHelper<T extends StructureNode> {
     /**
      * Creates and returns the {@link StructureEntityVersion} as method of the {@link ClassHistory}. The method is
      * attached to the corresponding {@link MethodHistory}, if exists. Otherwise a new one is created.
-     * 
+     *
      * @param classHistory
      *            to create the structure entity version for
      * @param node
@@ -116,7 +116,7 @@ public interface ASTHelper<T extends StructureNode> {
     /**
      * Creates and returns the {@link StructureEntityVersion} as method of the {@link ClassHistory}. The method is
      * attached to the corresponding {@link MethodHistory}, if exists. Otherwise a new one is created.
-     * 
+     *
      * @param classHistory
      *            to create the structure entity version for
      * @param node
@@ -124,11 +124,11 @@ public interface ASTHelper<T extends StructureNode> {
      * @return the method structure entity version in the class history for the node
      */
     StructureEntityVersion createMethodInClassHistory(ClassHistory classHistory, T node);
-    
+
     /**
      * Creates and returns the {@link StructureEntityVersion} as field of the {@link ClassHistory}. The field is
      * attached to the corresponding {@link AttributeHistory}, if exists. Otherwise a new one is created.
-     * 
+     *
      * @param classHistory
      *            to create the structure entity version for
      * @param node
@@ -142,7 +142,7 @@ public interface ASTHelper<T extends StructureNode> {
     /**
      * Creates and returns the {@link StructureEntityVersion} as field of the {@link ClassHistory}. The field is
      * attached to the corresponding {@link AttributeHistory}, if exists. Otherwise a new one is created.
-     * 
+     *
      * @param classHistory
      *            to create the structure entity version for
      * @param node
@@ -150,11 +150,11 @@ public interface ASTHelper<T extends StructureNode> {
      * @return the field structure entity version in the class history for the node
      */
     StructureEntityVersion createFieldInClassHistory(ClassHistory classHistory, T node);
-    
+
     /**
      * Creates and returns the {@link StructureEntityVersion} as class of the {@link ClassHistory}. An inner class
      * version is added to this resulting Inner{@link ClassHistory}.
-     * 
+     *
      * @param classHistory
      *            to create the structure entity version for
      * @param node
@@ -168,7 +168,7 @@ public interface ASTHelper<T extends StructureNode> {
     /**
      * Creates and returns the {@link StructureEntityVersion} as class of the {@link ClassHistory}. An inner class
      * version is added to this resulting Inner{@link ClassHistory}.
-     * 
+     *
      * @param classHistory
      *            to create the structure entity version for
      * @param node
@@ -176,11 +176,11 @@ public interface ASTHelper<T extends StructureNode> {
      * @return the class structure entity version in the class history for the node
      */
     StructureEntityVersion createInnerClassInClassHistory(ClassHistory classHistory, T node);
-    
+
     /**
      * Creates and returns the declaration {@link Node} tree for the {@link StructureNode}. In addition it replaces the
      * qualified name with the given one.
-     * 
+     *
      * @param node
      *            to create the declaration tree
      * @param qualifiedName

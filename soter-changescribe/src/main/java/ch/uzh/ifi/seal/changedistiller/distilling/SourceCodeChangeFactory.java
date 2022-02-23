@@ -9,9 +9,9 @@ package ch.uzh.ifi.seal.changedistiller.distilling;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,8 +21,8 @@ package ch.uzh.ifi.seal.changedistiller.distilling;
  */
 
 import ch.uzh.ifi.seal.changedistiller.model.entities.*;
-import ch.uzh.ifi.seal.changedistiller.treedifferencing.Node;
 import ch.uzh.ifi.seal.changedistiller.treedifferencing.TreeEditOperation;
+import ch.uzh.ifi.seal.changedistiller.treedifferencing.Node;
 import ch.uzh.ifi.seal.changedistiller.treedifferencing.operation.DeleteOperation;
 import ch.uzh.ifi.seal.changedistiller.treedifferencing.operation.InsertOperation;
 import ch.uzh.ifi.seal.changedistiller.treedifferencing.operation.MoveOperation;
@@ -30,14 +30,14 @@ import ch.uzh.ifi.seal.changedistiller.treedifferencing.operation.UpdateOperatio
 
 /**
  * Factory for {@link SourceCodeChange} creation out of {@link TreeEditOperation}.
- * 
+ *
  * @author Beat Fluri
  */
 public class SourceCodeChangeFactory {
 
     /**
      * Creates an {@link Insert} change from the {@link InsertOperation}.
-     * 
+     *
      * @param structureEntity
      *            in which the source code change happened
      * @param insert
@@ -54,7 +54,7 @@ public class SourceCodeChangeFactory {
 
     /**
      * Creates an {@link Delete} change from the {@link DeleteOperation}.
-     * 
+     *
      * @param structureEntity
      *            in which the source code change happened
      * @param delete
@@ -71,7 +71,7 @@ public class SourceCodeChangeFactory {
 
     /**
      * Creates an {@link Move} change from the {@link MoveOperation}.
-     * 
+     *
      * @param structureEntity
      *            in which the source code change happened
      * @param move
@@ -88,7 +88,7 @@ public class SourceCodeChangeFactory {
 
     /**
      * Creates an {@link Update} change from the {@link UpdateOperation}.
-     * 
+     *
      * @param structureEntity
      *            in which the source code change happened
      * @param update
@@ -102,7 +102,7 @@ public class SourceCodeChangeFactory {
                             .getNodeToUpdate().getEntity().getModifiers(), update.getNodeToUpdate().getEntity()
                             .getSourceRange(),
                             update.getNodeToUpdate().getEntity().getAstNode(),
-                            update.getNodeToUpdate().getValue(), 
+                            update.getNodeToUpdate().getValue(),
                             structureEntity.getJavaStructureNode());
             return new Update(structureEntity, entity, update.getNewNode().getEntity(), ((Node) update
                     .getNodeToUpdate().getParent()).getEntity());

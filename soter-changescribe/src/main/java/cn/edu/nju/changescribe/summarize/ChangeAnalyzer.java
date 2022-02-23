@@ -4,10 +4,8 @@ import ch.uzh.ifi.seal.changedistiller.model.entities.StructureEntityVersion;
 import cn.edu.nju.changescribe.domain.*;
 import cn.edu.nju.core.Constants;
 import cn.edu.nju.core.entity.MyModule;
-import cn.edu.nju.core.filter.DetailDescribeFilter;
 import cn.edu.nju.core.git.ChangedFile;
 import cn.edu.nju.core.git.SCMRepository;
-import cn.edu.nju.core.label.LabelMethod;
 import cn.edu.nju.core.label.TypeLabel;
 import cn.edu.nju.core.stereotype.stereotyped.*;
 import cn.edu.nju.core.stereotype.taxonomy.CodeStereotype;
@@ -16,11 +14,9 @@ import cn.edu.nju.core.stereotype.taxonomy.MethodStereotype;
 import cn.edu.nju.core.stereotype.taxonomy.TypeStereotype;
 import cn.edu.nju.core.summarizer.CommitStereotypeDescriptor;
 import cn.edu.nju.core.summarizer.ModificationDescriptor;
-import cn.edu.nju.core.summarizer.SummarizeType;
 import cn.edu.nju.core.textgenerator.phrase.MethodPhraseGenerator;
 import cn.edu.nju.core.utils.Utils;
-import cn.edu.nju.core.visitor.TypeReferencedVisitor;
-import cn.edu.nju.github.entity.CommitEntity;
+import lombok.Data;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
@@ -29,10 +25,10 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+@Data
 public class ChangeAnalyzer {
     private String projectPath;
     //该类型的Java文件都会被用于分析
@@ -50,6 +46,7 @@ public class ChangeAnalyzer {
     private Map<String, StereotypeIdentifier> summarized;
     private List<MyModule> newModules;
     private Git git;
+    private SummaryEntity summaryEntity;
 
     public void changeAnalyzerInit() {
         identifiers = new ArrayList<>();
@@ -73,7 +70,7 @@ public class ChangeAnalyzer {
             //初始化summarized
             fillSummarized(differences);
             fillNewModules();
-            SummaryEntity summaryEntity = analyzeCommitEntity();
+            summaryEntity = analyzeCommitEntity();
 
             StereotypedCommit stereotypedCommit = getStereotypedCommit();
             String signature = stereotypedCommit.buildSignature();
@@ -101,6 +98,76 @@ public class ChangeAnalyzer {
             e.printStackTrace();
         }
 
+    }
+
+    public String getDescribe(SummaryEntity summaryEntity) {
+        StringBuilder des = new StringBuilder();
+        des.append(summaryEntity.getSimpleDescribe());
+
+        if (summaryEntity.getPackageEntityList().size() > 0) {
+            des.append("This change set is mainly composed of: \n");
+        }
+
+        int i = 1;
+        for (PackageEntity packageEntity : summaryEntity.getPackageEntityList()) {
+            StringBuilder packageDes = new StringBuilder();
+            packageDes.append(i + ". ");
+            packageDes.append("Changes to " + packageEntity.getPackageName() + ": \n");
+            int j = 1;
+            for (FileEntity fileEntity : packageEntity.getFileEntityList()) {
+                StringBuilder fileDes = new StringBuilder();
+                fileDes.append(i + "." + j + ". ");
+                if (fileEntity.getOperation().equals(ChangedFile.TypeChange.MODIFIED.name())) {
+                    fileDes.append("Modifications to " + fileEntity.getFileName() + "\n");
+                    fileDes.append(fileEntity.getChangeDescribe());
+                } else if (fileEntity.getOperation().equals(ChangedFile.TypeChange.ADDED) ||
+                        fileEntity.getOperation().equals(ChangedFile.TypeChange.REMOVED.name())) {
+                    StringBuilder typeDes = new StringBuilder();
+                    for (TypeEntity typeEntity : fileEntity.getTypeEntityList()) {
+                        if (fileEntity.getOperation().equals(ChangedFile.TypeChange.ADDED.name())) {
+                            typeDes.append("Add ");
+                        } else {
+                            typeDes.append("Remove ");
+                        }
+                        typeDes.append(typeEntity.getTypeStereotype() + typeEntity.getTypeName());
+                        if (typeEntity.getTypeLabel().equals(TypeLabel.ABSTRACT)) {
+                            typeDes.append(" abstract class ");
+                        } else if (typeEntity.getTypeLabel().equals(TypeLabel.INTERFACE)) {
+                            typeDes.append(" interface ");
+                        } else if (typeEntity.getTypeLabel().equals(TypeLabel.USUAL_CLASS)) {
+                            typeDes.append(" class ");
+                        }
+                        if (typeEntity.getInterfaceList().size() > 0) {
+                            typeDes.append("implements ");
+                            for (String interfaceName : typeEntity.getInterfaceList()) {
+                                typeDes.append(interfaceName + ", ");
+                            }
+                        }
+                        if (!typeEntity.getSuperClassStr().equals("")) {
+                            if (typeEntity.getInterfaceList().size() > 0) {
+                                typeDes.append(", and extends " + typeEntity.getSuperClassStr());
+                            } else {
+                                typeDes.append("extends " + typeEntity.getSuperClassStr());
+                            }
+                        }
+                        if (typeEntity.getMethodEntityList().size() > 0) {
+                            typeDes.append("\n" + "It allows to: + \n" );
+                            for (MethodEntity methodEntity : typeEntity.getMethodEntityList()) {
+                                typeDes.append("\t" + methodEntity.getPhrase() + "\n");
+                            }
+                        }
+
+                    }
+
+                    fileDes.append(typeDes);
+                }
+                packageDes.append(fileDes);
+                j++;
+            }
+            des.append(packageDes);
+            i++;
+        }
+        return des.toString();
     }
 
     public String getSimpleDescribe() {
@@ -459,5 +526,6 @@ public class ChangeAnalyzer {
     public static void main(String[] args) {
         ChangeAnalyzer changeAnalyzer = new ChangeAnalyzer("/Users/chengleming/work/projectDir");
         changeAnalyzer.analyze();
+        changeAnalyzer.getDescribe(changeAnalyzer.summaryEntity);
     }
 }

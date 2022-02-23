@@ -21,12 +21,12 @@ package ch.uzh.ifi.seal.changedistiller.ast.java;
  */
 
 import ch.uzh.ifi.seal.changedistiller.ast.ASTNodeTypeConverter;
-import ch.uzh.ifi.seal.changedistiller.ast.java.Comment.CommentType;
 import ch.uzh.ifi.seal.changedistiller.model.classifiers.EntityType;
 import ch.uzh.ifi.seal.changedistiller.model.classifiers.SourceRange;
 import ch.uzh.ifi.seal.changedistiller.model.classifiers.java.JavaEntityType;
 import ch.uzh.ifi.seal.changedistiller.model.entities.SourceCodeEntity;
 import ch.uzh.ifi.seal.changedistiller.treedifferencing.Node;
+import ch.uzh.ifi.seal.changedistiller.ast.java.Comment.CommentType;
 import com.google.inject.Inject;
 import org.eclipse.jdt.core.compiler.InvalidInputException;
 import org.eclipse.jdt.internal.compiler.ASTVisitor;

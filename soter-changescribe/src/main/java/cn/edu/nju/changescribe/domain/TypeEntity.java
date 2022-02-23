@@ -1,8 +1,6 @@
 package cn.edu.nju.changescribe.domain;
 
-import ch.uzh.ifi.seal.changedistiller.model.classifiers.ChangeType;
 import ch.uzh.ifi.seal.changedistiller.model.entities.SourceCodeChange;
-import cn.edu.nju.core.git.ChangedFile.TypeChange;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

@@ -9,9 +9,9 @@ package ch.uzh.ifi.seal.changedistiller.distilling;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,9 +20,9 @@ package ch.uzh.ifi.seal.changedistiller.distilling;
  * #L%
  */
 
+import ch.uzh.ifi.seal.changedistiller.treedifferencing.TreeEditOperation;
 import ch.uzh.ifi.seal.changedistiller.model.entities.SourceCodeChange;
 import ch.uzh.ifi.seal.changedistiller.model.entities.StructureEntityVersion;
-import ch.uzh.ifi.seal.changedistiller.treedifferencing.TreeEditOperation;
 import ch.uzh.ifi.seal.changedistiller.treedifferencing.operation.DeleteOperation;
 import ch.uzh.ifi.seal.changedistiller.treedifferencing.operation.InsertOperation;
 import ch.uzh.ifi.seal.changedistiller.treedifferencing.operation.MoveOperation;
@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * Converts {@link TreeEditOperation}s to {@link SourceCodeChange}s and attaches them to a
  * {@link StructureEntityVersion} in which the changes happened.
- * 
+ *
  * @author Beat Fluri
  */
 public final class SourceCodeChangeConverter {
@@ -45,7 +45,7 @@ public final class SourceCodeChangeConverter {
 
     /**
      * Creates a new {@link SourceCodeChangeConverter}.
-     * 
+     *
      * @param structureEntity
      *            in which the {@link SourceCodeChange}s happened
      */
@@ -60,7 +60,7 @@ public final class SourceCodeChangeConverter {
      * {@link StructureEntityVersion}.
      * <p>
      * A {@link SourceCodeChange} is added if the conversion didn't result in a <code>null</code> value.
-     * 
+     *
      * @param operation
      *            to convert
      */
@@ -92,7 +92,7 @@ public final class SourceCodeChangeConverter {
      * them to the {@link StructureEntityVersion}.
      * <p>
      * A {@link SourceCodeChange} is added if the conversion didn't result in a <code>null</code> value.
-     * 
+     *
      * @param operations
      *            to convert
      */

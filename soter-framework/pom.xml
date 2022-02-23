@@ -59,6 +59,11 @@
             <artifactId>soter-system</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>cn.edu.nju</groupId>
+            <artifactId>soter-common</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

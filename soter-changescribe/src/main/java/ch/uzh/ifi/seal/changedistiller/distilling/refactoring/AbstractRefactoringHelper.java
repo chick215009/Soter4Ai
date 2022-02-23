@@ -9,9 +9,9 @@ package ch.uzh.ifi.seal.changedistiller.distilling.refactoring;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,22 +20,22 @@ package ch.uzh.ifi.seal.changedistiller.distilling.refactoring;
  * #L%
  */
 
-import ch.uzh.ifi.seal.changedistiller.ast.ASTHelper;
 import ch.uzh.ifi.seal.changedistiller.distilling.Distiller;
+import ch.uzh.ifi.seal.changedistiller.structuredifferencing.StructureNode;
+import ch.uzh.ifi.seal.changedistiller.ast.ASTHelper;
 import ch.uzh.ifi.seal.changedistiller.model.entities.ClassHistory;
 import ch.uzh.ifi.seal.changedistiller.model.entities.StructureEntityVersion;
-import ch.uzh.ifi.seal.changedistiller.structuredifferencing.StructureNode;
 
 /**
  * Refactoring helpers support {@link Distiller} in deciding whether an added and a deleted class/field/method represent
  * a refactoring. The helpers for the different {@link StructureNode} have to extend this class to be conform to the
  * {@link Distiller}.
- * 
+ *
  * <p>
  * Since the {@link Distiller} assumes that the refactoring helper updates the {@link ClassHistory} in which the
  * refactorings took place, heirs of this class have to fulfill that all {@link StructureEntityVersion} generations are
  * made via the provided {@link ClassHistory}.
- * 
+ *
  * @author Beat Fluri
  * @author Giacomo Ghezzi
  * @see ClassRefactoringHelper
@@ -50,7 +50,7 @@ public abstract class AbstractRefactoringHelper {
 
     /**
      * Creates a new refactoring helper.
-     * 
+     *
      * @param classHistory
      *            on which the helper creates new {@link StructureEntityVersion}s
      * @param astHelper
@@ -64,17 +64,17 @@ public abstract class AbstractRefactoringHelper {
     /**
      * Creates a {@link StructureEntityVersion} for the given {@link StructureNode} and attaches it to the
      * {@link ClassHistory}.
-     * 
+     *
      * @param node
      *            to create the structure entity version
      * @return structure entity version for the structure node
      */
     public abstract StructureEntityVersion createStructureEntityVersion(StructureNode node);
-    
+
     /**
      * Creates a {@link StructureEntityVersion} for the given {@link StructureNode} and attaches it to the
      * {@link ClassHistory}.
-     * 
+     *
      * @param node
      *            to create the structure entity version
      * @param version
@@ -87,7 +87,7 @@ public abstract class AbstractRefactoringHelper {
     /**
      * Creates a {@link StructureEntityVersion} with newEntityName and replaces the {@link StructureEntityVersion} of
      * the {@link StructureNode} (if exists) with it in the {@link ClassHistory}. took place.
-     * 
+     *
      * @param node
      *            to create the structure entity version
      * @param newEntityName
@@ -96,12 +96,12 @@ public abstract class AbstractRefactoringHelper {
      *         version of the structure node
      */
     public abstract StructureEntityVersion createStructureEntityVersion(StructureNode node, String newEntityName);
-    
+
 	/**
 	 * Creates a {@link StructureEntityVersion} with newEntityName and replaces
 	 * the {@link StructureEntityVersion} of the {@link StructureNode} (if
 	 * exists) with it in the {@link ClassHistory}. took place.
-	 * 
+	 *
 	 * @param node
 	 *            to create the structure entity version
 	 * @param newEntityName
@@ -116,7 +116,7 @@ public abstract class AbstractRefactoringHelper {
 
     /**
      * Extracts a short form of the unique name provided.
-     * 
+     *
      * @param uniqueName
      *            to shorten
      * @return short form of unique name
@@ -126,7 +126,7 @@ public abstract class AbstractRefactoringHelper {
     /**
      * Checks whether an old and a new entity are subject of a refactoring. Whether it is a refactoring or not is
      * decided according to the similarity implementation and the given threshold.
-     * 
+     *
      * @param left
      *            the old entity
      * @param right
@@ -139,7 +139,7 @@ public abstract class AbstractRefactoringHelper {
 
     /**
      * Sets the threshold for the similarity calculation.
-     * 
+     *
      * @param threshold
      *            for the similarity calculation
      */
@@ -149,7 +149,7 @@ public abstract class AbstractRefactoringHelper {
 
     /**
      * Calculates the similarity between two entities represented by their names and the string representation of them.
-     * 
+     *
      * @param left
      *            the old entity
      * @param right

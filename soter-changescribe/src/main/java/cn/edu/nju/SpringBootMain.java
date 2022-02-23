@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 
-@ComponentScan(value = {"cn.edu.nju.controller", "cn.edu.nju.service"})
+@ComponentScan(value = {"cn.edu.nju.changescribe.controller", "cn.edu.nju.changescribe.service"})
 @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class })
 public class SpringBootMain {
     public static void main(String[] args) {

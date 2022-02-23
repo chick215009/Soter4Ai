@@ -11,11 +11,13 @@ import cn.edu.nju.core.stereotype.stereotyped.StereotypeIdentifier;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Service
 public class CodeChangeServiceImpl implements ICodeChangeService {
     @Override
     public List<MethodStatistic> getMethodStatisticList(String projectPath) {

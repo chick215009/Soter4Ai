@@ -9,9 +9,9 @@ package ch.uzh.ifi.seal.changedistiller.ast.java;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,11 +24,10 @@ import ch.uzh.ifi.seal.changedistiller.ast.ASTHelper;
 import ch.uzh.ifi.seal.changedistiller.model.classifiers.ChangeModifier;
 import ch.uzh.ifi.seal.changedistiller.model.classifiers.EntityType;
 import ch.uzh.ifi.seal.changedistiller.model.classifiers.SourceRange;
-import ch.uzh.ifi.seal.changedistiller.model.entities.*;
 import ch.uzh.ifi.seal.changedistiller.structuredifferencing.java.JavaStructureNode;
-import ch.uzh.ifi.seal.changedistiller.structuredifferencing.java.JavaStructureNode.Type;
 import ch.uzh.ifi.seal.changedistiller.structuredifferencing.java.JavaStructureTreeBuilder;
 import ch.uzh.ifi.seal.changedistiller.treedifferencing.Node;
+import ch.uzh.ifi.seal.changedistiller.model.entities.*;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import org.eclipse.jdt.internal.compiler.ast.*;
@@ -41,7 +40,7 @@ import java.util.List;
 
 /**
  * Implementation of {@link ASTHelper} for the Java programming language.
- * 
+ *
  * @author Beat Fluri,
  * @author Giacomo Ghezzi
  */
@@ -77,7 +76,7 @@ public class JavaASTHelper implements ASTHelper<JavaStructureNode> {
         fDeclarationConverter = declarationConverter;
         fBodyConverter = bodyConverter;
     }
-    
+
     private void prepareComments() {
         cleanComments(collectComments());
     }
@@ -144,7 +143,7 @@ public class JavaASTHelper implements ASTHelper<JavaStructureNode> {
     @Override
     public JavaStructureNode createStructureTree() {
         CompilationUnitDeclaration cu = fCompilation.getCompilationUnit();
-        JavaStructureNode node = new JavaStructureNode(Type.CU, null, null, cu);
+        JavaStructureNode node = new JavaStructureNode(JavaStructureNode.Type.CU, null, null, cu);
         cu.traverse(new JavaStructureTreeBuilder(node), (CompilationUnitScope) null);
         return node;
     }
@@ -187,10 +186,10 @@ public class JavaASTHelper implements ASTHelper<JavaStructureNode> {
                 convertType(node),
                 node.getFullyQualifiedName(),
                 extractModifier(node.getASTNode()),
-                versionNum, 
+                versionNum,
                 node);
     }
-    
+
     @Override
     public StructureEntityVersion createStructureEntityVersion(JavaStructureNode node) {
         return new StructureEntityVersion(
@@ -252,15 +251,15 @@ public class JavaASTHelper implements ASTHelper<JavaStructureNode> {
         }
         return modifier;
     }
-    
+
     private boolean isNative(int ecjModifier) {
     	return (ecjModifier & ClassFileConstants.AccNative) != 0;
     }
-    
+
     private boolean isStatic(int ecjModifier) {
     	return (ecjModifier & ClassFileConstants.AccStatic) != 0;
     }
-    
+
     private boolean isStrictFP(int ecjModifier) {
     	return (ecjModifier & ClassFileConstants.AccStrictfp) != 0;
     }
@@ -276,12 +275,12 @@ public class JavaASTHelper implements ASTHelper<JavaStructureNode> {
     private boolean isVolatile(int ecjModifier) {
     	return (ecjModifier & ClassFileConstants.AccVolatile) != 0;
     }
-    
+
 
     private boolean isAbstract(int ecjModifier) {
         return (ecjModifier & ClassFileConstants.AccAbstract) != 0;
     }
-    
+
     private boolean isPrivate(int ecjModifier) {
         return (ecjModifier & ClassFileConstants.AccPrivate) != 0;
     }
@@ -325,7 +324,7 @@ public class JavaASTHelper implements ASTHelper<JavaStructureNode> {
         }
         return method;
     }
-    
+
     @Override
     public StructureEntityVersion createFieldInClassHistory(ClassHistory classHistory, JavaStructureNode node, String versionNum) {
         AttributeHistory ah = null;
@@ -340,7 +339,7 @@ public class JavaASTHelper implements ASTHelper<JavaStructureNode> {
         return attribute;
 
     }
-    
+
     @Override
     public StructureEntityVersion createFieldInClassHistory(ClassHistory classHistory, JavaStructureNode node) {
         AttributeHistory ah = null;
@@ -370,7 +369,7 @@ public class JavaASTHelper implements ASTHelper<JavaStructureNode> {
         return clazz;
 
     }
-    
+
     @Override
     public StructureEntityVersion createInnerClassInClassHistory(ClassHistory classHistory, JavaStructureNode node) {
         ClassHistory ch = null;

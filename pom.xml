@@ -33,6 +33,9 @@
         <poi.version>4.1.2</poi.version>
         <velocity.version>2.3</velocity.version>
         <jwt.version>0.9.1</jwt.version>
+        <org.eclipse.jdt.core.version>3.10.0</org.eclipse.jdt.core.version>
+        <github-api.version>1.300</github-api.version>
+        <fastjson.version>1.2.78</fastjson.version>
     </properties>
 
     <!-- 依赖声明 -->
@@ -206,6 +209,38 @@
                 <version>${soter.version}</version>
             </dependency>
 
+<!--            <dependency>-->
+<!--                <groupId>cn.edu.nju</groupId>-->
+<!--                <artifactId>soter-changescribe</artifactId>-->
+<!--                <version>${soter.version}</version>-->
+<!--            </dependency>-->
+
+            <dependency>
+                <groupId>cn.edu.nju</groupId>
+                <artifactId>soter-analyze</artifactId>
+                <version>${soter.version}</version>
+            </dependency>
+
+
+
+            <dependency>
+                <groupId>org.eclipse.jdt</groupId>
+                <artifactId>org.eclipse.jdt.core</artifactId>
+                <version>${org.eclipse.jdt.core.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.kohsuke</groupId>
+                <artifactId>github-api</artifactId>
+                <version>${github-api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+
 
         </dependencies>
     </dependencyManagement>
@@ -219,6 +254,7 @@
         <module>soter-common</module>
         <module>soter-github</module>
         <module>soter-changescribe</module>
+        <module>soter-analyze</module>
     </modules>
     <packaging>pom</packaging>
 

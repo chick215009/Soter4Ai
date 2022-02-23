@@ -9,9 +9,9 @@ package ch.uzh.ifi.seal.changedistiller.distilling.refactoring;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,15 +20,15 @@ package ch.uzh.ifi.seal.changedistiller.distilling.refactoring;
  * #L%
  */
 
-import ch.uzh.ifi.seal.changedistiller.ast.ASTHelper;
 import ch.uzh.ifi.seal.changedistiller.distilling.Distiller;
 import ch.uzh.ifi.seal.changedistiller.distilling.DistillerFactory;
 import ch.uzh.ifi.seal.changedistiller.distilling.SourceCodeChangeClassifier;
+import ch.uzh.ifi.seal.changedistiller.structuredifferencing.StructureNode;
+import ch.uzh.ifi.seal.changedistiller.ast.ASTHelper;
 import ch.uzh.ifi.seal.changedistiller.model.entities.ClassHistory;
 import ch.uzh.ifi.seal.changedistiller.model.entities.SourceCodeChange;
 import ch.uzh.ifi.seal.changedistiller.model.entities.StructureEntityVersion;
 import ch.uzh.ifi.seal.changedistiller.model.entities.Update;
-import ch.uzh.ifi.seal.changedistiller.structuredifferencing.StructureNode;
 import ch.uzh.ifi.seal.changedistiller.treedifferencing.Node;
 import com.google.inject.Inject;
 
@@ -39,7 +39,7 @@ import java.util.List;
 /**
  * Processes {@link RefactoringCandidate}s from a {@link RefactoringCandidateContainer} and adds resulting changes to
  * the {@link ClassHistory}, and its member histories respectively.
- * 
+ *
  * @author Beat Fluri
  * @author Giacomo Ghezzi
  */
@@ -62,7 +62,7 @@ public class RefactoringCandidateProcessor {
     /**
      * Processes all {@link RefactoringCandidate}s in the {@link RefactoringCandidateContainer} and stores all resulting
      * changes to the {@link ClassHistory}.
-     * 
+     *
      * @param classHistory
      *            in which the refactorings took place
      * @param leftHelper
@@ -85,11 +85,11 @@ public class RefactoringCandidateProcessor {
         processFieldRefactoringCandidates(candidates);
         processInnerClassesRefactoringCandidates(candidates);
     }
-    
+
     /**
      * Processes all {@link RefactoringCandidate}s in the {@link RefactoringCandidateContainer} and stores all resulting
      * changes to the {@link ClassHistory}.
-     * 
+     *
      * @param classHistory
      *            in which the refactorings took place
      * @param leftHelper

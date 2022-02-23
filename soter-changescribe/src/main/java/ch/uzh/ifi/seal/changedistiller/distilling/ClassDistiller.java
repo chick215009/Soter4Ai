@@ -9,9 +9,9 @@ package ch.uzh.ifi.seal.changedistiller.distilling;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,13 +20,13 @@ package ch.uzh.ifi.seal.changedistiller.distilling;
  * #L%
  */
 
+import ch.uzh.ifi.seal.changedistiller.structuredifferencing.StructureDiffNode;
+import ch.uzh.ifi.seal.changedistiller.structuredifferencing.StructureNode;
 import ch.uzh.ifi.seal.changedistiller.ast.ASTHelper;
 import ch.uzh.ifi.seal.changedistiller.distilling.refactoring.RefactoringCandidate;
 import ch.uzh.ifi.seal.changedistiller.distilling.refactoring.RefactoringCandidateContainer;
 import ch.uzh.ifi.seal.changedistiller.distilling.refactoring.RefactoringCandidateProcessor;
 import ch.uzh.ifi.seal.changedistiller.model.entities.*;
-import ch.uzh.ifi.seal.changedistiller.structuredifferencing.StructureDiffNode;
-import ch.uzh.ifi.seal.changedistiller.structuredifferencing.StructureNode;
 import ch.uzh.ifi.seal.changedistiller.treedifferencing.Node;
 
 import java.util.Iterator;
@@ -35,7 +35,7 @@ import java.util.List;
 
 /**
  * Extracts changes from a class {@link StructureDiffNode}.
- * 
+ *
  * @author Beat Fluri
  * @author Giacomo Ghezzi
  */
@@ -56,7 +56,7 @@ public class ClassDistiller {
 
     /**
      * Creates a new class distiller.
-     * 
+     *
      * @param classNode
      *            of which the changes should be extracted
      * @param classHistory
@@ -86,10 +86,10 @@ public class ClassDistiller {
         fChanges = new LinkedList<SourceCodeChange>();
         fRefactoringContainer = new RefactoringCandidateContainer();
     }
-    
+
     /**
      * Creates a new class distiller.
-     * 
+     *
      * @param classNode
      *            of which the changes should be extracted
      * @param classHistory
@@ -138,7 +138,7 @@ public class ClassDistiller {
         processDeclarationChanges(fClassDiffNode, fRootEntity);
         fChanges.addAll(fRootEntity.getSourceCodeChanges());
         processChildren();
-        
+
         if (fVersion != null) {
         	fRefactoringProcessor.processRefactoringCandidates(fClassHistory,
 					fLeftASTHelper, fRightASTHelper, fRefactoringContainer, fVersion);

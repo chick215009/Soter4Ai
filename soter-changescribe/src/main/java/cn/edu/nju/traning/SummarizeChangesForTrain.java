@@ -1,7 +1,7 @@
 package cn.edu.nju.traning;
 
 import ch.uzh.ifi.seal.changedistiller.model.entities.StructureEntityVersion;
-import cn.edu.nju.controller.vo.AnalyzeResultVO;
+import cn.edu.nju.changescribe.domain.vo.AnalyzeResultVO;
 import cn.edu.nju.core.Constants;
 import cn.edu.nju.core.entity.CommitMessage;
 import cn.edu.nju.core.entity.MyModule;
@@ -13,19 +13,16 @@ import cn.edu.nju.core.stereotype.stereotyped.*;
 import cn.edu.nju.core.stereotype.taxonomy.CommitStereotype;
 import cn.edu.nju.core.summarizer.CommitGeneralDescriptor;
 import cn.edu.nju.core.summarizer.CommitStereotypeDescriptor;
-import cn.edu.nju.core.summarizer.ModificationDescriptor;
 import cn.edu.nju.core.summarizer.SummarizeType;
 import cn.edu.nju.core.utils.JDTASTUtil;
 import cn.edu.nju.core.utils.Utils;
 import cn.edu.nju.core.visitor.MethodDeclarationStatisticsVisitor;
 import cn.edu.nju.core.visitor.MethodInvocationStatisticsVisitor;
-import cn.edu.nju.core.visitor.TypeReferencedVisitor;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jgit.api.Git;

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" xmlns:th="http://www.thymeleaf.org">
+    <title>commit-helper</title>
+
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+
+    <script type="text/javascript" th:inline="javascript">
+        var host = "http://localhost:9079/";
+        var simpleDescribe = "";
+        var detailDescribe = "";
+        function gitInit() {
+            var projectPathUrl = $("#projectPathUrl").val();
+            $.ajax({
+                url:host + "git-init",
+                type:"POST",
+                data:{
+                    projectPath:projectPathUrl
+                },
+                async: false,
+                success: function (res) {
+                    if (res) {
+                        alert("git init 成功");
+                    } else {
+                        alert("git init 失败");
+                    }
+                },
+                fail:function () {
+                    alert("访问后端失败")
+                }
+            })
+        }
+
+        function gitAddAll() {
+            var projectPathUrl = $("#projectPathUrl").val();
+            $.ajax(
+                {
+                    url: host + "git-add-all",
+                    type: "POST",
+                    data: {
+                        projectPath:projectPathUrl
+                    },
+                    async: false,
+                    success:function (res) {
+                        if (res) {
+                            alert("git add * 成功")
+                        } else {
+                            alert("git add * 失败")
+                        }
+                    },
+                    fail:function () {
+                        alert("访问后端失败")
+                    }
+                }
+            )
+        }
+
+        function updateProject() {
+            var projectPathUrl = $("#projectPathUrl").val();
+            var newProjectPathUrl = $("#newProjectPathUrl").val();
+
+            $.ajax(
+                {
+                    url: host + "update-project",
+                    type: "POST",
+                    data: {
+                        projectPath: projectPathUrl,
+                        newProjectPath: newProjectPathUrl
+                    },
+                    async: false,
+                    success:function (res) {
+                        if (res) {
+                            alert("项目更新成功")
+                        } else {
+                            alert("项目更新失败")
+                        }
+                    },
+                    fail:function () {
+                        alert("访问后端失败")
+                    }
+                }
+            )
+        }
+
+        function clearProjectDir() {
+            var projectPathUrl = $("#projectPathUrl").val();
+
+            $.ajax(
+                {
+                    url: host + "clear-projectDir",
+                    type: "POST",
+                    data: {
+                        projectPath: projectPathUrl
+                    },
+                    async: false,
+                    success:function (res) {
+                        if (res) {
+                            alert("项目文件夹已清空")
+                        } else {
+                            alert("项目文件夹清空失败")
+                        }
+                    },
+                    fail:function () {
+                        alert("访问后端失败")
+                    }
+                }
+
+            )
+        }
+
+        function generateCommitMessage() {
+            var projectPathUrl = $("#projectPathUrl").val();
+            var fileVO = new Object();
+            fileVO.isSimpleDescribe = true;
+            fileVO.isTypeLabel = true;
+
+            $.ajax(
+                {
+                    url: host + "generate-commit-message",
+                    type: "POST",
+                    data: {
+                        projectPath: projectPathUrl,
+                        fileVO:JSON.stringify(fileVO)
+                    },
+                    async: false,
+                    success:function (res) {
+                        simpleDescribe = res.simpleDescribe;
+                        detailDescribe = res.detailDescribe;
+                        $("#commitMessage").html(res.simpleDescribe+res.detailDescribe);
+                    },
+                    fail:function () {
+                        alert("访问后端失败")
+                    }
+                }
+
+            )
+        }
+
+        function gitCommit() {
+            var commitMessage = $("#commitMessage").text();
+            var projectPathUrl = $("#projectPathUrl").val();
+
+            $.ajax(
+                {
+                    url: host + "git-commit",
+                    type: "POST",
+                    data: {
+                        projectPath: projectPathUrl,
+                        message: commitMessage
+                    },
+                    async: false,
+                    success:function (res) {
+                        if (res) {
+                            alert("提交成功")
+                        } else {
+                            alert("提交失败")
+                        }
+                    },
+                    fail:function () {
+                        alert("访问后端失败")
+                    }
+                }
+
+            )
+        }
+
+        function test01() {
+            clearProjectDir();
+            gitInit();
+
+            updateProject();
+            generateCommitMessage();
+            gitAddAll();
+            gitCommit();
+        }
+
+        function test02() {
+            updateProject();
+
+            generateCommitMessage();
+            gitAddAll();
+            gitCommit();
+        }
+
+    </script>
+</head>
+<body>
+<div style="width:100%;text-align: center">
+    <b>本地项目路径</b>
+    <br>
+    <input type="text" th:id="projectPathUrl" th:name="projectPathUrl" placeholder="请输入本地项目地址"/>
+    <br>
+    <button onclick="gitInit()">git init</button>
+    <button onclick="gitAddAll()">git add *</button>
+    <button onclick="clearProjectDir()">清空项目文件夹</button>
+    <br>
+    <b>新项目路径: </b>
+    <input type="text" th:id="newProjectPathUrl" placeholder="请输入本地新的项目路径">
+    <button onclick="updateProject()">更新项目</button>
+    <button onclick="test01()">一键initial commit 测试</button>
+    <button onclick="test02()">一键非 initial commit 测试</button>
+    <br>
+    <br>
+    <button onclick="generateCommitMessage()">生成commit message</button>
+    <button onclick="gitCommit()">将生成的commit message 提交</button>
+    <textarea id="commitMessage" style="display: block;width: 100%;height: 600px"></textarea>
+ </div>
+
+
+</body>
+</html>

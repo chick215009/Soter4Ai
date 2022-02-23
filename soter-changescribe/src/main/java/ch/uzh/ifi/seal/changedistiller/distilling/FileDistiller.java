@@ -9,9 +9,9 @@ package ch.uzh.ifi.seal.changedistiller.distilling;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,15 +20,15 @@ package ch.uzh.ifi.seal.changedistiller.distilling;
  * #L%
  */
 
+import ch.uzh.ifi.seal.changedistiller.structuredifferencing.StructureDiffNode;
+import ch.uzh.ifi.seal.changedistiller.structuredifferencing.StructureDifferencer;
+import ch.uzh.ifi.seal.changedistiller.structuredifferencing.StructureNode;
 import ch.uzh.ifi.seal.changedistiller.ast.ASTHelper;
 import ch.uzh.ifi.seal.changedistiller.ast.ASTHelperFactory;
 import ch.uzh.ifi.seal.changedistiller.distilling.refactoring.RefactoringCandidateContainer;
 import ch.uzh.ifi.seal.changedistiller.distilling.refactoring.RefactoringCandidateProcessor;
 import ch.uzh.ifi.seal.changedistiller.model.entities.ClassHistory;
 import ch.uzh.ifi.seal.changedistiller.model.entities.SourceCodeChange;
-import ch.uzh.ifi.seal.changedistiller.structuredifferencing.StructureDiffNode;
-import ch.uzh.ifi.seal.changedistiller.structuredifferencing.StructureDifferencer;
-import ch.uzh.ifi.seal.changedistiller.structuredifferencing.StructureNode;
 import com.google.inject.Inject;
 
 import java.io.File;
@@ -38,7 +38,7 @@ import java.util.List;
 
 /**
  * Distills {@link SourceCodeChange}s between two {@link File}.
- * 
+ *
  * @author Beat Fluri
  * @author Giacomo Ghezzi
  */
@@ -68,7 +68,7 @@ public class FileDistiller {
 
     /**
      * Extracts classified {@link SourceCodeChange}s between two {@link File}s.
-     * 
+     *
      * @param left
      *            file to extract changes
      * @param right
@@ -80,7 +80,7 @@ public class FileDistiller {
 
     /**
      * Extracts classified {@link SourceCodeChange}s between two {@link File}s.
-     * 
+     *
      * @param left
      *            file to extract changes
      * @param leftVersion
@@ -96,7 +96,7 @@ public class FileDistiller {
 
     	fLeftASTHelper = fASTHelperFactory.create(left, leftVersion);
         fRightASTHelper = fASTHelperFactory.create(right, rightVersion);
-        
+
         extractDifferences();
     }
 
@@ -120,7 +120,7 @@ public class FileDistiller {
     	this.extractClassifiedSourceCodeChanges(left, right);
     	fRefactoringProcessor.processRefactoringCandidates(fClassHistory, fLeftASTHelper, fRightASTHelper, fRefactoringContainer);
     }
-    
+
     private void processRootChildren(StructureDiffNode diffNode) {
         for (StructureDiffNode child : diffNode.getChildren()) {
             if (child.isClassOrInterfaceDiffNode() && mayHaveChanges(child.getLeft(), child.getRight())) {

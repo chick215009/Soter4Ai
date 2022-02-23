@@ -8,11 +8,9 @@ import ch.uzh.ifi.seal.changedistiller.model.entities.*;
 import ch.uzh.ifi.seal.changedistiller.structuredifferencing.java.JavaStructureNode;
 import ch.uzh.ifi.seal.changedistiller.structuredifferencing.java.JavaStructureNode.Type;
 import cn.edu.nju.core.Constants;
-import cn.edu.nju.core.entity.CommitMessage;
 import cn.edu.nju.core.entity.TypeDescribe;
 import cn.edu.nju.core.git.ChangedFile;
 import cn.edu.nju.core.dependencies.MethodDependencySummary;
-import cn.edu.nju.core.git.ChangedFile;
 import cn.edu.nju.core.textgenerator.phrase.NounPhrase;
 import cn.edu.nju.core.textgenerator.phrase.Parameter;
 import cn.edu.nju.core.textgenerator.phrase.ParameterPhrase;
@@ -199,7 +197,6 @@ public class ModificationDescriptor {
                     if(changes != null && changes.size() > 0) {
                         desc.insert(0,  "Modifications to " + file.getName() + "\n\n");
 //                    desc.insert(0, "Modifications to " + file.getName() + "\n\n");
-                        desc.append(Constants.NEW_LINE);
                         desc.append(Constants.NEW_LINE);
                     }
                     desc.append(Constants.NEW_LINE);

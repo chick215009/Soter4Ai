@@ -17,10 +17,10 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>cn.edu.nju</groupId>
-            <artifactId>soter-common</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>cn.edu.nju</groupId>-->
+<!--            <artifactId>soter-common</artifactId>-->
+<!--        </dependency>-->
 
         <!-- Spring框架基本的核心工具 -->
         <dependency>
