@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.nju.analyze.mapper.GeneratedCommitMapper">
+
+    <resultMap type="GeneratedCommitVO" id="generatedCommitVO">
+        <result property="generatedDate"    column="generated_date"    />
+        <result property="localProjectPath"    column="local_project_path"    />
+        <result property="summaryEntityJSON"    column="summary_entity_json"    />
+    </resultMap>
+
+    <select id="insertGeneratedCommit" parameterType="GeneratedCommitVO" resultType="Integer">
+        insert into generated_commit
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="generatedDate != null">generated_date,</if>
+            <if test="summaryEntityJSON != null">summary_entity_json,</if>
+            <if test="localProjectPath != null">local_project_path</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="generatedDate != null">#{generatedDate},</if>
+            <if test="summaryEntityJSON != null">#{summaryEntityJSON},</if>
+            <if test="localProjectPath != null">#{localProjectPath}</if>
+        </trim>
+    </select>
+
+    <select id="selectGeneratedCommitList" resultType="generatedCommitVO">
+        select generated_date, local_project_path, summary_entity_json
+        from generated_commit
+    </select>
+
+
+
+
+</mapper>

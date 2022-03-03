@@ -11,11 +11,9 @@ import java.util.List;
 public class PackageEntity {
     private String packageName;
     private List<FileEntity> FileEntityList;
-    private List<TypeEntity> typeEntityList;
 
     public PackageEntity() {
         this.packageName = "";
-        this.typeEntityList = new ArrayList<>();
         this.FileEntityList = new ArrayList<>();
     }
 }

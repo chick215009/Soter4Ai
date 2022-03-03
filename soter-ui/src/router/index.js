@@ -5,6 +5,7 @@ Vue.use(Router)
 
 /* Layout */
 import Layout from '@/layout'
+import Generate from '@/views/commit/generate/index'
 
 /**
  * Note: 路由配置项
@@ -161,6 +162,11 @@ export const dynamicRoutes = [
         meta: { title: '修改生成配置', activeMenu: '/tool/gen' }
       }
     ]
+  },
+  {
+    path: '/commit/generate',
+    component: Generate,
+    name: 'Generate'
   }
 ]
 

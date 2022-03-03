@@ -20,4 +20,9 @@ public class FileEntity {
         this.changeDescribe = "";
         this.typeEntityList = new ArrayList<>();
     }
+
+    public FileEntity() {
+        this.changeDescribe = "";
+        this.typeEntityList = new ArrayList<>();
+    }
 }

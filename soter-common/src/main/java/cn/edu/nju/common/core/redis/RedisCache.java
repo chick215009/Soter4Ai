@@ -211,9 +211,9 @@ public class RedisCache
 
     /**
      * 删除Hash中的数据
-     * 
+     *
      * @param key
-     * @param mapkey
+     * @param hkey
      */
     public void delCacheMapValue(final String key, final String hkey)
     {
@@ -242,5 +242,14 @@ public class RedisCache
     public Collection<String> keys(final String pattern)
     {
         return redisTemplate.keys(pattern);
+    }
+
+    /**
+     * 判断是否存在该缓存
+     * @param key
+     * @return
+     */
+    public boolean hasKey(final String key) {
+        return redisTemplate.hasKey(key);
     }
 }

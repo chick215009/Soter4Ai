@@ -1,10 +1,7 @@
 package cn.edu.nju.core.summarizer;
 
 import ch.uzh.ifi.seal.changedistiller.model.entities.StructureEntityVersion;
-import cn.edu.nju.analyze.domain.MethodEntity;
-import cn.edu.nju.analyze.domain.PackageEntity;
-import cn.edu.nju.analyze.domain.SummaryEntity;
-import cn.edu.nju.analyze.domain.TypeEntity;
+import cn.edu.nju.analyze.domain.*;
 import cn.edu.nju.analyze.domain.vo.AnalyzeResultVO;
 import cn.edu.nju.core.Constants;
 import cn.edu.nju.core.entity.CommitMessage;
@@ -372,7 +369,10 @@ public class SummarizeChanges {
                 summaryEntity.getPackageEntityList().add(currentPackageEntity);
             }
 
-            TypeEntity typeEntity = new TypeEntity();
+
+            FileEntity fileEntity = new FileEntity();
+            fileEntity.setOperation(identifier.getValue().getScmOperation());
+            fileEntity.setFileName(identifier.getValue().getChangedFile().getName());
 
             //如果属于modified
             if (identifier.getValue().getScmOperation().equals(TypeChange.MODIFIED.toString())) {
@@ -383,16 +383,15 @@ public class SummarizeChanges {
 
                 //更新changes
                 modificationDescriptor.extractDifferences(identifier.getValue().getChangedFile(), git);
-                typeEntity.setChanges(modificationDescriptor.getChanges());
-                typeEntity.setOperation(identifier.getValue().getScmOperation());
-                if (identifier.getValue().getStereotypedElements().size() > 0) {
-                    StereotypedElement stereotypedElement = identifier.getValue().getStereotypedElements().get(0);
-                    if (stereotypedElement instanceof StereotypedType) {
-                        StereotypedType type = (StereotypedType) stereotypedElement;
-                        typeEntity.setTypeStereotype(getTypeStereotypeLabelFromStereotypedType(type));
-                    }
-                }
-                currentPackageEntity.getTypeEntityList().add(typeEntity);
+                fileEntity.setChangeDescribe(modificationDescriptor.describe());
+//                if (identifier.getValue().getStereotypedElements().size() > 0) {
+//                    StereotypedElement stereotypedElement = identifier.getValue().getStereotypedElements().get(0);
+//                    if (stereotypedElement instanceof StereotypedType) {
+//                        StereotypedType type = (StereotypedType) stereotypedElement;
+//                        typeEntity.setTypeStereotype(getTypeStereotypeLabelFromStereotypedType(type));
+//                    }
+//                }
+                currentPackageEntity.getFileEntityList().add(fileEntity);
             } else {
                 StringBuilder nonModifiedDescribe = new StringBuilder();
                 Set<String> typeReferenceStatistic = identifier.getValue().getTypeReferenceStatistic();
@@ -423,6 +422,8 @@ public class SummarizeChanges {
                         List<LabelMethod> labelMethodList = StereotypeMethodDescriptor.describe2(summarizeType.getElement().getStereoSubElements());
                         labelType.setLabelMethodList(labelMethodList);
 
+                        TypeEntity typeEntity = new TypeEntity();
+
                         typeEntity.setOperation(labelType.getOperation());
                         typeEntity.setReferencedList(labelType.getReferencedList());
                         typeEntity.setTypeLabel(labelType.getTypeLabel());
@@ -436,9 +437,11 @@ public class SummarizeChanges {
                             typeEntity.getMethodEntityList().add(new MethodEntity(labelMethod.getMethodCategoryLabel(), labelMethod.getMethodStereotypeLabel(),labelMethod.getPhrase()));
                         }
 
-                        currentPackageEntity.getTypeEntityList().add(typeEntity);
+                        fileEntity.getTypeEntityList().add(typeEntity);
+//                        currentPackageEntity.getTypeEntityList().add(typeEntity);
                     }
                     x++;
+                    currentPackageEntity.getFileEntityList().add(fileEntity);
                 }
 
             }

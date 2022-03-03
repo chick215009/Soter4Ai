@@ -1,11 +1,24 @@
 <template>
   <div class="app-container">
     <el-row :gutter="20">
-      <el-col :span="6">
-        <h3>生成记录</h3>
-      </el-col>
+<!--      <el-col :span="6">-->
+<!--        <h3>生成记录</h3>-->
+<!--        <el-table-->
+<!--          :data="historyList"-->
+<!--          @row-click = "historyDetail"-->
+<!--          v-loading="historyLoading"-->
+<!--        >-->
+<!--          <el-table-column label="生成时间" align="center" prop="generatedDate"  width="180">-->
+<!--            <template slot-scope="scope">-->
+<!--              <span>{{ parseTime(scope.row.generatedDate, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>-->
+<!--            </template>-->
+<!--          </el-table-column>-->
+<!--          <el-table-column label="地址" align="center" prop="localProjectPath" />-->
+<!--        </el-table>-->
 
-      <el-col :span="18">
+<!--      </el-col>-->
+
+      <el-col>
         <el-card shadow="hover">
           <span>本地项目地址</span>
           <el-input
@@ -26,23 +39,41 @@
           </el-button>
 
         </el-card>
-        <el-col :span="12">
-          <el-card style="height:300px; margin-top: 20px">
-            <h3>视图1</h3>
-          </el-card>
-          <el-card style="height:300px; margin-top: 20px">
-            <h3>视图2</h3>
-          </el-card>
-        </el-col>
-        <el-col :span="12">
-          <el-input
-            style="margin-top: 20px"
-            type="textarea"
-            :rows="30"
-            v-model="commit_message"
-          >
-          </el-input>
-        </el-col>
+        <div>
+          <el-col :span="12">
+            <el-card style="height:300px; margin-top: 20px">
+              <span>method stereotype 统计</span>
+              <div class="pie">
+                <div id="pie1">
+                  <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+                  <div id="main1" style="float:left;width:500px;height: 300px"></div>
+                </div>
+              </div>
+            </el-card>
+
+
+            <el-card style="height:300px; margin-top: 20px">
+              <el-descriptions title="变化统计" :column="1">
+                <el-descriptions-item label="提交类型">{{commit_stereotype}}</el-descriptions-item>
+                <el-descriptions-item label="总文件数">{{file_num}}</el-descriptions-item>
+                <el-descriptions-item label="新增文件">{{add_num}}</el-descriptions-item>
+                <el-descriptions-item label="删除文件">{{remove_num}}</el-descriptions-item>
+                <el-descriptions-item label="修改文件">{{changed_num}}</el-descriptions-item>
+              </el-descriptions>
+            </el-card>
+          </el-col>
+          <el-col :span="12">
+<!--            <el-input-->
+<!--              style="margin-top: 20px"-->
+<!--              type="textarea"-->
+<!--              :rows="30"-->
+<!--              v-model="commit_message"-->
+<!--            >-->
+<!--            </el-input>-->
+            <div v-html="commit_message"></div>
+          </el-col>
+        </div>
+
       </el-col>
     </el-row>
 
@@ -50,7 +81,9 @@
 </template>
 
 <script>
-import {generateCommit} from "@/api/commit/generate";
+import {generateCommit, getStatistics, getHistoryList, getHistoryDetail} from "@/api/commit/generate";
+import { parseTime } from '@/utils'
+var echarts = require('echarts');
 
 export default {
   name: "Generate",
@@ -59,14 +92,150 @@ export default {
       queryParams: {
         localProjectPath: null
       },
-      commit_message: null
+      detailParams: {
+        summaryEntityJSON: null
+      },
+      commit_message: null,
+      commit_stereotype: null,
+      method_statistic: null,
+      main1PieDataKey: [],
+      main1PieDataValue: [],
+      file_num: null,
+      add_num: null,
+      remove_num:null,
+      changed_num:null,
+      // git commit信息表格数据
+      historyList: []
     }
   },
   methods: {
     handleGenerate() {
       generateCommit(this.queryParams).then(response=>{
+        this.commit_message = response.describe;
+        this.method_statistic = response.methodStatistics;
+        this.commit_stereotype = response.commitStereotype;
+        this.file_num = response.fileNum;
+        this.add_num = response.addNum;
+        this.remove_num = response.removeNum;
+        this.changed_num = response.changedNum;
+        this.initMethodPie();
+        // this.handleStatistics();
+        this.initHistoryList();
+      });
+    },
+    handleStatistics() {
+      getStatistics(this.queryParams).then(response=>{
+        this.file_num = response.fileNum;
+        this.add_num = response.addNum;
+        this.remove_num = response.removeNum;
+        this.changed_num = response.changedNum;
+      });
+    },
+    initHistoryList() {
+      this.historyLoading = true;
+      getHistoryList().then(response=>{
+        this.historyList = response.rows;
+      });
+      this.historyLoading = false;
+    },
+    historyDetail(row) {
+      console.log(row);
+      console.log(row.summaryEntityJSON);
+      this.detailParams.summaryEntityJSON = row.summaryEntityJSON;
+      getHistoryDetail(this.detailParams).then(response=>{
+        this.commit_message = response.describe;
+        this.method_statistic = response.methodStatistics;
+        console.log("this.method_statistic" + this.method_statistic);
+        this.commit_stereotype = response.commitStereotype;
+        this.file_num = response.fileNum;
+        this.add_num = response.addNum;
+        this.remove_num = response.removeNum;
+        this.changed_num = response.changedNum;
+        this.initMethodPie();
+        this.initHistoryList();
+      });
+    },
+    initMethodPie() {
+      var jsonarr=JSON.parse( this.method_statistic );
+
+      this.main1PieDataKey = [];
+      this.main1PieDataValue = [];
+      for (var i in jsonarr) {
+        const obj = {
+          name: i,
+          value: jsonarr[i]
+        }
+        this.main1PieDataKey.push(obj);
+        this.main1PieDataValue.push(i);
+      }
+
+
+      var myChart = echarts.init(document.getElementById('main1'));
+      console.log(this.main1PieDataValue);
+      // 绘制图表
+      myChart.setOption({
+        //提示框组件,鼠标移动上去显示的提示内容
+        tooltip: {
+          trigger: 'item',
+          formatter: "{a} <br/>{b}: {c} ({d}%)"//模板变量有 {a}、{b}、{c}、{d}，分别表示系列名，数据名，数据值，百分比。
+        },
+        //图例
+        legend: {
+          //图例垂直排列
+          orient: 'vertical',
+          left: '55%',
+          //data中的名字要与series-data中的列名对应，方可点击操控
+          data: this.main1PieDataKey
+        },
+        series: [
+          {
+            name: 'method stereotype 统计',
+            type: 'pie',
+            radius: '60%',
+            avoidLabelOverlap: false,
+            data: this.main1PieDataKey,
+            center: ['25%', '50%'],
+            label: {
+              normal: {
+                show: true,
+                position: 'inside',
+                formatter: '{d}%',//模板变量有 {a}、{b}、{c}、{d}，分别表示系列名，数据名，数据值，百分比。{d}数据会根据value值计算百分比
+
+                textStyle : {
+                  align : 'center',
+                  baseline : 'middle',
+                  fontFamily : '微软雅黑',
+                  fontSize : 15,
+                  fontWeight : 'bolder'
+                }
+              },
+            },
+            itemStyle: {
+              normal: {
+                label: {
+                  show: true,
+                  position: 'outer',
+                  formatter: function (p) {
+                    return p.data.name;
+                  }
+                }
+              },
+              labelLine: {
+                show: true
+              }
+            }
+          }
+        ]
       })
     }
+  },
+  mounted() {
+    console.log(this.$route.params.jump_row )
+    if (this.$route.params.jump_row != null) {
+      console.log(this.$route.params.jump_row);
+      this.historyDetail(this.$route.params.jump_row);
+    }
+
   }
 }
 </script>

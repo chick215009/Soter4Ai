@@ -2,6 +2,7 @@ package cn.edu.nju.analyze.summarize;
 
 import ch.uzh.ifi.seal.changedistiller.model.entities.StructureEntityVersion;
 import cn.edu.nju.analyze.domain.*;
+import cn.edu.nju.common.utils.FileCounter;
 import cn.edu.nju.core.Constants;
 import cn.edu.nju.core.entity.MyModule;
 import cn.edu.nju.core.git.ChangedFile;
@@ -17,6 +18,7 @@ import cn.edu.nju.core.summarizer.ModificationDescriptor;
 import cn.edu.nju.core.textgenerator.phrase.MethodPhraseGenerator;
 import cn.edu.nju.core.utils.Utils;
 import lombok.Data;
+import org.apache.commons.math3.stat.descriptive.summary.Sum;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
@@ -67,10 +69,16 @@ public class ChangeAnalyzer {
             git = scmRepository.getGit();
             Status status = scmRepository.getStatus();
             Set<ChangedFile> differences = SCMRepository.getDifferences(status, projectPath);
+
             //初始化summarized
             fillSummarized(differences);
             fillNewModules();
             summaryEntity = analyzeCommitEntity();
+
+            FileCounter fileCounter = new FileCounter(projectPath);
+            fileCounter.searchFiles();
+            summaryEntity.setAddNum(fileCounter.getFileList().size());
+            fillChangedFileStatistics(summaryEntity, status);
 
             StereotypedCommit stereotypedCommit = getStereotypedCommit();
             String signature = stereotypedCommit.buildSignature();
@@ -100,7 +108,13 @@ public class ChangeAnalyzer {
 
     }
 
-    public String getDescribe(SummaryEntity summaryEntity) {
+    public void fillChangedFileStatistics(SummaryEntity summaryEntity, Status status) {
+        summaryEntity.setChangedNum(status.getChanged().size() + status.getModified().size());//changed为文件重命名，modified为修改文件内容
+        summaryEntity.setAddNum(status.getAdded().size());
+        summaryEntity.setRemoveNum(status.getRemoved().size());
+    }
+
+    public static String getDescribe(SummaryEntity summaryEntity) {
         StringBuilder des = new StringBuilder();
         des.append(summaryEntity.getSimpleDescribe());
 
@@ -120,7 +134,7 @@ public class ChangeAnalyzer {
                 if (fileEntity.getOperation().equals(ChangedFile.TypeChange.MODIFIED.name())) {
                     fileDes.append("Modifications to " + fileEntity.getFileName() + "\n");
                     fileDes.append(fileEntity.getChangeDescribe());
-                } else if (fileEntity.getOperation().equals(ChangedFile.TypeChange.ADDED) ||
+                } else if (fileEntity.getOperation().equals(ChangedFile.TypeChange.ADDED.name()) ||
                         fileEntity.getOperation().equals(ChangedFile.TypeChange.REMOVED.name())) {
                     StringBuilder typeDes = new StringBuilder();
                     for (TypeEntity typeEntity : fileEntity.getTypeEntityList()) {
@@ -151,9 +165,9 @@ public class ChangeAnalyzer {
                             }
                         }
                         if (typeEntity.getMethodEntityList().size() > 0) {
-                            typeDes.append("\n" + "It allows to: + \n" );
+                            typeDes.append("\n" + "It allows to: \n" );
                             for (MethodEntity methodEntity : typeEntity.getMethodEntityList()) {
-                                typeDes.append("\t" + methodEntity.getPhrase() + "\n");
+                                typeDes.append( methodEntity.getPhrase());
                             }
                         }
 
@@ -396,7 +410,7 @@ public class ChangeAnalyzer {
                 if (identifier != null) {
                     if (identifier.getStereotypedElements().size() == 0) { //如果该文件没有任何AST子节点
                         typesProblem.add(identifier);
-                        return;
+                        continue;
                     }
 
 
@@ -521,6 +535,78 @@ public class ChangeAnalyzer {
         ArrayList<MethodEntity> list = new ArrayList<>();
         list.addAll(set);
         return list;
+    }
+
+    public static String getDescribeHTML(SummaryEntity summaryEntity) {
+        StringBuilder des = new StringBuilder();
+        des.append("<b>" + summaryEntity.getSimpleDescribe() + "</b>");
+
+        if (summaryEntity.getPackageEntityList().size() > 0) {
+            des.append("This change set is mainly composed of: " + "</br>");
+        }
+
+        int i = 1;
+        for (PackageEntity packageEntity : summaryEntity.getPackageEntityList()) {
+            StringBuilder packageDes = new StringBuilder();
+            packageDes.append("<h3>" + i + ". ");
+            packageDes.append("Changes to " + packageEntity.getPackageName() + ": " + "</br>" + "</h3>");
+            int j = 1;
+            for (FileEntity fileEntity : packageEntity.getFileEntityList()) {
+                StringBuilder fileDes = new StringBuilder();
+                fileDes.append("<h4>" + i + "." + j + ". ");
+                if (fileEntity.getOperation().equals(ChangedFile.TypeChange.MODIFIED.name())) {
+                    fileDes.append("Modifications to " + "<font color=#33ccff>" + fileEntity.getFileName() + "</font>" + "</h4>" + "</br>");
+                    fileEntity.setChangeDescribe(fileEntity.getChangeDescribe().replaceAll("\n", "</br>"));
+                    fileEntity.setChangeDescribe(fileEntity.getChangeDescribe().replaceAll("\t", "&nbsp&nbsp"));
+                    fileDes.append(fileEntity.getChangeDescribe());
+                } else if (fileEntity.getOperation().equals(ChangedFile.TypeChange.ADDED.name()) ||
+                        fileEntity.getOperation().equals(ChangedFile.TypeChange.REMOVED.name())) {
+                    StringBuilder typeDes = new StringBuilder();
+                    for (TypeEntity typeEntity : fileEntity.getTypeEntityList()) {
+                        if (fileEntity.getOperation().equals(ChangedFile.TypeChange.ADDED.name())) {
+                            typeDes.append("Add ");
+                        } else {
+                            typeDes.append("Remove ");
+                        }
+                        typeDes.append(typeEntity.getTypeStereotype() + "<font color=#33ccff>"  +typeEntity.getTypeName() + "</font>" + "</br>");
+                        if (typeEntity.getTypeLabel().equals(TypeLabel.ABSTRACT)) {
+                            typeDes.append(" abstract class ");
+                        } else if (typeEntity.getTypeLabel().equals(TypeLabel.INTERFACE)) {
+                            typeDes.append(" interface ");
+                        } else if (typeEntity.getTypeLabel().equals(TypeLabel.USUAL_CLASS)) {
+                            typeDes.append(" class ");
+                        }
+                        if (typeEntity.getInterfaceList().size() > 0) {
+                            typeDes.append("implements ");
+                            for (String interfaceName : typeEntity.getInterfaceList()) {
+                                typeDes.append(interfaceName + ", ");
+                            }
+                        }
+                        if (!typeEntity.getSuperClassStr().equals("")) {
+                            if (typeEntity.getInterfaceList().size() > 0) {
+                                typeDes.append(", and extends " + typeEntity.getSuperClassStr());
+                            } else {
+                                typeDes.append("extends " + typeEntity.getSuperClassStr());
+                            }
+                        }
+                        if (typeEntity.getMethodEntityList().size() > 0) {
+                            typeDes.append("</br>" + "It allows to: " + "</br>" );
+                            for (MethodEntity methodEntity : typeEntity.getMethodEntityList()) {
+                                typeDes.append( methodEntity.getPhrase());
+                            }
+                        }
+
+                    }
+
+                    fileDes.append(typeDes);
+                }
+                packageDes.append(fileDes);
+                j++;
+            }
+            des.append(packageDes);
+            i++;
+        }
+        return des.toString();
     }
 
     public static void main(String[] args) {

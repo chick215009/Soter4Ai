@@ -195,7 +195,7 @@ public class ModificationDescriptor {
                 }
                 if(!localDescription.toString().equals(Constants.EMPTY_STRING)) {
                     if(changes != null && changes.size() > 0) {
-                        desc.insert(0,  "Modifications to " + file.getName() + "\n\n");
+//                        desc.insert(0,  "Modifications to " + file.getName() + "\n\n");
 //                    desc.insert(0, "Modifications to " + file.getName() + "\n\n");
                         desc.append(Constants.NEW_LINE);
                     }

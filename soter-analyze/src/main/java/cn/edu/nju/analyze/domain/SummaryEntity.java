@@ -17,6 +17,13 @@ public class SummaryEntity {
     private String commitStereotype;
     private String methodStatisticJson;
 
+    private Integer fileNum;
+    private Integer addNum;
+    private Integer removeNum;
+    private Integer changedNum;
+
+
+
     public SummaryEntity() {
         this.simpleDescribe = "";
         this.newModuleDescribe = "";
