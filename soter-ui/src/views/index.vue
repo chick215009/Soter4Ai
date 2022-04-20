@@ -1,24 +1,24 @@
 <template>
   <div class="app-container">
     <el-row :gutter="20">
-      <el-col :span="6">
-        <h3>最近生成记录</h3>
-        <el-table
-          :data="historyList"
-          @row-click="jumpHistoryDetail"
-        >
-          <el-table-column label="生成时间" align="center" prop="generatedDate" width="180">
-            <template slot-scope="scope">
-              <span>{{ parseTime(scope.row.generatedDate, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="地址" align="center" prop="localProjectPath"/>
-        </el-table>
+<!--      <el-col :span="6">-->
+<!--        <h3>最近生成记录</h3>-->
+<!--        <el-table-->
+<!--          :data="historyList"-->
+<!--          @row-click="jumpHistoryDetail"-->
+<!--        >-->
+<!--          <el-table-column label="生成时间" align="center" prop="generatedDate" width="180">-->
+<!--            <template slot-scope="scope">-->
+<!--              <span>{{ parseTime(scope.row.generatedDate, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>-->
+<!--            </template>-->
+<!--          </el-table-column>-->
+<!--          <el-table-column label="地址" align="center" prop="localProjectPath"/>-->
+<!--        </el-table>-->
 
-      </el-col>
-      <el-col :span="18">
-        <div id="main1" style="width: 100%; height: 700px"></div>
-      </el-col>
+<!--      </el-col>-->
+<!--      <el-col :span="18">-->
+<!--        <div id="main1" style="width: 100%; height: 700px"></div>-->
+<!--      </el-col>-->
     </el-row>
   </div>
 </template>
@@ -180,8 +180,8 @@ export default {
     },
   },
   mounted() {
-    this.initHistoryList();
-    this.initStatisticsData();
+    // this.initHistoryList();
+    // this.initStatisticsData();
   }
 }
 

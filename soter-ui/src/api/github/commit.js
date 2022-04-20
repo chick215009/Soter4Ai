@@ -26,6 +26,14 @@ export function addCommit(data) {
   })
 }
 
+export function get2CommitDiff(data) {
+  return request({
+    url: '/github/commit/compare',
+    method: 'post',
+    data: data
+  })
+}
+
 // 修改git commit信息
 export function updateCommit(data) {
   return request({
@@ -42,3 +50,38 @@ export function delCommit(id) {
     method: 'delete'
   })
 }
+
+export function analyzeGithubProject(query) {
+  return request({
+    url: '/github/commit/analyze',
+    method: 'post',
+    data: JSON.stringify(query)
+  })
+}
+
+export function analyzeDisplayProjectTags(query) {
+  return request({
+    url: '/github/commit/tags',
+    method: 'get',
+    params: query
+  })
+}
+
+export function getRecentCommit(query) {
+  return request({
+    url: 'github/commit/recent',
+    method: 'get',
+    params: query
+  })
+}
+
+export function getCommitInTag(query) {
+  return request({
+    url: 'github/commit/intag',
+    method: 'get',
+    params: query
+  })
+}
+
+
+

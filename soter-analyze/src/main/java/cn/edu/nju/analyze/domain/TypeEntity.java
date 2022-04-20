@@ -21,6 +21,7 @@ public class TypeEntity {
     private String superClassStr;//继承的类
     private String typeName;
     private List<MethodEntity> methodEntityList;
+    private String absolutePath;
 
     public TypeEntity() {
         this.referencedList = new ArrayList<>();

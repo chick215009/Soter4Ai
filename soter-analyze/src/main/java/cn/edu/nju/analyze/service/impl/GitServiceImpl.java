@@ -1,7 +1,7 @@
-package cn.edu.nju.service.impl;
+package cn.edu.nju.analyze.service.impl;
 
+import cn.edu.nju.analyze.service.GitService;
 import cn.edu.nju.core.git.SCMRepository;
-import cn.edu.nju.service.GitService;
 import lombok.extern.log4j.Log4j;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;

@@ -12,6 +12,7 @@ public class FileEntity {
     private String fileName;
     private String changeDescribe;
     private List<TypeEntity> typeEntityList;
+    private String absolutePath;
 
     public FileEntity(String operation, Boolean isModified, String fileName) {
         this.operation = operation;

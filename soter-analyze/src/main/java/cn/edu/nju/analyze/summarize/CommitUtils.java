@@ -1,3 +1,9 @@
+package cn.edu.nju.analyze.summarize;
+
+import cn.edu.nju.analyze.service.impl.GitServiceImpl;
+import cn.edu.nju.analyze.summarize.CommitShortInfo;
+import cn.edu.nju.analyze.summarize.DownloadCodeBySha1;
+import cn.edu.nju.analyze.summarize.TaggedCommit;
 import com.alibaba.fastjson.JSONObject;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -27,10 +33,10 @@ public class CommitUtils {
 
     // 1.获取指定两个版本间的所有commits,默认按时间降序
     public static List<CommitShortInfo> getCommitsListBetweenTags(String userName, String projectName, String since, String util) throws IOException, ParseException {
-        TaggedCommit[] list = DownloadCodeBySha.getTagList(userName, projectName);
+        TaggedCommit[] list = DownloadCodeBySha1.getTagList(userName, projectName);
         HashMap<String, String> nameToSha = new HashMap<>();
         for (TaggedCommit tc : list) {
-            nameToSha.put(tc.name, tc.getCommit().sha);
+            nameToSha.put(tc.getName(), tc.getCommit().getSha());
         }
         String sinceSha = nameToSha.get(since);
         String utilSha = nameToSha.get(util);
@@ -84,7 +90,7 @@ public class CommitUtils {
 
     // 2.获取最后一次版本前三个月的commits,默认按时间降序
     public static List<CommitShortInfo> getRecentCommitsList(String userName, String projectName) throws IOException, ParseException {
-        TaggedCommit[] list = DownloadCodeBySha.getTagList(userName, projectName);
+        TaggedCommit[] list = DownloadCodeBySha1.getTagList(userName, projectName);
         String latestSha = list[0].getCommit().getSha();
         Date utilDate = CommitUtils.getTagDateBySha(userName, projectName, latestSha);
         Calendar cal = Calendar.getInstance();
@@ -113,51 +119,82 @@ public class CommitUtils {
     }
 
     // 3.获取指定版本及其前一个版本的代码
-    public static List<String> recentCommitsPath(String username, String projectName, String curSha) throws GitAPIException, IOException {
-        String localPath = "D:\\MyProject\\" + projectName;
+    public static List<String> recentCommitsPath(String username, String projectName, String curSha, String preSha) throws GitAPIException, IOException {
+
+        String localPath = "/Users/chengleming/MasterThesis/Soter/tmp/compare/" + projectName;
+        if (new File(localPath).exists()) {
+            FileUtils.deleteDirectory(new File(localPath));
+        }
+
+        String basePath = localPath + "/base";
+        baseCommitPath(username,projectName);
+        CredentialsProvider provider = new UsernamePasswordCredentialsProvider("zztu", "QianPeng2");
+        Git git = Git.open(new File(basePath));
+
+        List<String> resPathList = new LinkedList<>();
+
+        String curPath = localPath + "/" + curSha;
+        File curFile = new File(curPath);
+        if (!curFile.exists()) {
+            curFile.mkdir();
+            git.reset().setMode(ResetCommand.ResetType.HARD).setRef(curSha).call();
+            FileUtils.copyDirectory(new File(basePath), new File(curPath));
+            resPathList.add(curPath);
+        } else {
+            resPathList.add(curPath);
+            if (curFile.list().length > 0) {
+                System.out.println(curFile + "存在且不为空！");
+            } else {
+                System.out.println(curFile + "存在且为空！");
+            }
+        }
+
+        String prePath = localPath + "/" + preSha;
+        File preFile = new File(prePath);
+        if (!preFile.exists()) {
+            preFile.mkdir();
+            git.reset().setMode(ResetCommand.ResetType.HARD).setRef(preSha).call();
+            FileUtils.copyDirectory(new File(basePath), new File(prePath));
+            resPathList.add(prePath);
+        } else {
+            resPathList.add(prePath);
+            if (preFile.list().length > 0) {
+                System.out.println(preFile + "存在且不为空！");
+            } else {
+                System.out.println(preFile + "存在且为空！");
+            }
+        }
+
+        return resPathList;
+    }
+
+    public static String baseCommitPath(String username, String projectName) throws GitAPIException {
+        String localPath = "/Users/chengleming/MasterThesis/Soter/tmp/compare/" + projectName;
         String githubPath = "https://github.com/" + username + "/" + projectName + ".git";
 
         System.out.println(localPath);
         System.out.println(githubPath);
-        String basePath = localPath + "\\base";
+        String basePath = localPath + "/base";
         File file = new File(basePath);
         if (!file.exists()) {
             file.mkdir();
+            System.out.println("下载开始······");
+            CredentialsProvider provider = new UsernamePasswordCredentialsProvider("zztu", "QianPeng2");
+            Git git = Git.cloneRepository()
+                    .setCredentialsProvider(provider)
+                    .setURI(githubPath)
+                    .setDirectory(new File(basePath))
+                    .setCloneAllBranches(true)
+                    .call();
+            System.out.println("下载完成······");
+        } else {
+            if (file.list().length > 0) {
+                System.out.println(basePath + "存在且不为空！");
+            } else {
+                System.out.println(basePath + "存在且为空！");
+            }
         }
-
-        System.out.println("下载开始······");
-
-        CredentialsProvider provider = new UsernamePasswordCredentialsProvider("zztu", "QianPeng2");
-        Git git = Git.cloneRepository()
-                .setCredentialsProvider(provider)
-                .setURI(githubPath)
-                .setDirectory(new File(basePath))
-                .setCloneAllBranches(true)
-                .call();
-
-        System.out.println("下载完成······");
-
-        List<String> resPathList = new LinkedList<>();
-
-        String curPath = localPath + "\\" + curSha;
-        File curFile = new File(curPath);
-        if (!curFile.exists()) {
-            curFile.mkdir();
-        }
-        git.reset().setMode(ResetCommand.ResetType.HARD).setRef(curSha).call();
-        FileUtils.copyDirectory(new File(basePath), new File(curPath));
-        resPathList.add(curPath);
-
-        String beforePath = localPath + "\\" + "before" + curSha;
-        File beforeFile = new File(beforePath);
-        if (!beforeFile.exists()) {
-            beforeFile.mkdir();
-        }
-        git.reset().setMode(ResetCommand.ResetType.HARD).setRef(curSha).call();
-        FileUtils.copyDirectory(new File(basePath), new File(beforePath));
-        resPathList.add(curPath);
-
-        return resPathList;
+        return basePath;
     }
 
     // 获取指定commit的提交时间
@@ -183,9 +220,25 @@ public class CommitUtils {
         return date;
     }
 
-    public static void main(String[] args) throws IOException, ParseException {
+    public static List<CommitShortInfo> getCommitsListBetweenAdjacentTags(String userName, String projectName, String util) throws IOException, ParseException {
+        TaggedCommit[] list = DownloadCodeBySha1.getTagList(userName, projectName);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < list.length-1; i++) {
+            if (list[i].getName().equals(util)) {
+                sb.append(list[i+1].getName());
+                break;
+            }
+        }
+        String since = sb.toString();
+        return getCommitsListBetweenTags(userName, projectName, since, util);
+    }
+
+    public static void main(String[] args) throws IOException, ParseException, GitAPIException {
         // CommitUtils.getCommitsListBetweenTags("docmirror", "dev-sidecar", "v1.7.2", "v1.7.3");
         // System.out.println(getTagDate("docmirror", "dev-sidecar", "ade3470ed07475a6c1707f7fa3b2b5b44ccefbfd").toString());
-        CommitUtils.getRecentCommitsList("docmirror", "dev-sidecar");
+        // CommitUtils.getRecentCommitsList("docmirror", "dev-sidecar");
+        // recentCommitsPath("docmirror", "dev-sidecar", "ade3470ed07475a6c1707f7fa3b2b5b44ccefbfd");
+        baseCommitPath("yangzongzhuan", "RuoYi");
+//        recentCommitsPath("yangzongzhuan", "RuoYi", "4613984fb4c02ff4eb5b506bcaf47d37a45cf4ed", "893b29cae849c1b027e115d6c8560ce1c489418c");;
     }
 }

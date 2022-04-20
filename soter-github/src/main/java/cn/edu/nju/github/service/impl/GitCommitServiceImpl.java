@@ -63,9 +63,16 @@ public class GitCommitServiceImpl implements IGitCommitService
         if (username == null || repoName == null) {
             return gitCommits;
         }
+        String auth_url = "https://api.github.com/?access_token=" + "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";
+
 
         String urlStr = "https://api.github.com/repos" + "/" + username + "/" + repoName + "/commits";
         try {
+            URL authURL = new URL(auth_url);
+            HttpURLConnection conn1 = (HttpURLConnection) authURL.openConnection();
+            conn1.setRequestMethod("GET");
+            conn1.setRequestProperty("Accept", "application/json");
+
             URL url = new URL(urlStr);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");

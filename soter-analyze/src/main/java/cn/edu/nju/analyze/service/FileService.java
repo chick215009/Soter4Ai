@@ -1,4 +1,4 @@
-package cn.edu.nju.service;
+package cn.edu.nju.analyze.service;
 
 public interface FileService {
     Boolean clearDirectory(String directoryPath);

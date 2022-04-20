@@ -16,17 +16,22 @@ import cn.edu.nju.core.stereotype.taxonomy.TypeStereotype;
 import cn.edu.nju.core.summarizer.CommitStereotypeDescriptor;
 import cn.edu.nju.core.summarizer.ModificationDescriptor;
 import cn.edu.nju.core.textgenerator.phrase.MethodPhraseGenerator;
+import cn.edu.nju.core.utils.JDTASTUtil;
 import cn.edu.nju.core.utils.Utils;
+import com.alibaba.fastjson.JSON;
 import lombok.Data;
 import org.apache.commons.math3.stat.descriptive.summary.Sum;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
+import org.eclipse.jgit.api.CheckoutCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -63,26 +68,33 @@ public class ChangeAnalyzer {
         changeAnalyzerInit();
     }
 
-    public void analyze() {
+    public boolean analyze() {
         try {
-            SCMRepository scmRepository = new SCMRepository(projectPath);
-            git = scmRepository.getGit();
-            Status status = scmRepository.getStatus();
-            Set<ChangedFile> differences = SCMRepository.getDifferences(status, projectPath);
+            SCMRepository scmRepository = new SCMRepository(projectPath);//仓库类
+            git = scmRepository.getGit();//git类
+            Status status = scmRepository.getStatus();//git状态
+            Set<ChangedFile> differences = SCMRepository.getDifferences(status, projectPath);//获取所有增删改的文件
 
             //初始化summarized
-            fillSummarized(differences);
-            fillNewModules();
-            summaryEntity = analyzeCommitEntity();
+            fillSummarized(differences);//填充map，key为URI地址，value为变化文件的抽象类
+            fillNewModules();//记录新增了哪些模块/包
+            summaryEntity = analyzeCommitEntity();//核心
+//            summaryEntity.setMethodStatisticJson(buildSignature(projectPath));
 
             FileCounter fileCounter = new FileCounter(projectPath);
             fileCounter.searchFiles();
-            summaryEntity.setAddNum(fileCounter.getFileList().size());
-            fillChangedFileStatistics(summaryEntity, status);
+            summaryEntity.setFileNum(fileCounter.getFileList().size());
+//            fillChangedFileStatistics(summaryEntity, status);
 
             StereotypedCommit stereotypedCommit = getStereotypedCommit();
+            if (stereotypedCommit == null) {
+                return false;
+            }
             String signature = stereotypedCommit.buildSignature();
             CommitStereotype stereotype = stereotypedCommit.findStereotypes();
+            if (stereotype == null) {
+                return false;
+            }
             String name = stereotype.name();
             String result = CommitStereotypeDescriptor.describe(stereotypedCommit);
 
@@ -102,12 +114,67 @@ public class ChangeAnalyzer {
             summaryEntity.setCommitStereotype(name);
             summaryEntity.setMethodStatisticJson(signature);
 
+
         } catch (GitAPIException e) {
             e.printStackTrace();
         }
 
+        return true;
     }
 
+    public boolean analyze(String username, String repoName,Map<String, Set<String>> stereotypeMap) {
+        try {
+            SCMRepository scmRepository = new SCMRepository(projectPath);
+            git = scmRepository.getGit();
+            Status status = scmRepository.getStatus();
+            Set<ChangedFile> differences = SCMRepository.getDifferences(status, projectPath);
+
+            //初始化summarized
+            fillSummarized(differences);
+            fillNewModules();
+            summaryEntity = analyzeCommitEntity();
+//            summaryEntity.setMethodStatisticJson(buildSignature(projectPath));
+
+            FileCounter fileCounter = new FileCounter(projectPath);
+            fileCounter.searchFiles();
+            summaryEntity.setFileNum(fileCounter.getFileList().size());
+//            fillChangedFileStatistics(summaryEntity, status);
+
+            StereotypedCommit stereotypedCommit = getStereotypedCommit();
+            if (stereotypedCommit == null) {
+                return false;
+            }
+            String signature = stereotypedCommit.buildSignature(username, repoName, stereotypeMap);
+            CommitStereotype stereotype = stereotypedCommit.findStereotypes();
+            if (stereotype == null) {
+                return false;
+            }
+            String name = stereotype.name();
+            String result = CommitStereotypeDescriptor.describe(stereotypedCommit);
+
+            boolean isInitialCommit = Utils.isInitialCommit(git);
+
+            StringBuilder simpleDescribe = new StringBuilder();
+            if (isInitialCommit) {
+                simpleDescribe.append("Initial commit. \n");
+            } else {
+                simpleDescribe.append("BUG - FEATURE: <type-ID> \n");
+            }
+            simpleDescribe.append(result);
+
+            summaryEntity.setSimpleDescribe(simpleDescribe.toString());
+            summaryEntity.setNewModuleDescribe(describeNewModules());
+            summaryEntity.setIsInitialCommit(isInitialCommit);
+            summaryEntity.setCommitStereotype(name);
+            summaryEntity.setMethodStatisticJson(signature);
+
+
+        } catch (GitAPIException e) {
+            e.printStackTrace();
+        }
+
+        return true;
+    }
     public void fillChangedFileStatistics(SummaryEntity summaryEntity, Status status) {
         summaryEntity.setChangedNum(status.getChanged().size() + status.getModified().size());//changed为文件重命名，modified为修改文件内容
         summaryEntity.setAddNum(status.getAdded().size());
@@ -206,7 +273,9 @@ public class ChangeAnalyzer {
                 if (!identifier.getScmOperation().equals(ChangedFile.TypeChange.MODIFIED.name()) && !identifier.getChangedFile().isRenamed()) {
                     for (StereotypedElement stereoSubElement : element.getStereoSubElements()) {
                         if (stereoSubElement instanceof StereotypedMethod) {
-                            methods.add((StereotypedMethod) stereoSubElement);
+                            StereotypedMethod method = (StereotypedMethod) stereoSubElement;
+                            method.setTypeAbsolutePath(identifier.getChangedFile().getAbsolutePath());
+                            methods.add(method);
                         }
                     }
 //                    methods.addAll(List<? extends StereotypedMethod>) element.getStereoSubElements());
@@ -218,7 +287,9 @@ public class ChangeAnalyzer {
                                     element,
                                     structureEntityVersion);
                             if (stereotypedMethod != null) {
-                                methods.add((StereotypedMethod) stereotypedMethod);
+                                StereotypedMethod method = (StereotypedMethod) stereotypedMethod;
+                                method.setTypeAbsolutePath(identifier.getChangedFile().getAbsolutePath());
+                                methods.add(method);
                             }
                         }
                     }
@@ -311,16 +382,24 @@ public class ChangeAnalyzer {
 
             String typeName = key.substring(key.lastIndexOf(".") + 1);
             if (identifier.getScmOperation().equals(ChangedFile.TypeChange.MODIFIED.toString())) {
+                summaryEntity.setChangedNum(summaryEntity.getChangedNum() + 1);
                 FileEntity fileEntity = new FileEntity(identifier.getScmOperation(), true, identifier.getChangedFile().getName());
                 ModificationDescriptor modificationDescriptor = new ModificationDescriptor();
                 modificationDescriptor.setFile(identifier.getChangedFile());
                 modificationDescriptor.setGit(git);
                 modificationDescriptor.extractDifferences(identifier.getChangedFile(), git);//获得该文件changes
                 modificationDescriptor.extractModifiedMethods();//获取发生变化的函数
-                String describe = modificationDescriptor.describe();
+                String describe = modificationDescriptor.describe();//字符串结果 核心
                 fileEntity.setChangeDescribe(describe);
+                String absolutePath = identifier.getChangedFile().getAbsolutePath();
+                fileEntity.setAbsolutePath(absolutePath);
                 summaryEntity.getPackageEntityList().get(summaryEntity.getPackageEntityList().size() - 1).getFileEntityList().add(fileEntity);
             } else {
+                if (identifier.getScmOperation().equals(ChangedFile.TypeChange.REMOVED.toString())) {
+                    summaryEntity.setRemoveNum(summaryEntity.getRemoveNum() + 1);
+                } else if (identifier.getScmOperation().equals(ChangedFile.TypeChange.ADDED.toString())) {
+                    summaryEntity.setAddNum(summaryEntity.getAddNum() + 1);
+                }
                 FileEntity fileEntity = new FileEntity(identifier.getScmOperation(), false, identifier.getChangedFile().getName());
                 for (StereotypedElement element : identifier.getStereotypedElements()) {
                     if (!(element instanceof StereotypedType)) {
@@ -338,6 +417,8 @@ public class ChangeAnalyzer {
                     typeEntity.setTypeStereotype(typeStereotypeLabel);
                     typeEntity.setInterfaceList(interfaceList);
                     typeEntity.setSuperClassStr(superclassStr);
+                    String absolutePath = identifier.getChangedFile().getAbsolutePath();
+                    typeEntity.setAbsolutePath(absolutePath);
 
                     if (!identifier.getScmOperation().equals(ChangedFile.TypeChange.MODIFIED.toString())) {
                         List<MethodEntity> methodEntityList = getMethodEntityList(stereotypedType);
@@ -555,7 +636,13 @@ public class ChangeAnalyzer {
                 StringBuilder fileDes = new StringBuilder();
                 fileDes.append("<h4>" + i + "." + j + ". ");
                 if (fileEntity.getOperation().equals(ChangedFile.TypeChange.MODIFIED.name())) {
-                    fileDes.append("Modifications to " + "<font color=#33ccff>" + fileEntity.getFileName() + "</font>" + "</h4>" + "</br>");
+                    fileDes.append("Modifications to " +
+//                            "<font color=#33ccff>" + fileEntity.getFileName() + "</font>" +
+                            "<a style=\"color:#33ccff;\" href=\"http://localhost:1024/code/change?localpath=" +
+                            fileEntity.getAbsolutePath() + "\" " +"target=\"_blank\">" +
+                            fileEntity.getFileName() +
+                            "</a>" +
+                            "</h4>" + "</br>");
                     fileEntity.setChangeDescribe(fileEntity.getChangeDescribe().replaceAll("\n", "</br>"));
                     fileEntity.setChangeDescribe(fileEntity.getChangeDescribe().replaceAll("\t", "&nbsp&nbsp"));
                     fileDes.append(fileEntity.getChangeDescribe());
@@ -568,7 +655,12 @@ public class ChangeAnalyzer {
                         } else {
                             typeDes.append("Remove ");
                         }
-                        typeDes.append(typeEntity.getTypeStereotype() + "<font color=#33ccff>"  +typeEntity.getTypeName() + "</font>" + "</br>");
+                        typeDes.append(typeEntity.getTypeStereotype() +
+//                                "<font color=#33ccff>"  +typeEntity.getTypeName() + "</font>" + "</br>");
+                                "<a style=\"color:#33ccff;\" href=\"http://localhost:1024/code/change?localpath=" +
+                                typeEntity.getAbsolutePath() + "\" " +"target=\"_blank\">" +
+                                typeEntity.getTypeName() +
+                                "</a>" );
                         if (typeEntity.getTypeLabel().equals(TypeLabel.ABSTRACT)) {
                             typeDes.append(" abstract class ");
                         } else if (typeEntity.getTypeLabel().equals(TypeLabel.INTERFACE)) {
@@ -609,9 +701,47 @@ public class ChangeAnalyzer {
         return des.toString();
     }
 
+    public String buildSignature(String projectPath) {
+        List<MethodDeclaration> methods = new ArrayList<>();
+        File file = new File(projectPath);		//获取其file对象
+        traverseFile(file, methods);
+
+        Map<MethodStereotype, Integer> signatureMap = new TreeMap<MethodStereotype, Integer>();
+        for (MethodDeclaration method : methods) {
+            StereotypedMethod stereotypedMethod = new StereotypedMethod(method);
+            stereotypedMethod.findStereotypes();
+            if(!signatureMap.containsKey(stereotypedMethod.getStereotypes().get(0))) {
+                signatureMap.put((MethodStereotype) stereotypedMethod.getStereotypes().get(0), 1);
+            } else {
+                Integer value = signatureMap.get(stereotypedMethod.getStereotypes().get(0));
+                signatureMap.put((MethodStereotype) stereotypedMethod.getStereotypes().get(0), value + 1);
+            }
+        }
+
+//       System.out.println("signatures: " + getSignatureMap().toString());
+        return JSON.toJSONString(signatureMap);
+
+    }
+
+    private void  traverseFile(File file, List<MethodDeclaration> methods) {
+        File[] fs = file.listFiles();
+        for(File f:fs){
+            if(f.isDirectory())	{//若是目录，则递归打印该目录下的文件
+                traverseFile(f, methods);
+            } else {
+                if(f.isFile() && f.getAbsolutePath().endsWith(".java")) {
+                    CompilationUnit compilationUnit = JDTASTUtil.getCompilationUnit(f.getAbsolutePath());
+                    compilationUnit.accept(new MethodVisitor(methods));
+                }
+            }
+        }
+    }
+
     public static void main(String[] args) {
+//        ChangeAnalyzer changeAnalyzer = new ChangeAnalyzer("/Users/chengleming/work/projectDir");
+//        changeAnalyzer.analyze();
+//        changeAnalyzer.getDescribe(changeAnalyzer.summaryEntity);
         ChangeAnalyzer changeAnalyzer = new ChangeAnalyzer("/Users/chengleming/work/projectDir");
-        changeAnalyzer.analyze();
-        changeAnalyzer.getDescribe(changeAnalyzer.summaryEntity);
+        changeAnalyzer.buildSignature("/Users/chengleming/MasterThesis/Soter/tmp/mavenbase");
     }
 }

@@ -24,9 +24,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </trim>
     </select>
 
-    <select id="selectGeneratedCommitList" resultType="generatedCommitVO">
+    <select id="selectGeneratedCommitListByLocalProjectPath" resultType="generatedCommitVO">
         select generated_date, local_project_path, summary_entity_json
         from generated_commit
+        where local_project_path = #{localProjectPath}
+        order by generated_date desc
+    </select>
+
+    <select id="getProjectPathList" parameterType="String" resultType="String">
+        select
+            local_project_path
+        from generated_commit
+        group by local_project_path
     </select>
 
 

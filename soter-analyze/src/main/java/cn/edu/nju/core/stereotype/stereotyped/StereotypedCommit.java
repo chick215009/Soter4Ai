@@ -5,9 +5,7 @@ import cn.edu.nju.core.stereotype.taxonomy.CommitStereotype;
 import cn.edu.nju.core.stereotype.taxonomy.MethodStereotype;
 import com.alibaba.fastjson.JSON;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 
 public class StereotypedCommit {
 
@@ -22,7 +20,10 @@ public class StereotypedCommit {
     }
 
     public String buildSignature() {
-        signatureMap = new TreeMap<MethodStereotype, Integer>();
+//        signatureMap = new TreeMap<MethodStereotype, Integer>();
+        if (methods.size() == 0) {
+            return "";
+        }
         for(Object object: methods) {
             if(object instanceof StereotypedMethod) {
                 StereotypedMethod method = (StereotypedMethod) object;
@@ -36,7 +37,45 @@ public class StereotypedCommit {
             }
         }
 //        System.out.println("signatures: " + getSignatureMap().toString());
-        return JSON.toJSONString(getSignatureMap());
+        if (getSignatureMap().size() == 0) {
+            return "";
+        }else {
+            return JSON.toJSONString(getSignatureMap());
+        }
+    }
+
+    public String buildSignature(String username, String repoName, Map<String, Set<String>> stereotypeMap) {
+        if (methods.size() == 0) {
+            return "";
+        }
+        for(Object object: methods) {
+            if(object instanceof StereotypedMethod) {
+                StereotypedMethod method = (StereotypedMethod) object;
+                Integer value = null;
+                if(!getSignatureMap().containsKey(method.getStereotypes().get(0))) {
+                    MethodStereotype methodStereotype = (MethodStereotype) method.getStereotypes().get(0);
+                    if (!stereotypeMap.containsKey(methodStereotype.name())) {
+                        stereotypeMap.put(methodStereotype.name(), new HashSet<>());
+                    }
+                    stereotypeMap.get(methodStereotype.name()).add(((StereotypedMethod) object).getTypeAbsolutePath());
+                    getSignatureMap().put((MethodStereotype) method.getStereotypes().get(0), 1);
+                } else {
+                    MethodStereotype methodStereotype = (MethodStereotype) method.getStereotypes().get(0);
+                    if (!stereotypeMap.containsKey(methodStereotype.name())) {
+                        stereotypeMap.put(methodStereotype.name(), new HashSet<>());
+                    }
+                    stereotypeMap.get(methodStereotype.name()).add(((StereotypedMethod) object).getTypeAbsolutePath());
+                    value = getSignatureMap().get(method.getStereotypes().get(0));
+                    getSignatureMap().put((MethodStereotype) method.getStereotypes().get(0), value + 1);
+                }
+            }
+        }
+//        System.out.println("signatures: " + getSignatureMap().toString());
+        if (getSignatureMap().size() == 0) {
+            return "";
+        }else {
+            return JSON.toJSONString(getSignatureMap());
+        }
     }
 
     public CommitStereotype findStereotypes() {

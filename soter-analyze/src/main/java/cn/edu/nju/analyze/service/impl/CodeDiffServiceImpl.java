@@ -1,11 +1,10 @@
-package cn.edu.nju.service.impl;
+package cn.edu.nju.analyze.service.impl;
 
-import cn.edu.nju.controller.vo.ChangedClassVO;
-import cn.edu.nju.core.Constants;
+import cn.edu.nju.analyze.domain.vo.ChangedClassVO;
+import cn.edu.nju.analyze.service.CodeDiffService;
 import cn.edu.nju.core.git.ChangedFile;
 import cn.edu.nju.core.git.SCMRepository;
 import cn.edu.nju.core.utils.Utils;
-import cn.edu.nju.service.CodeDiffService;
 import lombok.extern.log4j.Log4j;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;

@@ -38,6 +38,40 @@
             <groupId>cn.edu.nju</groupId>
             <artifactId>soter-common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>cn.edu.nju</groupId>
+            <artifactId>soter-github</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kohsuke</groupId>
+            <artifactId>github-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jgit</groupId>
+            <artifactId>org.eclipse.jgit</artifactId>
+            <version>4.4.1.201607150455-r</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jgit</groupId>
+            <artifactId>org.eclipse.jgit.archive</artifactId>
+            <version>5.8.1.202007141445-r</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squareup.okhttp</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+
     </dependencies>
 
 </project>

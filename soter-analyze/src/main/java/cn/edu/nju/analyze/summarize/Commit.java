@@ -1,3 +1,5 @@
+package cn.edu.nju.analyze.summarize;
+
 public class Commit {
     String sha;
     String url;

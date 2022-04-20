@@ -1,3 +1,5 @@
+package cn.edu.nju.analyze.summarize;
+
 public class TaggedCommit {
     String name;
     String zipball_url;

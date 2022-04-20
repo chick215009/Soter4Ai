@@ -23,6 +23,7 @@ public class StereotypedMethod extends MethodStereotypeRules implements
 	private MethodStereotype primaryStereotype;
 	private MethodStereotype secondaryStereotype;
 	private StringBuilder report;
+	private String typeAbsolutePath;
 
 	static {
 		StereotypedMethod.METHOD_KEY_PATTERN = Pattern

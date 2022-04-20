@@ -1,37 +1,42 @@
 <template>
-  <el-form model="queryParams" ref="queryFrom" label-width="68px">
-    <el-form-item>
-      <el-input
-        v-model="queryParams.localProjectPath"
-        placeholder="请输入本地项目地址"
-        clearable
-        size="small"
-        v-on:input="upgradeLocalProjectPath"
-      />
-    </el-form-item>
-  </el-form>
-
+  <!-- If your source-code lives in a variable called 'sourcecode' -->
+  <pre
+    v-highlightjs="content"
+  ><code class="java"></code></pre>
 </template>
 
 <script>
+// Import Vue and vue-highlgihtjs
+import Vue from 'vue'
+import VueHighlightJS from 'vue-highlightjs'
+import 'highlight.js/styles/atom-one-dark.css'
+import {getFileContent} from '@/api/code/code'
+
+// Tell Vue.js to use vue-highlightjs
+Vue.use(VueHighlightJS)
+
 export default {
   data() {
     return {
-      queryParams:{
-        localProjectPath:""
+      content: '123',
+      params: {
+        localProjectPath: ''
       }
     }
   },
   methods: {
-    upgradeLocalProjectPath() {
-      this.$store.state.localProjectPath = this.queryParams.localProjectPath;
-    },
-    paramsInit() {
-      this.queryParams.localProjectPath = this.$store.state.localProjectPath;
+    readFileContent(param) {
+      getFileContent(param).then(response => {
+        console.log(response.msg);
+        this.content = response.msg;
+      })
     }
   },
-  created() {
-    paramsInit()
+  mounted() {
+    let path = this.$route.query.localpath;
+    // console.log(this.$route.query.localpath);
+    this.params.localProjectPath = path;
+    this.readFileContent(this.params);
   }
 }
 

@@ -28,6 +28,23 @@ export function getHistoryList() {
   })
 }
 
+// 根据项目查询历史
+export function getHistoryListByProject(queryParams) {
+  return request({
+    url: 'commit/generate/project_history',
+    method: 'get',
+    params: queryParams
+  })
+}
+
+//获取所有项目
+export function getProjectList() {
+  return request({
+    url: 'commit/generate/project_list',
+    method: 'get'
+  })
+}
+
 //查询method统计记录
 export function getGeneratedCommitStatistics(queryParams) {
   return request( {

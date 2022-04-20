@@ -1,13 +1,14 @@
-package cn.edu.nju.service.impl;
+package cn.edu.nju.analyze.service.impl;
 
-import cn.edu.nju.controller.vo.AnalyzeResultVO;
+import cn.edu.nju.analyze.domain.vo.AnalyzeResultVO;
+import cn.edu.nju.analyze.domain.vo.CommitMessageVO;
+import cn.edu.nju.analyze.service.CommitService;
 import cn.edu.nju.core.filter.DetailDescribeFilter;
 import cn.edu.nju.core.filter.SimpleDescribeFilter;
 import cn.edu.nju.core.git.ChangedFile;
 import cn.edu.nju.core.git.SCMRepository;
 import cn.edu.nju.core.summarizer.SummarizeChanges;
-import cn.edu.nju.service.CommitService;
-import cn.edu.nju.controller.vo.CommitMessageVO;
+
 import lombok.extern.log4j.Log4j;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;

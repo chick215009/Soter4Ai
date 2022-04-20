@@ -1,7 +1,7 @@
-package cn.edu.nju.service;
+package cn.edu.nju.analyze.service;
 
-import cn.edu.nju.controller.vo.AnalyzeResultVO;
-import cn.edu.nju.controller.vo.CommitMessageVO;
+import cn.edu.nju.analyze.domain.vo.AnalyzeResultVO;
+import cn.edu.nju.analyze.domain.vo.CommitMessageVO;
 import cn.edu.nju.core.filter.DetailDescribeFilter;
 import cn.edu.nju.core.filter.SimpleDescribeFilter;
 import org.eclipse.jgit.api.errors.GitAPIException;

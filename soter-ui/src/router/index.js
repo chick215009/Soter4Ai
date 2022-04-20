@@ -6,6 +6,7 @@ Vue.use(Router)
 /* Layout */
 import Layout from '@/layout'
 import Generate from '@/views/commit/generate/index'
+import Current from '@/views/code/current/index'
 
 /**
  * Note: 路由配置项
@@ -167,6 +168,11 @@ export const dynamicRoutes = [
     path: '/commit/generate',
     component: Generate,
     name: 'Generate'
+  },
+  {
+    path: '/code/current',
+    component: Current,
+    name: 'Current'
   }
 ]
 

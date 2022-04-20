@@ -1,12 +1,13 @@
-package cn.edu.nju.service.impl;
+package cn.edu.nju.analyze.service.impl;
 
 
-import cn.edu.nju.service.FileService;
+import cn.edu.nju.analyze.service.FileService;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 
 @Service
@@ -42,7 +43,12 @@ public class FileServiceImpl implements FileService {
         }
 
         try {
-            FileUtils.copyDirectory(new File(newProjectPath), new File(projectPath));
+            FileUtils.copyDirectory(new File(newProjectPath), new File(projectPath), new FileFilter() {
+                @Override
+                public boolean accept(File pathname) {
+                    return !(pathname.getName().equals(".git"));
+                }
+            });
         } catch (IOException e) {
             return false;
         }

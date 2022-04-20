@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.nju.analyze.mapper.GitHubStereotypeMapper">
+    <resultMap type="GithubStereotypeVO" id="githubStereotypeVO">
+        <result property="username"    column="username"    />
+        <result property="repoName"    column="repo_name"    />
+        <result property="stereoType"    column="stereotype"    />
+        <result property="path" column="path"/>
+    </resultMap>
+
+
+    <select id="insertStereotype" parameterType="GithubStereotypeVO">
+        insert into github_stereotype
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="username != null">username,</if>
+            <if test="repoName != null">repo_name,</if>
+            <if test="stereoType != null">stereoType,</if>
+            <if test="path != null">path</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="username != null">#{username},</if>
+            <if test="repoName != null">#{repoName},</if>
+            <if test="stereoType != null">#{stereoType},</if>
+            <if test="path != null">#{path}</if>
+        </trim>
+    </select>
+    <select id="selectFileList" resultType="String">
+        SELECT path
+        FROM github_stereotype
+        WHERE
+            username = #{username}
+          AND repo_name=#{repoName}
+          AND stereotype=#{stereoType}
+    </select>
+</mapper>

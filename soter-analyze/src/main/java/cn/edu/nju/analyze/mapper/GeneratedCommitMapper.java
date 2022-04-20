@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface GeneratedCommitMapper {
     Integer insertGeneratedCommit(GeneratedCommitVO generatedCommitVO);
-    List<GeneratedCommitVO> selectGeneratedCommitList();
-
+    List<GeneratedCommitVO> selectGeneratedCommitListByLocalProjectPath(String localProjectPath);
+    List<String> getProjectPathList();
 
 }

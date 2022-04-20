@@ -2,6 +2,7 @@ package cn.edu.nju.github.domain;
 
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import cn.edu.nju.common.annotation.Excel;
@@ -13,6 +14,7 @@ import cn.edu.nju.common.core.domain.BaseEntity;
  * @author clm
  * @date 2022-02-14
  */
+@NoArgsConstructor
 public class GitCommit extends BaseEntity
 {
     private static final long serialVersionUID = 1L;

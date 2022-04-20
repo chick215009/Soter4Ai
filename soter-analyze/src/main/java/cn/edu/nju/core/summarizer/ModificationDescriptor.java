@@ -478,7 +478,7 @@ public class ModificationDescriptor {
                     desc.append(" " + receiverA + " at " + update.getRootEntity().getJavaStructureNode().getName() + " method");
                 } else if(!(new String(methodC.selector)).equals((new String(methodN.selector)))) {
                     desc.append(new String(methodC.selector) + " at " + update.getParentEntity().getName() + " method");
-                } else if(!methodC.arguments.equals(methodN.arguments)) {
+                } else if(methodC != null && methodC.arguments != null && !methodC.arguments.equals(methodN.arguments)) {
                     String name = !(new String(methodC.selector)).equals(Constants.EMPTY_STRING) ? (new String(methodC.selector)) : methodC.receiver.toString();
                     String methodName = update.getRootEntity().getUniqueName().substring(update.getRootEntity().getUniqueName().lastIndexOf(".") + 1, update.getRootEntity().getUniqueName().length());
                     desc.replace(desc.lastIndexOf(fType), desc.lastIndexOf(fType) + fType.length(), Constants.EMPTY_STRING);

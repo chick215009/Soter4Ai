@@ -32,5 +32,9 @@ public class SummaryEntity {
         this.properties = new ArrayList<>();
         this.commitStereotype = "";
         this.methodStatisticJson = "";
+        fileNum = 0;
+        addNum = 0;
+        removeNum = 0;
+        changedNum = 0;
     }
 }

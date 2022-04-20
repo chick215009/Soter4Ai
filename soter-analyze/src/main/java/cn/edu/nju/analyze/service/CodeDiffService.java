@@ -1,6 +1,6 @@
-package cn.edu.nju.service;
+package cn.edu.nju.analyze.service;
 
-import cn.edu.nju.controller.vo.ChangedClassVO;
+import cn.edu.nju.analyze.domain.vo.ChangedClassVO;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
 import java.io.IOException;

@@ -72,6 +72,12 @@
             <artifactId>soter-github</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.kohsuke</groupId>
+            <artifactId>github-api</artifactId>
+        </dependency>
+
+
 
     </dependencies>
 

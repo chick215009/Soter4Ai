@@ -18,7 +18,7 @@ public class HostController {
     @GetMapping(value="/host")
     @PreAuthorize("@ss.hasPermi('commit:generate:analyze')")
     public AjaxResult getGeneratedCommitStatistics(String localProjectPath) {
-        CommitGeneratedStatisticsVO statisticsVO = codeAnalyzeService.getCommitGeneratedStatisticsVO();
+        CommitGeneratedStatisticsVO statisticsVO = codeAnalyzeService.getCommitGeneratedStatisticsVOByProjectPath(localProjectPath);
         AjaxResult success = AjaxResult.success(statisticsVO);
         return success;
     }

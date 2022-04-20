@@ -12,12 +12,19 @@
         <settings />
       </right-panel>
     </div>
+    <div
+      style="position: fixed;
+      right: 0;top:50px"
+    >
+      <Drawer/>
+    </div>
   </div>
+
 </template>
 
 <script>
 import RightPanel from '@/components/RightPanel'
-import { AppMain, Navbar, Settings, Sidebar, TagsView } from './components'
+import { AppMain, Navbar, Settings, Sidebar, TagsView, Drawer } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import { mapState } from 'vuex'
 import variables from '@/assets/styles/variables.scss'
@@ -30,7 +37,8 @@ export default {
     RightPanel,
     Settings,
     Sidebar,
-    TagsView
+    TagsView,
+    Drawer
   },
   mixins: [ResizeMixin],
   computed: {

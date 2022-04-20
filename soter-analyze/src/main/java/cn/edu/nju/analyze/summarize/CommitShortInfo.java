@@ -1,3 +1,5 @@
+package cn.edu.nju.analyze.summarize;
+
 import java.util.Date;
 
 /**
