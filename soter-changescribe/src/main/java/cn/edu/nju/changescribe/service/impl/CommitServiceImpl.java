@@ -71,25 +71,5 @@ public class CommitServiceImpl implements CommitService {
         return summarizeChanges.getAnalyzeResultVO();
     }
 
-    public static void main(String[] args) {
-        String projectPath = "/Users/chengleming/work/projectDir";
-        SCMRepository scmRepository = new SCMRepository("/Users/chengleming/work/projectDir");
-        Git git = scmRepository.getGit();
-        try {
-            Status status = scmRepository.getStatus();
-            Set<ChangedFile> differences = SCMRepository.getDifferences(status, projectPath);
-            SummarizeChanges summarizeChanges = new SummarizeChanges(git, projectPath);
-            ChangedFile[] changedFiles = new ChangedFile[differences.size()];
-            summarizeChanges.summarize3(differences.toArray(changedFiles));
-            SummaryEntity summaryEntity = summarizeChanges.getSummaryEntity();
-            System.out.println(summaryEntity);
-        } catch (GitAPIException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
 
 }

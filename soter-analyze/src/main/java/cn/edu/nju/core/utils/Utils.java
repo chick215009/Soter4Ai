@@ -53,7 +53,11 @@ public class Utils {
         ObjectId objectId = treeWalk.getObjectId(0);
         ObjectLoader loader = repository.open(objectId);
 
-        return Utils.inputStreamToFile(loader.openStream());
+        if (filePath.endsWith(cn.edu.nju.core.Constants.JAVA_EXTENSION)){
+            return inputStreamToFile(loader.openStream(), cn.edu.nju.core.Constants.JAVA_EXTENSION);
+        } else {
+            return Utils.inputStreamToFile(loader.openStream());
+        }
     }
 
     public static String getStringContentOfLastCommit(String filePath,Repository repository) throws RevisionSyntaxException, AmbiguousObjectException, IncorrectObjectTypeException, IOException {
@@ -148,7 +152,11 @@ public class Utils {
     }
 
     public static File inputStreamToFile(InputStream is) throws IOException {
-        File contentFile = File.createTempFile("tmpCont", ".txt");
+        return inputStreamToFile(is,".txt");
+    }
+
+    public static File inputStreamToFile(InputStream is,String suffix) throws IOException {
+        File contentFile = File.createTempFile("tmpCont", suffix);
         OutputStream outputStream = null;
         outputStream = new FileOutputStream(contentFile);
         int read = 0;

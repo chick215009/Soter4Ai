@@ -33,6 +33,19 @@ public class RuoYiConfig
     /** 验证码类型 */
     private static String captchaType;
 
+    /** GitHub token **/
+    private static String githubToken;
+
+    public static void setGithubToken(String githubToken) {
+        RuoYiConfig.githubToken = githubToken;
+    }
+
+    public static String getGithubToken() {
+        return githubToken;
+    }
+
+
+
     public String getName()
     {
         return name;

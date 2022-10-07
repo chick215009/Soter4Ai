@@ -24,15 +24,15 @@ public class Main {
     // 根目录
     public static String projectPath = "/Users/chengleming/work/projectDir/";
     // A、B file数据的文件夹的路径
-    public static String DATA_PATH = "/Users/chengleming/Downloads/data_zip/data/cs/input/dataset/dataset_split_train_test/testset";
+    public static String DATA_PATH = "/Users/chengleming/Library/Containers/com.tencent.xinWeChat/Data/Library/Application Support/com.tencent.xinWeChat/2.0b4.0.9/eefb8be5f9238e581b3ad38afaf83cc7/Message/MessageTemp/0bd50e08626b44e67e98831fe9b80f1c/File/trainingset";
     // ChangeScribe输出的文件，对应difftext.json
-    private static String outputFile = "/Users/chengleming/work/硕士毕业论文/test/difftext_test.txt";
+    private static String outputFile = "/Users/chengleming/work/硕士毕业论文/yq/difftext_test.txt";
     // real message文件，对应msgtext.json
-    public static String msgText = "/Users/chengleming/work/硕士毕业论文/test/msgtext_test.txt";
+    public static String msgText = "/Users/chengleming/work/硕士毕业论文/yq/msgtext_test.txt";
     // log信息
-    private static String logText = "/Users/chengleming/work/硕士毕业论文/test/log_test.txt";
+    private static String logText = "/Users/chengleming/work/硕士毕业论文/yq/log_test.txt";
     // 唯一标识
-    private static String indexFilePath = "/Users/chengleming/work/硕士毕业论文/test/index_test.txt";
+    private static String indexFilePath = "/Users/chengleming/work/硕士毕业论文/yq/index_test.txt";
 
     public static void main(String[] args) throws IOException, GitAPIException, ClassNotFoundException {
         File gitRootDir = new File(projectPath);	// git根目录

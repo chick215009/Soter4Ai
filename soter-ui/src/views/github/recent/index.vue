@@ -276,6 +276,8 @@ export default {
     getRecent() {
       this.isShowLoading = true;
       getRecentCommit(this.query).then(response => {
+        console.log("12235")
+        console.log(response.rows);
         this.tableData = response.rows;
         this.isShowLoading = false;
       });
@@ -284,6 +286,7 @@ export default {
       this.isShowLoading = true;
       this.query.tag = this.value1;
       getCommitInTag(this.query).then(response => {
+        console.log(response);
         this.tableData = response.rows;
         this.isShowLoading = false;
         for (var i = 0; i < this.options.length; i++) {

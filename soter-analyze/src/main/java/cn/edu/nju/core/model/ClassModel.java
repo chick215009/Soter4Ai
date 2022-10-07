@@ -6,7 +6,7 @@ import lombok.extern.log4j.Log4j;
 import java.util.LinkedList;
 import java.util.List;
 
-@Log4j
+//@Log4j
 @Data
 public class ClassModel {
     String qualifiedName;

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 
-@Log4j
+//@Log4j
 @Service
 public class CodeDiffServiceImpl implements CodeDiffService {
     @Override

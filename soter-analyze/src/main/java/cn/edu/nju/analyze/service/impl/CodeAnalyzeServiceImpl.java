@@ -49,8 +49,8 @@ public class CodeAnalyzeServiceImpl implements ICodeAnalyzeService {
             }
         }
 
-        String summaryEntityJSON = JSON.toJSONString(summaryEntity, SerializerFeature.WriteClassName);
-        analyzeResultMapper.insertGeneratedCommit(new GeneratedCommitVO(new Date(),localProjectPath, summaryEntityJSON));
+        //String summaryEntityJSON = JSON.toJSONString(summaryEntity, SerializerFeature.WriteClassName);
+        //analyzeResultMapper.insertGeneratedCommit(new GeneratedCommitVO(new Date(),localProjectPath, summaryEntityJSON));
         return summaryEntity;
     }
 
@@ -141,8 +141,8 @@ public class CodeAnalyzeServiceImpl implements ICodeAnalyzeService {
 
     public String analyzeProjectInGithub(String username, String repoName) {
         try {
-            List<String> paths = DownloadCodeBySha1.historyProjectPath(username, repoName);
-            String projectPath = "/Users/chengleming/MasterThesis/Soter/tmp/" + repoName + "/base";
+            List<String> paths = DownloadCodeBySha.historyProjectPath(username, repoName);
+            String projectPath = System.getProperty("user.dir") + "/tmp/" + repoName + "/base";
 
             FileServiceImpl fileService = new FileServiceImpl();
             GitServiceImpl gitService = new GitServiceImpl();
@@ -175,7 +175,7 @@ public class CodeAnalyzeServiceImpl implements ICodeAnalyzeService {
     public CommitGeneratedStatisticsVO analyzeProjectInGithub(String username, String repoName, List<String> tags) {
         CommitGeneratedStatisticsVO statisticsVO = new CommitGeneratedStatisticsVO();
         try {
-            TaggedCommit[] taggedCommits = DownloadCodeBySha1.getTagList(username, repoName);
+            TaggedCommit[] taggedCommits = DownloadCodeBySha.getTagList(username, repoName);
             Map<String, TaggedCommit> taggedCommitIndex = new HashMap<>();
             List<TaggedCommit> taggedCommitList = new ArrayList<>();
             int n = taggedCommits.length;
@@ -198,7 +198,7 @@ public class CodeAnalyzeServiceImpl implements ICodeAnalyzeService {
             }
 
 
-            String localPath = "/Users/chengleming/MasterThesis/Soter/tmp/" + repoName;
+            String localPath = "C:/Soter3/Soter/tmp/" + repoName;
             String githubPath = "https://github.com/" + username + "/" + repoName + ".git";
 
             File projectFile = new File(localPath);
@@ -329,7 +329,7 @@ public class CodeAnalyzeServiceImpl implements ICodeAnalyzeService {
 
     @Override
     public List<TagsVO> displayTags(String username, String repoName) {
-        TaggedCommit[] taggedCommits = DownloadCodeBySha1.getTagList(username, repoName);
+        TaggedCommit[] taggedCommits = DownloadCodeBySha.getTagList(username, repoName);
         List<TagsVO> tagsVOList = new ArrayList<>();
         int n = taggedCommits.length;
         for (int i = 0; i < n; i++) {

@@ -49,6 +49,8 @@ public class CommitStereotypeDescriptor {
             description.append("These methods indicate that a new feature is planned. " );
         } else if (stereotypedCommit.getStereotypes().get(0) == CommitStereotype.SMALL_MODIFIER) {
             description.append("This is a small modifier commit that does not change the system significantly.");
+        } else if (stereotypedCommit.getStereotypes().get(0) == CommitStereotype.UNKNOWN_MODIFIER){
+            description.append("This is a unknown modifier commit that does not change the system significantly.");
         }
 
         return description.toString();

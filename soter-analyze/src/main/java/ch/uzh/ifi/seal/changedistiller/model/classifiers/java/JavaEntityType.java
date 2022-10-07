@@ -147,6 +147,7 @@ public enum JavaEntityType implements EntityType {
             case QUALIFIED_TYPE:
             case SINGLE_TYPE:
             case WILDCARD_TYPE:
+            case NUMBER_LITERAL://todo 加
                 return true;
             default:
                 return false;

@@ -1,5 +1,6 @@
 package cn.edu.nju;
 
+import cn.edu.nju.Application;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 

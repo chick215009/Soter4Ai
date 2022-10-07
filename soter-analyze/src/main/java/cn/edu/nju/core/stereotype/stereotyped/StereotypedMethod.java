@@ -325,6 +325,19 @@ public class StereotypedMethod extends MethodStereotypeRules implements
 		return qName.toString();
 	}
 
+	public ArrayList<String> fullyQualifiedClassName() {
+		ArrayList<String> namepiece = new ArrayList<>();
+		ASTNode tmp = this.method.getParent();
+		while (tmp instanceof TypeDeclaration && tmp.getParent() != null){
+			namepiece.add(((TypeDeclaration)tmp).getName().toString());
+			tmp = tmp.getParent();
+		}
+		if (tmp instanceof CompilationUnit) {
+			namepiece.add(((CompilationUnit) tmp).getPackage().getName().getFullyQualifiedName());
+		}
+		return namepiece;
+	}
+
 	public String getFullyQualifiedName() {
 		final StringBuilder qName = new StringBuilder();
 		if (this.method != null && this.method.resolveBinding() != null) {
@@ -347,11 +360,17 @@ public class StereotypedMethod extends MethodStereotypeRules implements
 			}
 			qName.append(")");
 		} else if (this.method != null) {
-			if(this.method.getParent() instanceof TypeDeclaration) {
+			/*if(this.method.getParent() instanceof TypeDeclaration) {
 				String fullyQualifiedClassName = ((CompilationUnit)((TypeDeclaration) this.method.getParent()).getParent()).getPackage().getName().getFullyQualifiedName();
 				qName.append(fullyQualifiedClassName);
 				qName.append(".");
 				qName.append(((TypeDeclaration) this.method.getParent()).getName());
+				qName.append(".");
+			}*/
+			ArrayList<String> namepiece = fullyQualifiedClassName();
+
+			for (int js = namepiece.size() - 1;js >= 0;js--){
+				qName.append(namepiece.get(js));
 				qName.append(".");
 			}
 

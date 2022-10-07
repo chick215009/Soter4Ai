@@ -73,7 +73,8 @@ public class ChangeAnalyzer {
             SCMRepository scmRepository = new SCMRepository(projectPath);//仓库类
             git = scmRepository.getGit();//git类
             Status status = scmRepository.getStatus();//git状态
-            Set<ChangedFile> differences = SCMRepository.getDifferences(status, projectPath);//获取所有增删改的文件
+            Set<ChangedFile> differences = scmRepository.getDifferences();//获取所有增删改的文件
+            //Set<ChangedFile> differences = SCMRepository.getDifferences(status, projectPath);//获取所有增删改的文件
 
             //初始化summarized
             fillSummarized(differences);//填充map，key为URI地址，value为变化文件的抽象类
@@ -87,6 +88,10 @@ public class ChangeAnalyzer {
 //            fillChangedFileStatistics(summaryEntity, status);
 
             StereotypedCommit stereotypedCommit = getStereotypedCommit();
+            if (summaryEntity.getPackageEntityList().size() > 0 && stereotypedCommit == null){
+                return true;
+            }
+
             if (stereotypedCommit == null) {
                 return false;
             }
@@ -117,6 +122,8 @@ public class ChangeAnalyzer {
 
         } catch (GitAPIException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         return true;
@@ -192,12 +199,12 @@ public class ChangeAnalyzer {
         int i = 1;
         for (PackageEntity packageEntity : summaryEntity.getPackageEntityList()) {
             StringBuilder packageDes = new StringBuilder();
-            packageDes.append(i + ". ");
+            //packageDes.append(i + ". ");
             packageDes.append("Changes to " + packageEntity.getPackageName() + ": \n");
             int j = 1;
             for (FileEntity fileEntity : packageEntity.getFileEntityList()) {
                 StringBuilder fileDes = new StringBuilder();
-                fileDes.append(i + "." + j + ". ");
+                //fileDes.append(i + "." + j + ". ");
                 if (fileEntity.getOperation().equals(ChangedFile.TypeChange.MODIFIED.name())) {
                     fileDes.append("Modifications to " + fileEntity.getFileName() + "\n");
                     fileDes.append(fileEntity.getChangeDescribe());
@@ -355,10 +362,18 @@ public class ChangeAnalyzer {
 //                    result = stereotyped;
 //                    break;
 //                }
-                if (stereotyped.getFullyQualifiedName().equals(searchedElement.getUniqueName()) ||
-                        searchedElement.getUniqueName().endsWith(stereotyped.getFullyQualifiedName())) {
-                    result = stereotyped;
-                    break;
+                if (stereotyped instanceof StereotypedType){
+                    StereotypedElement tmp = getStereotypedElementFromName(stereotyped,searchedElement);
+                    if (tmp != null){
+                        result = tmp;
+                        break;
+                    }
+                } else {
+                    if (stereotyped.getFullyQualifiedName().equals(searchedElement.getUniqueName()) ||
+                            searchedElement.getUniqueName().endsWith(stereotyped.getFullyQualifiedName())) {
+                        result = stereotyped;
+                        break;
+                    }
                 }
             }
         }
@@ -477,6 +492,10 @@ public class ChangeAnalyzer {
     public void fillSummarized(Set<ChangedFile> differences) {
         try {
             for (final ChangedFile file : differences) {
+                //if (file.getChangeType() == "REMOVED"){
+                //    String s = "1";
+                //}
+
                 StereotypeIdentifier identifier = null;
                 if (file.getAbsolutePath().endsWith(Constants.JAVA_EXTENSION)) {
                     String changeType = file.getChangeType();

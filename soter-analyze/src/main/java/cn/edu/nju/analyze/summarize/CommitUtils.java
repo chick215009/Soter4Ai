@@ -1,9 +1,6 @@
 package cn.edu.nju.analyze.summarize;
 
-import cn.edu.nju.analyze.service.impl.GitServiceImpl;
-import cn.edu.nju.analyze.summarize.CommitShortInfo;
-import cn.edu.nju.analyze.summarize.DownloadCodeBySha1;
-import cn.edu.nju.analyze.summarize.TaggedCommit;
+import cn.edu.nju.common.config.RuoYiConfig;
 import com.alibaba.fastjson.JSONObject;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -29,11 +26,11 @@ import java.util.*;
  * @Author panpan
  */
 public class CommitUtils {
-    public static String token = "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";
+    public static String token = "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";
 
     // 1.获取指定两个版本间的所有commits,默认按时间降序
     public static List<CommitShortInfo> getCommitsListBetweenTags(String userName, String projectName, String since, String util) throws IOException, ParseException {
-        TaggedCommit[] list = DownloadCodeBySha1.getTagList(userName, projectName);
+        TaggedCommit[] list = DownloadCodeBySha.getTagList(userName, projectName);
         HashMap<String, String> nameToSha = new HashMap<>();
         for (TaggedCommit tc : list) {
             nameToSha.put(tc.getName(), tc.getCommit().getSha());
@@ -90,7 +87,7 @@ public class CommitUtils {
 
     // 2.获取最后一次版本前三个月的commits,默认按时间降序
     public static List<CommitShortInfo> getRecentCommitsList(String userName, String projectName) throws IOException, ParseException {
-        TaggedCommit[] list = DownloadCodeBySha1.getTagList(userName, projectName);
+        TaggedCommit[] list = DownloadCodeBySha.getTagList(userName, projectName);
         String latestSha = list[0].getCommit().getSha();
         Date utilDate = CommitUtils.getTagDateBySha(userName, projectName, latestSha);
         Calendar cal = Calendar.getInstance();
@@ -221,7 +218,7 @@ public class CommitUtils {
     }
 
     public static List<CommitShortInfo> getCommitsListBetweenAdjacentTags(String userName, String projectName, String util) throws IOException, ParseException {
-        TaggedCommit[] list = DownloadCodeBySha1.getTagList(userName, projectName);
+        TaggedCommit[] list = DownloadCodeBySha.getTagList(userName, projectName);
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < list.length-1; i++) {
             if (list[i].getName().equals(util)) {

@@ -54,6 +54,7 @@ public class StereotypedCommit {
                 Integer value = null;
                 if(!getSignatureMap().containsKey(method.getStereotypes().get(0))) {
                     MethodStereotype methodStereotype = (MethodStereotype) method.getStereotypes().get(0);
+                    System.out.println(method.getMethod().getName() + "-----" + methodStereotype.name());
                     if (!stereotypeMap.containsKey(methodStereotype.name())) {
                         stereotypeMap.put(methodStereotype.name(), new HashSet<>());
                     }
@@ -61,6 +62,7 @@ public class StereotypedCommit {
                     getSignatureMap().put((MethodStereotype) method.getStereotypes().get(0), 1);
                 } else {
                     MethodStereotype methodStereotype = (MethodStereotype) method.getStereotypes().get(0);
+                    System.out.println(method.getMethod().getName() + "-----" + methodStereotype.name());
                     if (!stereotypeMap.containsKey(methodStereotype.name())) {
                         stereotypeMap.put(methodStereotype.name(), new HashSet<>());
                     }
@@ -68,8 +70,10 @@ public class StereotypedCommit {
                     value = getSignatureMap().get(method.getStereotypes().get(0));
                     getSignatureMap().put((MethodStereotype) method.getStereotypes().get(0), value + 1);
                 }
+
             }
         }
+        System.out.println("===================");
 //        System.out.println("signatures: " + getSignatureMap().toString());
         if (getSignatureMap().size() == 0) {
             return "";
@@ -161,7 +165,8 @@ public class StereotypedCommit {
             return primaryStereotype;
         }
 
-        return null;
+        primaryStereotype = CommitStereotype.UNKNOWN_MODIFIER;
+        return primaryStereotype;
     }
 
     public List<CommitStereotype> getStereotypes() {

@@ -11,7 +11,9 @@ public enum CommitStereotype implements CodeStereotype{
     LARGE_MODIFIER("LARGE_MODIFIER", 7),
     LAZY_MODIFIER("LAZY_MODIFIER", 8),
     DEGENERATE_MODIFIER("DEGENERATE_MODIFIER", 9),
-    SMALL_MODIFIER("SMALL_MODIFIER", 10);
+    SMALL_MODIFIER("SMALL_MODIFIER", 10),
+
+    UNKNOWN_MODIFIER("UNKNOWN_MODIFIER",11);
 
     private CommitStereotype(final String s, final int n) {
     }

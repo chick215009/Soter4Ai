@@ -147,7 +147,7 @@ public class ModificationDescriptorForTrain {
             // 调整了一下输出格式
             if(!localDescription.toString().equals(Constants.EMPTY_STRING)) {
                 if(changes != null && changes.size() > 0) {
-                    desc.insert(0, "Modifications to " + file.getName() + "\n");
+                    desc.insert(0, (i-1) + "." + j + "." + "Modifications to " + file.getName() + "\n");
                     desc.append(Constants.NEW_LINE);
                 }
                 desc.append(Constants.NEW_LINE);

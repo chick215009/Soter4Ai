@@ -289,17 +289,17 @@ public class SummarizeChangesForTrain {
         StringBuilder desc = new StringBuilder();
         int i = 1;
         int j = 1;
-        boolean isInitialCommit = Utils.isInitialCommit(git);
+//        boolean isInitialCommit = Utils.isInitialCommit(git);
 
-        if (detailDescribeFilter.isNewModuleDescribe()) {
-            String newModuleDescribe = Constants.EMPTY_STRING;
-            if (isInitialCommit) { //如果有新包名，为desc增加新描述
-                fillNewModules();
-                newModuleDescribe = describeNewModules();
-            }
-
-            detailDescribe.append(newModuleDescribe);
-        }
+//        if (detailDescribeFilter.isNewModuleDescribe()) {
+//            String newModuleDescribe = Constants.EMPTY_STRING;
+//            if (isInitialCommit) { //如果有新包名，为desc增加新描述
+//                fillNewModules();
+//                newModuleDescribe = describeNewModules();
+//            }
+//
+//            detailDescribe.append(newModuleDescribe);
+//        }
 
 
 
@@ -310,44 +310,44 @@ public class SummarizeChangesForTrain {
 //                continue;
 //            }
 
-//            if (i == 1) {
+            if (i == 1) {
 //                detailDescribe.append("This change set is mainly composed of: " + Constants.NEW_LINE);
-////                desc.append(" This change set is mainly composed of:  \n\n");
-//            }
+//                desc.append(" This change set is mainly composed of:  \n\n");
+            }
             List<TypeDescribe> typeDescribes = null;
-//            if (currentPackage.trim().equals(Constants.EMPTY_STRING)) {
-//                currentPackage = identifier.getValue().getParser().getCompilationUnit().getPackage().getName().getFullyQualifiedName();
-//                detailDescribe.append(Constants.NEW_LINE + i + ". Changes to package " + currentPackage + ": " + Constants.NEW_LINE);
-//                Map<String, List<TypeDescribe>> packageAndTypes = commitMessage.getPackageAndTypes();
-//                typeDescribes = new ArrayList<>();
-//                packageAndTypes.put(currentPackage, typeDescribes);
-////                desc.append(i + ". Changes to package " + currentPackage + ":  \n\n");
-//                i++;
-//                //如果是不同一个包的类
-//            } else if (!currentPackage.equals(identifier.getValue().getParser().getCompilationUnit().getPackage().getName().getFullyQualifiedName())) {
-//                String[] lines = detailDescribe.toString().trim().split("\\n");
-//                if (lines != null && lines.length > 0) {
-//                    String lastLine = lines[lines.length - 1];
-//                    if (lastLine.contains("Changes to package " + currentPackage)) {
-//                        lines[lines.length - 1] = Constants.NEW_LINE;
-//                        StringBuilder builder = new StringBuilder();
-//                        for (String line : lines) {
-//                            builder.append(line + Constants.NEW_LINE);
-//                        }
-//                        detailDescribe = builder;
-//                        //desc = new StringBuilder(StringUtils.join(lines, "\\n)"));
-//                        i--;
-//                    }
-//                }
-//                currentPackage = identifier.getValue().getParser().getCompilationUnit().getPackage().getName().getFullyQualifiedName();
-//                detailDescribe.append(Constants.NEW_LINE + i + ". Changes to package " + currentPackage + ": " + Constants.NEW_LINE);
-//                Map<String, List<TypeDescribe>> packageAndTypes = commitMessage.getPackageAndTypes();
-//                typeDescribes = new ArrayList<>();
-//                packageAndTypes.put(currentPackage, typeDescribes);
-////                desc.append(i + ". Changes to package " + currentPackage + ":  \n\n");
-//                j = 1;
-//                i++;
-//            }
+            if (currentPackage.trim().equals(Constants.EMPTY_STRING)) {
+                currentPackage = identifier.getValue().getParser().getCompilationUnit().getPackage().getName().getFullyQualifiedName();
+                detailDescribe.append(Constants.NEW_LINE + i + ". Changes to package " + currentPackage + ": " + Constants.NEW_LINE);
+                Map<String, List<TypeDescribe>> packageAndTypes = commitMessage.getPackageAndTypes();
+                typeDescribes = new ArrayList<>();
+                packageAndTypes.put(currentPackage, typeDescribes);
+//                desc.append(i + ". Changes to package " + currentPackage + ":  \n\n");
+                i++;
+                //如果是不同一个包的类
+            } else if (!currentPackage.equals(identifier.getValue().getParser().getCompilationUnit().getPackage().getName().getFullyQualifiedName())) {
+                String[] lines = detailDescribe.toString().trim().split("\\n");
+                if (lines != null && lines.length > 0) {
+                    String lastLine = lines[lines.length - 1];
+                    if (lastLine.contains("Changes to package " + currentPackage)) {
+                        lines[lines.length - 1] = Constants.NEW_LINE;
+                        StringBuilder builder = new StringBuilder();
+                        for (String line : lines) {
+                            builder.append(line + Constants.NEW_LINE);
+                        }
+                        detailDescribe = builder;
+                        //desc = new StringBuilder(StringUtils.join(lines, "\\n)"));
+                        i--;
+                    }
+                }
+                currentPackage = identifier.getValue().getParser().getCompilationUnit().getPackage().getName().getFullyQualifiedName();
+                detailDescribe.append(Constants.NEW_LINE + i + ". Changes to package " + currentPackage + ": " + Constants.NEW_LINE);
+                Map<String, List<TypeDescribe>> packageAndTypes = commitMessage.getPackageAndTypes();
+                typeDescribes = new ArrayList<>();
+                packageAndTypes.put(currentPackage, typeDescribes);
+//                desc.append(i + ". Changes to package " + currentPackage + ":  \n\n");
+                j = 1;
+                i++;
+            }
             //如果属于modified
             if (identifier.getValue().getScmOperation().equals(TypeChange.MODIFIED.toString())) {
                 ModificationDescriptorForTrain modificationDescriptor = new ModificationDescriptorForTrain();
@@ -401,11 +401,11 @@ public class SummarizeChangesForTrain {
 
                     if (!identifier.getValue().getChangedFile().isRenamed()) {
                         if (!StringUtils.isBlank(nonModifiedDescribe)) {
-//                            descTmp.append((i - 1) + "." + j + ". " + nonModifiedDescribe);
+                            descTmp.append((i - 1) + "." + j + ". " + nonModifiedDescribe);
                             descTmp.append(nonModifiedDescribe);
                         }
                     } else {
-//                        descTmp.append((i - 1) + "." + j + ". " + "Rename type " + identifier.getValue().getChangedFile().getRenamedPath().substring(identifier.getValue().getChangedFile().getRenamedPath().lastIndexOf("/") + 1).replace(Constants.JAVA_EXTENSION, Constants.EMPTY_STRING) + " with " + identifier.getValue().getChangedFile().getName().replace(Constants.JAVA_EXTENSION, "\n\n"));
+                        descTmp.append((i - 1) + "." + j + ". " + "Rename type " + identifier.getValue().getChangedFile().getRenamedPath().substring(identifier.getValue().getChangedFile().getRenamedPath().lastIndexOf("/") + 1).replace(Constants.JAVA_EXTENSION, Constants.EMPTY_STRING) + " with " + identifier.getValue().getChangedFile().getName().replace(Constants.JAVA_EXTENSION, "\n\n"));
                         descTmp.append("Rename type " + identifier.getValue().getChangedFile().getRenamedPath().substring(identifier.getValue().getChangedFile().getRenamedPath().lastIndexOf("/") + 1).replace(Constants.JAVA_EXTENSION, Constants.EMPTY_STRING) + " with " + identifier.getValue().getChangedFile().getName().replace(Constants.JAVA_EXTENSION, "\n\n"));
                     }
                     x++;

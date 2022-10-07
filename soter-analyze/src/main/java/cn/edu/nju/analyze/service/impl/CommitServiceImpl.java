@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.Set;
 
-@Log4j
+//@Log4j
 @Service
 public class CommitServiceImpl implements CommitService {
     @Override
@@ -40,7 +40,6 @@ public class CommitServiceImpl implements CommitService {
             System.out.println(commitMessageVO.getDetailDescribe());
             return commitMessageVO;
         } catch (Exception e) {
-            log.error(e.getMessage());
             return null;
         }
     }

@@ -10,8 +10,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 
-@Service
-@Log4j
+//@Service
+//@Log4j
 public class FileServiceImpl implements FileService {
     @Override
     public Boolean clearDirectory(String directoryPath) {
@@ -21,7 +21,7 @@ public class FileServiceImpl implements FileService {
                 delFile(listFile);
             }
         } catch (Exception e) {
-            log.error(e.getMessage());
+//            log.error(e.getMessage());
             return false;
         }
         System.out.println("清空文件夹");

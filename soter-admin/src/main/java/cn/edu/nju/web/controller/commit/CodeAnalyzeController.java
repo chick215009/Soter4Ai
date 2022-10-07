@@ -162,7 +162,6 @@ public class CodeAnalyzeController {
     @GetMapping(value = "/content")
     @PreAuthorize("@ss.hasPermi('commit:generate:analyze')")
     public AjaxResult getFileContent(String localProjectPath) {
-//        localProjectPath = "/Users/chengleming/MasterThesis/Soter/soter-admin/src/main/java/cn/edu/nju/web/controller/commit/CodeAnalyzeController.java";
         try {
             BufferedReader reader = new BufferedReader(new FileReader(localProjectPath));
             StringBuilder stringBuilder = new StringBuilder();

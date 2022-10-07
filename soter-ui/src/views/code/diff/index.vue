@@ -23,62 +23,6 @@
       />
     </div>
   </div>
-
-
-
-<!--  <el-row>-->
-<!--    <el-col :span="8" style="margin-top: 20px">-->
-<!--      <el-table-->
-<!--        :data="tableData"-->
-<!--        style="width: 100%"-->
-<!--        @row-click="compare"-->
-<!--        height="700"-->
-<!--      >-->
-<!--        <el-table-column-->
-<!--          prop="className"-->
-<!--          label="文件名"-->
-<!--        >-->
-<!--          <template>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
-<!--        <el-table-column-->
-<!--          prop="classPath"-->
-<!--          label="文件路径"-->
-<!--        >-->
-<!--        </el-table-column>-->
-<!--        &lt;!&ndash; <el-table-column-->
-<!--        align="right"-->
-<!--        >-->
-<!--          <template slot-scopelot-scope="scope">-->
-<!--            <el-button-->
-<!--            size="mini"-->
-<!--            @click="compare(scope.row.classPath)"-->
-<!--          >-->
-<!--          比较-->
-<!--          </el-button>-->
-<!--          </template>-->
-
-<!--        </el-table-column> &ndash;&gt;-->
-<!--      </el-table>-->
-<!--    </el-col>-->
-<!--    <el-col :span="16" style="margin-top: 20px">-->
-<!--      <el-switch-->
-<!--        v-model="value1"-->
-<!--        active-text="side-by-side"-->
-<!--        inactive-text="line-by-line"-->
-<!--        on-value="1"-->
-<!--        off-value="0"-->
-<!--        @change="switchChange()"-->
-<!--      >-->
-<!--      </el-switch>-->
-<!--      <code-diff-->
-<!--        :old-string="oldStr"-->
-<!--        :new-string="newStr"-->
-<!--        :context="10"-->
-<!--        :outputFormat="output_format"-->
-<!--      />-->
-<!--    </el-col>-->
-<!--  </el-row>-->
 </template>
 
 <script>

@@ -2,15 +2,13 @@ package cn.edu.nju.analyze.service.impl;
 
 import cn.edu.nju.analyze.service.GitService;
 import cn.edu.nju.core.git.SCMRepository;
-import lombok.extern.log4j.Log4j;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 
-@Log4j
-@Service
+//@Service
 public class GitServiceImpl implements GitService {
     @Override
     public Boolean gitInit(String projectPath) {
@@ -18,7 +16,6 @@ public class GitServiceImpl implements GitService {
         try {
             Git.init().setDirectory(projectFile).call();
         } catch (GitAPIException e) {
-            log.error(e.getMessage());
             return false;
         }
         return true;
@@ -31,7 +28,6 @@ public class GitServiceImpl implements GitService {
         try {
             git.add().addFilepattern(".").call();
         } catch (GitAPIException e) {
-            log.error(e.getMessage());
             return false;
         }
         return true;
@@ -44,7 +40,6 @@ public class GitServiceImpl implements GitService {
         try {
             git.commit().setMessage(message).call();
         } catch (GitAPIException e) {
-            log.error(e.getMessage());
             return false;
         }
 

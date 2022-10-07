@@ -9,11 +9,15 @@ soter:
   # 实例演示开关
   demoEnabled: true
   # 文件路径
-  profile: /Users/chengleming/MasterThesis/Soter/uploadPath
+  profile: C:\Soter3\Soter\uploadPath
   # 获取ip地址开关
   addressEnabled: false
   # 验证码类型 math 数组计算 char 字符验证
   captchaType: math
+  # 连接GitHub使用，申请个人GitHub token
+  githubToken: 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
+  # 缓存地址，从GitHub拉下来的项目暂存在此处，可以debug时查看
+  tmp: C:\Soter3\Soter\uploadPath\tmp
 
 # 开发环境配置
 server:
@@ -121,3 +125,4 @@ xss:
   excludes: /system/notice
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
+
