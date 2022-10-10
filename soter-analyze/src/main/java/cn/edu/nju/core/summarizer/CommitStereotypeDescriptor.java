@@ -24,18 +24,18 @@ public class CommitStereotypeDescriptor {
         formalDescriptionMap.put(CommitStereotype.SMALL_MODIFIER,"This is a small modifier commit that does not change the system significantly.");
         formalDescriptionMap.put(CommitStereotype.UNKNOWN_MODIFIER,"This is a unknown modifier commit that does not change the system significantly.");
 
-        markDescriptionMap.put(CommitStereotype.STRUCTURE_MODIFIER,"Ty0");
-        markDescriptionMap.put(CommitStereotype.STATE_ACCESS_MODIFIER,"Ty1");
-        markDescriptionMap.put(CommitStereotype.STATE_UPDATE_MODIFIER,"Ty2");
-        markDescriptionMap.put(CommitStereotype.BEHAVIOR_MODIFIER,"Ty3");
-        markDescriptionMap.put(CommitStereotype.OBJECT_CREATION_MODIFIER,"Ty4");
-        markDescriptionMap.put(CommitStereotype.RELATIONSHIP_MODIFIER,"Ty5");
-        markDescriptionMap.put(CommitStereotype.CONTROL_MODIFIER,"Ty6");
-        markDescriptionMap.put(CommitStereotype.LARGE_MODIFIER,"Ty7");
-        markDescriptionMap.put(CommitStereotype.LAZY_MODIFIER,"Ty8");
-        markDescriptionMap.put(CommitStereotype.DEGENERATE_MODIFIER,"Ty9");
-        markDescriptionMap.put(CommitStereotype.SMALL_MODIFIER,"Ty10");
-        markDescriptionMap.put(CommitStereotype.UNKNOWN_MODIFIER,"Ty11");
+        markDescriptionMap.put(CommitStereotype.STRUCTURE_MODIFIER,"Ty0 ");
+        markDescriptionMap.put(CommitStereotype.STATE_ACCESS_MODIFIER,"Ty1 ");
+        markDescriptionMap.put(CommitStereotype.STATE_UPDATE_MODIFIER,"Ty2 ");
+        markDescriptionMap.put(CommitStereotype.BEHAVIOR_MODIFIER,"Ty3 ");
+        markDescriptionMap.put(CommitStereotype.OBJECT_CREATION_MODIFIER,"Ty4 ");
+        markDescriptionMap.put(CommitStereotype.RELATIONSHIP_MODIFIER,"Ty5 ");
+        markDescriptionMap.put(CommitStereotype.CONTROL_MODIFIER,"Ty6 ");
+        markDescriptionMap.put(CommitStereotype.LARGE_MODIFIER,"Ty7 ");
+        markDescriptionMap.put(CommitStereotype.LAZY_MODIFIER,"Ty8 ");
+        markDescriptionMap.put(CommitStereotype.DEGENERATE_MODIFIER,"Ty9 ");
+        markDescriptionMap.put(CommitStereotype.SMALL_MODIFIER,"Ty10 ");
+        markDescriptionMap.put(CommitStereotype.UNKNOWN_MODIFIER,"Ty11 ");
 
     }
     public static String describe( StereotypedCommit stereotypedCommit) {

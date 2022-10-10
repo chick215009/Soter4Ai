@@ -49,32 +49,10 @@ public class GetLocalGitFile {
 
     public String ProjectCommitPath(String shaCode,String baseProjectPath) throws GitAPIException, IOException {
         Git git = openRpo(baseProjectPath);
-        //new FileServiceImpl().clearDirectory(tmpPath);
-        //String latestCommitID = git.getRepository().exactRef("refs/heads/main").getObjectId().name();
-        //String latestCommitID = git.getRepository().resolve("HEAD").name();
-        //System.out.println(latestCommitID);
-
-        //String nowBranchShaBefore = tmpPath + "/shaBefore";
-        //String nowBranchShaAfter = tmpPath + "/shaAfter";
-
         git.reset().setMode(ResetCommand.ResetType.HARD).setRef(shaCode).call();
-        //FileUtils.copyDirectory(new File(baseProjectPath), new File(nowBranchShaAfter));
 
         git.reset().setMode(ResetCommand.ResetType.SOFT).setRef("HEAD~1").call();
-        //FileUtils.copyDirectory(new File(baseProjectPath), new File(nowBranchShaBefore));
         System.out.println("End After Version Copy.");
-
-        /*git.reset().setMode(ResetCommand.ResetType.HARD).setRef("HEAD~1").call();
-        FileUtils.copyDirectory(new File(baseProjectPath), new File(nowBranchShaBefore));
-
-        System.out.println("End Before Version Copy.");
-
-        git.reset().setMode(ResetCommand.ResetType.HARD).setRef(latestCommitID).call();
-
-        new FileServiceImpl().updateProject(nowBranchShaBefore,nowBranchShaAfter);
-        new GitServiceImpl().gitAddAll(nowBranchShaBefore);
-
-        System.out.println("End git add.");*/
 
         SummaryEntity summaryEntity = new CodeAnalyzeServiceImpl().getSummaryEntity(baseProjectPath);
         //String sf = summaryEntity.getMethodStatisticJson();
@@ -82,7 +60,6 @@ public class GetLocalGitFile {
         System.out.println("End analyze.");
 
         String sf = ChangeAnalyzer.getDescribe(summaryEntity);
-        //System.out.println(sf);
 
         return sf;
     }

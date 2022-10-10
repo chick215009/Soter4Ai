@@ -316,6 +316,10 @@ public class ModificationDescriptor {
                 phrase.generate();
                 desc.append("Remove parameter " + phrase.toString() + " at " + getRootEntityJavaStructureNodeName(delete) + " " + delete.getRootEntity().getJavaStructureNode().getType().name().toLowerCase());
             }
+        } else {
+            desc.append("Remove ");
+            desc.append(delete.getChangedEntity().getUniqueName() + " in ");
+            desc.append(delete.getRootEntity().getUniqueName().substring(delete.getRootEntity().getUniqueName().lastIndexOf(".") + 1) + " " + delete.getRootEntity().getType().name() + " ");
         }
     }
 

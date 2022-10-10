@@ -109,7 +109,7 @@ public class ChangeAnalyzer {
             if (isInitialCommit) {
                 simpleDescribe.append("Initial commit. \n");
             } else {
-                simpleDescribe.append("BUG - FEATURE: <type-ID> \n");
+                simpleDescribe.append("BF \n");
             }
             simpleDescribe.append(result);
 
@@ -193,7 +193,7 @@ public class ChangeAnalyzer {
         des.append(summaryEntity.getSimpleDescribe());
 
         if (summaryEntity.getPackageEntityList().size() > 0) {
-            des.append("This change set is mainly composed of: \n");
+            des.append("ChangeScribeStart \n");
         }
 
         int i = 1;
@@ -226,7 +226,7 @@ public class ChangeAnalyzer {
                             typeDes.append(" class ");
                         }
                         if (typeEntity.getInterfaceList().size() > 0) {
-                            typeDes.append("implements ");
+                            typeDes.append(" implements ");
                             for (String interfaceName : typeEntity.getInterfaceList()) {
                                 typeDes.append(interfaceName + ", ");
                             }
@@ -235,7 +235,7 @@ public class ChangeAnalyzer {
                             if (typeEntity.getInterfaceList().size() > 0) {
                                 typeDes.append(", and extends " + typeEntity.getSuperClassStr());
                             } else {
-                                typeDes.append("extends " + typeEntity.getSuperClassStr());
+                                typeDes.append(" extends " + typeEntity.getSuperClassStr());
                             }
                         }
                         if (typeEntity.getMethodEntityList().size() > 0) {

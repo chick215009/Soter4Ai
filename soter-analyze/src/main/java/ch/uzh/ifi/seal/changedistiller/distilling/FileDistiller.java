@@ -102,7 +102,7 @@ public class FileDistiller {
 
 	private void extractDifferences() {
 		StructureDifferencer structureDifferencer = new StructureDifferencer();
-        structureDifferencer.extractDifferences(
+        structureDifferencer.extractDifferences( ////为啥不直接送去遍历AST呢？？？
                 fLeftASTHelper.createStructureTree(),
                 fRightASTHelper.createStructureTree());
         StructureDiffNode structureDiff = structureDifferencer.getDifferences();//找到不相同的节点

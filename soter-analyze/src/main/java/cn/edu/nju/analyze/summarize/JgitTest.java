@@ -25,8 +25,14 @@ public class JgitTest {
         GetLocalGitFile localGit = new GetLocalGitFile("C:\\commitTest\\tmp1");
 
 
-        //String srr = localGit.ProjectCommitPath("c92b3422164ee2da4747c6dac0cf9921f4219060","C:\\ProjectFileStore\\FileRecv\\elasticsearch").replaceAll("\n"," ");
+        //String srr = localGit.ProjectCommitPath("ea29affc21b3b71751accdcb9754614250adfb72","C:\\ProjectFileStore\\FileRecv\\Android-CleanArchitecture").replaceAll("\n"," ");
+        //System.out.println(srr);
 
+        //String srr = localGit.ProjectCommitPath("fc836bd54dd4f621bafdd3aae29644248fd693b1","C:\\ProjectFileStore\\FileRecv\\Android-Universal-Image-Loader").replaceAll("\n"," ");
+        //System.out.println(srr);
+
+        String srr = localGit.ProjectCommitPath("88be58d387ee73b44e0a76d90e46a8676dbda975","C:\\ProjectFileStore\\FileRecv\\Android-Universal-Image-Loader").replaceAll("\n"," ");
+        System.out.println(srr);
 /*
         //localGit.ProjectCommitPath("4665354c00537773dca28d572053658f80ef187c","C:\\ProjectFileStore\\FileRecv\\QMUI_Android").replaceAll("\n"," ");
 
@@ -96,6 +102,9 @@ public class JgitTest {
 
 
 */
+
+
+        /*
         String content = "";
         StringBuilder builder = new StringBuilder();
 
@@ -122,7 +131,7 @@ public class JgitTest {
             executors2.execute(new MultiCS(entry.getKey(),entry.getValue(),"C:\\ProjectFileStore\\output\\"));
         }
 
-
+*/
         return ;
     }
 
@@ -144,7 +153,7 @@ public class JgitTest {
         return osw;
     }
 
-    public static void getSortedCommitID() throws IOException, GitAPIException {
+    public static void getSortedCommitID() throws IOException, GitAPIException { //排序用
         File outputFile = new File("C:\\ProjectFileStore\\sortedrepo2sha.json");
         FileOutputStream fos = null;
         OutputStreamWriter osw = null;

@@ -79,10 +79,12 @@ public class StructureDiffNode {
         fLeft = left;
     }
 
+    public void setChildren(List<StructureDiffNode>Children){
+        fChildren = Children;
+    }
     public List<StructureDiffNode> getChildren() {
         return fChildren;
     }
-
     public StructureNode getLeft() {
         return fLeft;
     }

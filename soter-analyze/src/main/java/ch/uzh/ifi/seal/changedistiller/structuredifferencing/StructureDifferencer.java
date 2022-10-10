@@ -68,11 +68,25 @@ public class StructureDifferencer {
         StructureDiffNode root = new StructureDiffNode(left, right);
         if ((leftChildren != null) && (rightChildren != null)) {//如果两个树都有孩子节点，则先遍历孩子
             root = traverseChildren(root, leftChildren, rightChildren);
+            //root = extractThisNodeChange(root,left,right);
         } else {
             root = extractLeaveChange(root, left, right);//否则，直接叶子节点比较
         }
         if (hasChanges(root)) {
             return root;
+        }
+        return null;
+    }
+
+
+    private StructureDiffNode extractThisNodeChange(StructureDiffNode root,StructureNode left, StructureNode right){
+        StructureDiffNode newroot = new StructureDiffNode();
+        newroot = extractLeaveChange(newroot,left,right);
+        if (root.hasChildren()){
+            newroot.setChildren(root.getChildren());
+        }
+        if (hasChanges(newroot)) {
+            return newroot;
         }
         return null;
     }
