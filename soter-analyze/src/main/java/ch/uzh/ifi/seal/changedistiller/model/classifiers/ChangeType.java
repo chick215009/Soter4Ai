@@ -96,7 +96,8 @@ public enum ChangeType {
     STATEMENT_ORDERING_CHANGE(SignificanceLevel.LOW, true, false),
     STATEMENT_PARENT_CHANGE(SignificanceLevel.MEDIUM, true, false),
     STATEMENT_UPDATE(SignificanceLevel.LOW, true, false),
-    UNCLASSIFIED_CHANGE(SignificanceLevel.NONE, true, false);
+    UNCLASSIFIED_CHANGE(SignificanceLevel.NONE, true, false),
+    ANNOTATION_CHANGE(SignificanceLevel.CRUCIAL, true, false),;
 
     private final boolean fIsBodyChange;
     private final boolean fHasUnstableSignificanceLevel;

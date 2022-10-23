@@ -354,6 +354,16 @@ public class JavaDeclarationConverter extends ASTVisitor {
         return false;
     }
 
+    @Override
+    public boolean visit(MarkerAnnotation type,BlockScope scope){
+        push(fASTHelper.convertNode(type), String.valueOf(type.toString()), type.sourceStart(), type.sourceEnd());
+        return false;
+    }
+
+    public void endVisit(MarkerAnnotation type,BlockScope scope){
+        pop();
+    }
+
     private void adjustEndPositionOfParameterizedType(ParameterizedQualifiedTypeReference type) {
         if (hasTypeParameter(type)) {
             visitList(JavaEntityType.TYPE_PARAMETERS, type.typeArguments[type.typeArguments.length - 1]);
@@ -458,11 +468,47 @@ public class JavaDeclarationConverter extends ASTVisitor {
         if (typeDeclaration.javadoc != null) {
             typeDeclaration.javadoc.traverse(this, scope);
         }
+
+        int length;
+        int i;
+        if (typeDeclaration.annotations != null) {
+            length = typeDeclaration.annotations.length;
+
+            for(i = 0; i < length; ++i) {
+                typeDeclaration.annotations[i].traverse(this, typeDeclaration.staticInitializerScope);
+            }
+        }
+
         visitTypeDeclarationModifiers(typeDeclaration);
         visitAbstractVariableDeclarations(JavaEntityType.TYPE_PARAMETERS, typeDeclaration.typeParameters);
         if (typeDeclaration.superclass != null) {
             typeDeclaration.superclass.traverse(this, scope);
         }
+
+        if (typeDeclaration.superInterfaces != null) {
+            length = typeDeclaration.superInterfaces.length;
+
+            for(i = 0; i < length; ++i) {
+                typeDeclaration.superInterfaces[i].traverse(this, typeDeclaration.scope);
+            }
+        }
+
+//        if (typeDeclaration.typeParameters != null) {
+//            length = typeDeclaration.typeParameters.length;
+//
+//            for(i = 0; i < length; ++i) {
+//                typeDeclaration.typeParameters[i].traverse(this, typeDeclaration.scope);
+//            }
+//        }
+//
+//        if (typeDeclaration.memberTypes != null) {
+//            length = typeDeclaration.memberTypes.length;
+//
+//            for(i = 0; i < length; ++i) {
+//                typeDeclaration.memberTypes[i].traverse(this, typeDeclaration.scope);
+//            }
+//        }
+
         visitList(JavaEntityType.SUPER_INTERFACE_TYPES, typeDeclaration.superInterfaces);
         return false;
     }

@@ -73,7 +73,7 @@ public enum JavaEntityType implements EntityType {
     NULL_LITERAL(true),
     NUMBER_LITERAL(true),
     PARAMETERIZED_TYPE(true),
-    PARAMETERS(false),
+    PARAMETERS(true),
     PARAMETER(true),
     POSTFIX_EXPRESSION(true),
     PREFIX_EXPRESSION(true),
@@ -85,12 +85,12 @@ public enum JavaEntityType implements EntityType {
     SIMPLE_NAME(true),
     SINGLE_TYPE(true),
     STRING_LITERAL(true),
-    SUPER_INTERFACE_TYPES(false),
+    SUPER_INTERFACE_TYPES(true),
     SWITCH_CASE(true),
     SWITCH_STATEMENT(true),
     SYNCHRONIZED_STATEMENT(true),
     THEN_STATEMENT(true),
-    THROW(false),
+    THROW(true),
     THROW_STATEMENT(true),
     TRY_STATEMENT(true),
     TYPE_PARAMETERS(false),
@@ -101,7 +101,8 @@ public enum JavaEntityType implements EntityType {
     WHILE_STATEMENT(true),
     WILDCARD_TYPE(true),
     FOR_INIT(true),
-    FOR_INCR(true);
+    FOR_INCR(true),
+    ANNOTATION(true);
 
     private final boolean fIsValidChange;
 

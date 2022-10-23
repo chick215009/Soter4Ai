@@ -279,7 +279,9 @@ public class ModificationDescriptor {
                     desc.append(" to " + statement.lhs.toString());
                 }
                 desc.append(" at " + getRootEntityJavaStructureNodeName(delete) + " " + delete.getRootEntity().getJavaStructureNode().getType().name().toLowerCase());
-            } else if(delete.getChangedEntity().getAstNode() != null && delete.getChangedEntity().getAstNode() instanceof ReturnStatement) {
+            } else if (delete.getChangeType() == ChangeType.ANNOTATION_CHANGE) {
+                desc.append("Delete annotation " + delete.getChangedEntity().getUniqueName() + " at " + delete.getRootEntity().getType().toString() + " " + delete.getRootEntity().getUniqueName().substring(delete.getRootEntity().getUniqueName().lastIndexOf(".") + 1));
+            }else if(delete.getChangedEntity().getAstNode() != null && delete.getChangedEntity().getAstNode() instanceof ReturnStatement) {
                 desc.append(" statement ");
                 desc.append(" at " + getRootEntityJavaStructureNodeName(delete) + " " + delete.getRootEntity().getJavaStructureNode().getType().name().toLowerCase());
             } else if(delete.getChangedEntity().getAstNode() != null && delete.getChangedEntity().getAstNode() instanceof IfStatement) {
@@ -341,6 +343,8 @@ public class ModificationDescriptor {
 
         if(insert.getChangeType() == ChangeType.ADDITIONAL_FUNCTIONALITY) {
             describeAdditionalRemovedFunctionality(desc, insert, "Add");
+        } else if (insert.getChangeType() == ChangeType.ANNOTATION_CHANGE){
+            desc.append("Add annotation " + insert.getChangedEntity().getUniqueName() +" at " + insert.getRootEntity().getType().toString() + " " + insert.getRootEntity().getUniqueName().substring(insert.getRootEntity().getUniqueName().lastIndexOf(".") + 1));
         } else if(insert.getChangeType() == ChangeType.ADDITIONAL_OBJECT_STATE ) {
             desc.append("Add (Object state) " + insert.getChangedEntity().getName().substring(0, insert.getChangedEntity().getName().indexOf(":")) + " attribute");
         } else if(insert.getChangeType() == ChangeType.INCREASING_ACCESSIBILITY_CHANGE) {
@@ -634,6 +638,8 @@ public class ModificationDescriptor {
         //如果变化类型是返回值类型发生变化
         } else if(update.getChangeType() == ChangeType.RETURN_TYPE_CHANGE) {
             desc.append(fType + " " + update.getChangedEntity().getUniqueName().substring(update.getChangedEntity().getUniqueName().indexOf(":") + 1).trim() + " with " + update.getNewEntity().getUniqueName().substring(update.getNewEntity().getUniqueName().indexOf(":") + 1, update.getNewEntity().getUniqueName().length()).trim()  + " for " + getRootEntityJavaStructureNodeName(update) + " " + update.getRootEntity().getType().name().toLowerCase());
+        } else if (update.getChangeType() == ChangeType.ANNOTATION_CHANGE) {
+            desc.append("Update annotation " + update.getChangedEntity().getUniqueName() + " at " + update.getRootEntity().getType().toString() + " " + update.getRootEntity().getUniqueName().substring(update.getRootEntity().getUniqueName().lastIndexOf(".") + 1));
         } else {
             desc.append(" The Case Has some problem. TAGUPDATEDES");
         }

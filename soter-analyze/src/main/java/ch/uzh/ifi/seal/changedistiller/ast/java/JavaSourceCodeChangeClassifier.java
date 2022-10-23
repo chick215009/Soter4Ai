@@ -108,6 +108,11 @@ public class JavaSourceCodeChangeClassifier implements SourceCodeChangeClassifie
             return insert;
         }
 
+        if (insert.getChangedEntity().getType() == JavaEntityType.ANNOTATION){
+            insert.setChangeType(ChangeType.ANNOTATION_CHANGE);
+            return insert;
+        }
+
         // ugly hack ;)
         if (insert.getChangedEntity().getType() == JavaEntityType.THEN_STATEMENT) {
             return null;
@@ -617,6 +622,11 @@ public class JavaSourceCodeChangeClassifier implements SourceCodeChangeClassifie
             return delete;
         }
 
+        if (delete.getChangedEntity().getType() == JavaEntityType.ANNOTATION){
+            delete.setChangeType(ChangeType.ANNOTATION_CHANGE);
+            return delete;
+        }
+
         // ugly hack ;)
         if (delete.getChangedEntity().getType() == JavaEntityType.THEN_STATEMENT) {
             return null;
@@ -881,6 +891,11 @@ public class JavaSourceCodeChangeClassifier implements SourceCodeChangeClassifie
         SourceCodeChange result = null;
 
         if (update.getChangeType() != ChangeType.UNCLASSIFIED_CHANGE) {
+            return update;
+        }
+
+        if (update.getChangedEntity().getType() == JavaEntityType.ANNOTATION){
+            update.setChangeType(ChangeType.ANNOTATION_CHANGE);
             return update;
         }
 

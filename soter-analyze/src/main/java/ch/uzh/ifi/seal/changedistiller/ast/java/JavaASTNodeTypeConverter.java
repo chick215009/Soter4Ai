@@ -115,6 +115,7 @@ public final class JavaASTNodeTypeConverter implements ASTNodeTypeConverter {
         sConversionMap.put(ConstructorDeclaration.class, JavaEntityType.METHOD);
         sConversionMap.put(TypeDeclaration.class, JavaEntityType.CLASS);
         sConversionMap.put(Initializer.class, JavaEntityType.FIELD);
+        sConversionMap.put(MarkerAnnotation.class,JavaEntityType.ANNOTATION);
     }
 
     @Override
