@@ -24,14 +24,20 @@ import ch.uzh.ifi.seal.changedistiller.ast.ASTHelper;
 import ch.uzh.ifi.seal.changedistiller.ast.ASTHelperFactory;
 import ch.uzh.ifi.seal.changedistiller.distilling.refactoring.RefactoringCandidateContainer;
 import ch.uzh.ifi.seal.changedistiller.distilling.refactoring.RefactoringCandidateProcessor;
+import ch.uzh.ifi.seal.changedistiller.model.classifiers.HeadType;
 import ch.uzh.ifi.seal.changedistiller.model.entities.ClassHistory;
+import ch.uzh.ifi.seal.changedistiller.model.entities.HeadChange;
 import ch.uzh.ifi.seal.changedistiller.model.entities.SourceCodeChange;
 import ch.uzh.ifi.seal.changedistiller.structuredifferencing.StructureDiffNode;
 import ch.uzh.ifi.seal.changedistiller.structuredifferencing.StructureDifferencer;
 import ch.uzh.ifi.seal.changedistiller.structuredifferencing.StructureNode;
+import ch.uzh.ifi.seal.changedistiller.structuredifferencing.java.JavaStructureNode;
 import com.google.inject.Inject;
+import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
+import org.eclipse.jdt.internal.compiler.ast.ImportReference;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,6 +56,7 @@ public class FileDistiller {
     private RefactoringCandidateContainer fRefactoringContainer;
 
     private List<SourceCodeChange> fChanges;
+    private List<HeadChange> fHeadChanges;
     private ASTHelper<StructureNode> fLeftASTHelper;
     private ASTHelper<StructureNode> fRightASTHelper;
     private ClassHistory fClassHistory;
@@ -105,6 +112,8 @@ public class FileDistiller {
         structureDifferencer.extractDifferences( ////为啥不直接送去遍历AST呢？？？
                 fLeftASTHelper.createStructureTree(),
                 fRightASTHelper.createStructureTree());
+
+        extractHeadDiff(fLeftASTHelper.createStructureTree(), fRightASTHelper.createStructureTree());
         StructureDiffNode structureDiff = structureDifferencer.getDifferences();//找到不相同的节点
         if (structureDiff != null) {
         	fChanges = new LinkedList<SourceCodeChange>();
@@ -114,6 +123,63 @@ public class FileDistiller {
         	fChanges = Collections.emptyList();
         }
 	}
+
+    private void extractHeadDiff(StructureNode left,StructureNode right){
+        fHeadChanges = new LinkedList<>();
+
+        if (!(left instanceof JavaStructureNode && right instanceof JavaStructureNode)){
+            System.out.println("left or right is not a JavaStructureNode.");
+            return;
+        }
+
+        JavaStructureNode LL = (JavaStructureNode)left;
+        JavaStructureNode RR = (JavaStructureNode)right;
+
+        if (!(LL.getASTNode() instanceof CompilationUnitDeclaration && RR.getASTNode() instanceof CompilationUnitDeclaration)){
+            System.out.println("leftNode or rightNode is not a CompilationUnitDeclaration.");
+            return;
+        }
+
+
+
+        CompilationUnitDeclaration LAstnode = (CompilationUnitDeclaration)LL.getASTNode();
+        CompilationUnitDeclaration RAstnode = (CompilationUnitDeclaration)RR.getASTNode();
+        for (ImportReference i :LAstnode.imports){
+            boolean has = false;
+            StringBuffer L = new StringBuffer();
+            i.print(0,L);
+            for (ImportReference j :RAstnode.imports){
+                StringBuffer R = new StringBuffer();
+                j.print(0,R);
+                if (L.toString().equals(R.toString())){
+                    has = true;
+                    break;
+                }
+            }
+            if (!has){
+                fHeadChanges.add(new HeadChange(HeadType.DEL_IMPORT,L.toString()));
+            }
+        }
+
+        for (ImportReference i :RAstnode.imports){
+            boolean has = false;
+            StringBuffer L = new StringBuffer();
+            i.print(0,L);
+            for (ImportReference j :LAstnode.imports){
+                StringBuffer R = new StringBuffer();
+                j.print(0,R);
+                if (L.toString().equals(R.toString())){
+                    has = true;
+                    break;
+                }
+            }
+            if (!has){
+                fHeadChanges.add(new HeadChange(HeadType.ADD_IMPORT,L.toString()));
+            }
+        }
+
+        return;
+    }
 
     public void extractClassifiedSourceCodeChanges(File left, File right, String version) {
     	fVersion = version;
@@ -168,6 +234,14 @@ public class FileDistiller {
 
     public List<SourceCodeChange> getSourceCodeChanges() {
         return fChanges;
+    }
+
+    public List<HeadChange> getfHeadChanges() {
+        return fHeadChanges;
+    }
+
+    public void setfHeadChanges(List<HeadChange> fHeadChanges) {
+        this.fHeadChanges = fHeadChanges;
     }
 
     public ClassHistory getClassHistory() {

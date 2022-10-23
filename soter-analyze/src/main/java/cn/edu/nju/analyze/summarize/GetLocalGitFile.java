@@ -61,6 +61,7 @@ public class GetLocalGitFile {
 
         String sf = ChangeAnalyzer.getDescribe(summaryEntity);
 
+        System.out.println(sf);
         return sf;
     }
 

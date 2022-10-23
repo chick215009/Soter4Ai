@@ -44,6 +44,7 @@ import java.util.Map;
 public class ModificationDescriptor {
 
     private List<SourceCodeChange> changes;
+    private List<HeadChange> HeadChanges;
     private ChangedFile file;
     private Git git;
     private ChangedFile[] differences;
@@ -59,6 +60,7 @@ public class ModificationDescriptor {
             ex.printStackTrace();
         }
         changes = distiller.getSourceCodeChanges();
+        HeadChanges = distiller.getfHeadChanges();
     }
 
     public void extractDifferencesBetweenVersions(ChangedFile file, Git git, String olderID, String currentID) {
@@ -69,6 +71,7 @@ public class ModificationDescriptor {
             ex.printStackTrace();
         }
         changes = distiller.getSourceCodeChanges();
+        HeadChanges = distiller.getfHeadChanges();
     }
 
     public void extractModifiedMethods() {
@@ -152,6 +155,12 @@ public class ModificationDescriptor {
         StringBuilder desc = new StringBuilder();
         try{
             StringBuilder localDescription = new StringBuilder(Constants.EMPTY_STRING);
+
+            if (HeadChanges.size() != 0){
+                for (HeadChange i:HeadChanges){
+                    desc.append(i.getDescribe());
+                }
+            }
 
             addedRemovedFunctionalities = new ArrayList<SourceCodeChange>();
             if(changes != null) {
@@ -317,7 +326,7 @@ public class ModificationDescriptor {
                 desc.append("Remove parameter " + phrase.toString() + " at " + getRootEntityJavaStructureNodeName(delete) + " " + delete.getRootEntity().getJavaStructureNode().getType().name().toLowerCase());
             }
         } else {
-            desc.append("Remove ");
+            desc.append(" TAGREMOVEDES Remove ");
             desc.append(delete.getChangedEntity().getUniqueName() + " in ");
             desc.append(delete.getRootEntity().getUniqueName().substring(delete.getRootEntity().getUniqueName().lastIndexOf(".") + 1) + " " + delete.getRootEntity().getType().name() + " ");
         }
@@ -391,6 +400,10 @@ public class ModificationDescriptor {
                 fType = insert.getChangeType().name().toLowerCase().replace("_", " ");
                 desc.append(" at " + getRootEntityJavaStructureNodeName(insert) + " method");
             }
+        } else {
+            desc.append(" TAGINSERTDES Insert ");
+            desc.append(insert.getChangedEntity().getUniqueName() + " in ");
+            desc.append(insert.getRootEntity().getUniqueName().substring(insert.getRootEntity().getUniqueName().lastIndexOf(".") + 1) + " " + insert.getRootEntity().getType().name() + " ");
         }
     }
 
@@ -621,6 +634,8 @@ public class ModificationDescriptor {
         //如果变化类型是返回值类型发生变化
         } else if(update.getChangeType() == ChangeType.RETURN_TYPE_CHANGE) {
             desc.append(fType + " " + update.getChangedEntity().getUniqueName().substring(update.getChangedEntity().getUniqueName().indexOf(":") + 1).trim() + " with " + update.getNewEntity().getUniqueName().substring(update.getNewEntity().getUniqueName().indexOf(":") + 1, update.getNewEntity().getUniqueName().length()).trim()  + " for " + getRootEntityJavaStructureNodeName(update) + " " + update.getRootEntity().getType().name().toLowerCase());
+        } else {
+            desc.append(" The Case Has some problem. TAGUPDATEDES");
         }
 
     }
