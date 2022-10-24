@@ -188,12 +188,18 @@ public class ChangeAnalyzer {
         summaryEntity.setRemoveNum(status.getRemoved().size());
     }
 
-    public static String getDescribe(SummaryEntity summaryEntity) {
+    public String getDescribe(SummaryEntity summaryEntity) {
         StringBuilder des = new StringBuilder();
         des.append(summaryEntity.getSimpleDescribe());
 
         if (summaryEntity.getPackageEntityList().size() > 0) {
             des.append("ChangeScribeStart \n");
+        }
+
+        if (!typesProblem.isEmpty()){
+            for (StereotypeIdentifier Si:typesProblem){
+                des.append(Si.getChangedFile().getChangeType() + " a almost empty file " + Si.getChangedFile().getName() + " with zero ast node ");
+            }
         }
 
         int i = 1;

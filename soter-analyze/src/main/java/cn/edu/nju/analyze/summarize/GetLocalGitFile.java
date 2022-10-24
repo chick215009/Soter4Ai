@@ -47,19 +47,33 @@ public class GetLocalGitFile {
         return git;
     }
 
+    public String getFinalDescribe(String baseProjectPath){
+        ChangeAnalyzer changeAnalyzer = new ChangeAnalyzer(baseProjectPath);
+        boolean hasRes = changeAnalyzer.analyze();
+        SummaryEntity summaryEntity = null;
+        if (!hasRes) {
+            summaryEntity = new SummaryEntity();
+            summaryEntity.setCommitStereotype("无明显变化");
+            summaryEntity.setSimpleDescribe("无明显变化");
+        } else {
+            summaryEntity = changeAnalyzer.getSummaryEntity();
+            if (summaryEntity.getIsInitialCommit()) {
+                summaryEntity.setCommitStereotype("INITIAL COMMIT");
+            }
+        }
+        System.out.println("End analyze.");
+
+        return changeAnalyzer.getDescribe(summaryEntity);
+    }
+
     public String ProjectCommitPath(String shaCode,String baseProjectPath) throws GitAPIException, IOException {
         Git git = openRpo(baseProjectPath);
-        git.reset().setMode(ResetCommand.ResetType.HARD).setRef(shaCode).call();
 
+        git.reset().setMode(ResetCommand.ResetType.HARD).setRef(shaCode).call();
         git.reset().setMode(ResetCommand.ResetType.SOFT).setRef("HEAD~1").call();
         System.out.println("End After Version Copy.");
 
-        SummaryEntity summaryEntity = new CodeAnalyzeServiceImpl().getSummaryEntity(baseProjectPath);
-        //String sf = summaryEntity.getMethodStatisticJson();
-
-        System.out.println("End analyze.");
-
-        String sf = ChangeAnalyzer.getDescribe(summaryEntity);
+        String sf = getFinalDescribe(baseProjectPath);
 
         System.out.println(sf);
         return sf;
