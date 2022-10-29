@@ -22,6 +22,7 @@ package ch.uzh.ifi.seal.changedistiller.distilling;
 
 import ch.uzh.ifi.seal.changedistiller.ast.ASTHelper;
 import ch.uzh.ifi.seal.changedistiller.ast.ASTHelperFactory;
+import ch.uzh.ifi.seal.changedistiller.ast.java.JavaASTHelper;
 import ch.uzh.ifi.seal.changedistiller.distilling.refactoring.RefactoringCandidateContainer;
 import ch.uzh.ifi.seal.changedistiller.distilling.refactoring.RefactoringCandidateProcessor;
 import ch.uzh.ifi.seal.changedistiller.model.classifiers.HeadType;
@@ -35,6 +36,7 @@ import ch.uzh.ifi.seal.changedistiller.structuredifferencing.java.JavaStructureN
 import com.google.inject.Inject;
 import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.ImportReference;
+import org.eclipse.jgit.lib.ObjectId;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -109,6 +111,10 @@ public class FileDistiller {
 
 	private void extractDifferences() {
 		StructureDifferencer structureDifferencer = new StructureDifferencer();
+        if ((Object)fLeftASTHelper instanceof JavaASTHelper && (Object)fRightASTHelper instanceof JavaASTHelper){
+            structureDifferencer.setLfComment(((JavaASTHelper)(Object)fLeftASTHelper).getfComments());
+            structureDifferencer.setRfComment(((JavaASTHelper)(Object)fRightASTHelper).getfComments());
+        }
         structureDifferencer.extractDifferences( ////为啥不直接送去遍历AST呢？？？
                 fLeftASTHelper.createStructureTree(),
                 fRightASTHelper.createStructureTree());
@@ -119,6 +125,7 @@ public class FileDistiller {
         	fChanges = new LinkedList<SourceCodeChange>();
             // first node is (usually) the compilation unit
             processRootChildren(structureDiff);
+            System.out.println(1);
         } else {
         	fChanges = Collections.emptyList();
         }

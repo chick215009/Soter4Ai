@@ -21,7 +21,7 @@ package ch.uzh.ifi.seal.changedistiller.structuredifferencing.java;
  */
 
 import ch.uzh.ifi.seal.changedistiller.structuredifferencing.StructureNode;
-import org.eclipse.jdt.internal.compiler.ast.ASTNode;
+import org.eclipse.jdt.internal.compiler.ast.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -36,6 +36,7 @@ public class JavaStructureNode implements StructureNode {
     private Type fType;
     private String fName;
     private String fQualifier;
+
     private ASTNode fASTNode;
     private List<JavaStructureNode> fChildren;
 
@@ -120,6 +121,24 @@ public class JavaStructureNode implements StructureNode {
 
     @Override
     public String getContent() {
+        if (!fChildren.isEmpty() && fASTNode instanceof CompilationUnitDeclaration){
+            StringBuffer output = new StringBuffer("package ");
+            ((CompilationUnitDeclaration)fASTNode).currentPackage.print(0, output, false).append(";\n");
+            return output.toString();
+        }
+
+        if (!fChildren.isEmpty() && fASTNode instanceof TypeDeclaration){
+            StringBuffer output = new StringBuffer();
+            if (((TypeDeclaration)fASTNode).javadoc != null) {
+                ((TypeDeclaration)fASTNode).javadoc.print(0, output);
+            }
+
+            if ((fASTNode.bits & 512) == 0) {
+                ((TypeDeclaration)fASTNode).printHeader(0, output);
+            }
+            return output.toString();
+        }
+
         return fASTNode.toString();
     }
 
@@ -162,6 +181,34 @@ public class JavaStructureNode implements StructureNode {
             return fType == ((JavaStructureNode) other).fType;
         }
         return false;
+    }
+
+    public int getStart() {
+        if (fASTNode instanceof FieldDeclaration){
+            return ((FieldDeclaration) fASTNode).declarationSourceStart;
+        }
+        if (fASTNode instanceof AbstractMethodDeclaration){
+            return ((AbstractMethodDeclaration) fASTNode).declarationSourceStart;
+        }
+        if (fASTNode instanceof TypeDeclaration){
+            return ((TypeDeclaration) fASTNode).declarationSourceStart;
+        }
+
+        return fASTNode.sourceStart();
+    }
+
+    public int getEnd() {
+        if (fASTNode instanceof FieldDeclaration){
+            return ((FieldDeclaration) fASTNode).declarationSourceEnd;
+        }
+        if (fASTNode instanceof AbstractMethodDeclaration){
+            return ((AbstractMethodDeclaration) fASTNode).declarationSourceEnd;
+        }
+        if (fASTNode instanceof TypeDeclaration){
+            return ((TypeDeclaration) fASTNode).declarationSourceEnd;
+        }
+
+        return fASTNode.sourceEnd();
     }
 
 }

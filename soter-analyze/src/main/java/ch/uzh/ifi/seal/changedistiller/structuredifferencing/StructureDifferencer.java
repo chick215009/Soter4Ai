@@ -20,6 +20,11 @@ package ch.uzh.ifi.seal.changedistiller.structuredifferencing;
  * #L%
  */
 
+import ch.uzh.ifi.seal.changedistiller.ast.java.Comment;
+import ch.uzh.ifi.seal.changedistiller.ast.java.JavaASTHelper;
+import ch.uzh.ifi.seal.changedistiller.model.classifiers.SourceRange;
+import ch.uzh.ifi.seal.changedistiller.structuredifferencing.java.JavaStructureNode;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.*;
@@ -33,6 +38,24 @@ public class StructureDifferencer {
 
     private StructureDiffNode fDifferences;
 
+    public List<Comment> getLfComment() {
+        return LfComment;
+    }
+
+    public void setLfComment(List<Comment> lfComment) {
+        LfComment = lfComment;
+    }
+
+    public List<Comment> getRfComment() {
+        return RfComment;
+    }
+
+    public void setRfComment(List<Comment> rfComment) {
+        RfComment = rfComment;
+    }
+
+    private List<Comment> LfComment;
+    private List<Comment> RfComment;
     /**
      * Types of differences.
      *
@@ -68,7 +91,9 @@ public class StructureDifferencer {
         StructureDiffNode root = new StructureDiffNode(left, right);
         if ((leftChildren != null) && (rightChildren != null)) {//如果两个树都有孩子节点，则先遍历孩子
             root = traverseChildren(root, leftChildren, rightChildren);
-            root = extractThisNodeChange(root,left,right);//同时查看自身是否有变化
+            if (!hasChanges(root)){
+                root = extractThisNodeChange(root,left,right);//同时查看自身是否有变化
+            }
         } else {
             root = extractLeaveChange(root, left, right);//否则，直接叶子节点比较
         }
@@ -78,6 +103,36 @@ public class StructureDifferencer {
         return null;
     }
 
+
+    public boolean commentsEqual(StructureNode left, StructureNode right){
+        if (!(left instanceof JavaStructureNode && right instanceof JavaStructureNode)) {
+            return true;
+        }
+
+        JavaStructureNode LL = (JavaStructureNode) left;
+        JavaStructureNode RR = (JavaStructureNode) right;
+        List<String> Comments = new ArrayList<>();
+        for (Comment i:this.LfComment){
+            if (LL.getStart() <= i.sourceStart && i.sourceEnd <= LL.getEnd() + 1){
+                Comments.add(i.getComment());
+            }
+        }
+        int cnt = 0;
+        for (Comment j:this.RfComment){
+            if (RR.getStart() <= j.sourceStart && j.sourceEnd <= RR.getEnd() + 1){
+                if (cnt >= Comments.size()){
+                    return false;
+                }
+
+                if (Comments.get(cnt).equals(j.getComment())){
+                    cnt++;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    };
 
     private StructureDiffNode extractThisNodeChange(StructureDiffNode root,StructureNode left, StructureNode right){
         StructureDiffNode newroot = new StructureDiffNode();
@@ -161,7 +216,8 @@ public class StructureDifferencer {
                 int l = leftContent.read();
                 int r = rightContent.read();
                 if ((l == -1) && (r == -1)) {
-                    return true;
+                    return commentsEqual(left,right);
+                    //return true;
                 }
                 if (l != r) {
                     break;

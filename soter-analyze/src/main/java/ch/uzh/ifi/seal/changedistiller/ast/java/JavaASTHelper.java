@@ -36,7 +36,9 @@ import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.jdt.internal.compiler.lookup.CompilationUnitScope;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Implementation of {@link ASTHelper} for the Java programming language.
@@ -50,6 +52,11 @@ public class JavaASTHelper implements ASTHelper<JavaStructureNode> {
     private JavaMethodBodyConverter fBodyConverter;
     private JavaASTNodeTypeConverter fASTHelper;
     private JavaCompilation fCompilation;
+
+    public List<Comment> getfComments() {
+        return fComments;
+    }
+
     private List<Comment> fComments;
 
     @Inject

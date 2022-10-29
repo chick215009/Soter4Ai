@@ -27,7 +27,9 @@ public class JgitTest {
 
         //String srr = localGit.ProjectCommitPath("ea29affc21b3b71751accdcb9754614250adfb72","C:\\ProjectFileStore\\FileRecv\\Android-CleanArchitecture").replaceAll("\n"," ");
         //System.out.println(srr);
-        localGit.ProjectCommitPath("a3899891281a9040912cd1a904d68487587e8512","C:\\ProjectFileStore\\FileRecv\\QMUI_Android").replaceAll("\n"," ");
+        //localGit.ProjectCommitPath("a3899891281a9040912cd1a904d68487587e8512","C:\\ProjectFileStore\\FileRecv\\QMUI_Android").replaceAll("\n"," ");
+        //localGit.ProjectCommitPath("35e130207d3944c856a62a20e8eef7f5a7171bb0","C:\\ProjectFileStore\\FileRecv\\apollo").replaceAll("\n"," ");
+        localGit.ProjectCommitPath("6b29f2d736eb9320469f59e3b4318bc260a061a8","C:\\ProjectFileStore\\FileRecv\\dbeaver").replaceAll("\n"," ");
         //String srr = localGit.ProjectCommitPath("fc836bd54dd4f621bafdd3aae29644248fd693b1","C:\\ProjectFileStore\\FileRecv\\Android-Universal-Image-Loader").replaceAll("\n"," ");
         //System.out.println(srr);
 
