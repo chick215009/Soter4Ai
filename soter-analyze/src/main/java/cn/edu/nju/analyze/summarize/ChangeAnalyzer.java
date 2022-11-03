@@ -223,7 +223,7 @@ public class ChangeAnalyzer {
                         } else {
                             typeDes.append("Remove ");
                         }
-                        typeDes.append(typeEntity.getTypeStereotype() + typeEntity.getTypeName());
+                        typeDes.append(typeEntity.getTypeStereotype() + " " + typeEntity.getTypeName());
                         if (typeEntity.getTypeLabel().equals(TypeLabel.ABSTRACT)) {
                             typeDes.append(" abstract class ");
                         } else if (typeEntity.getTypeLabel().equals(TypeLabel.INTERFACE)) {

@@ -151,11 +151,22 @@ public class FileDistiller {
 
         CompilationUnitDeclaration LAstnode = (CompilationUnitDeclaration)LL.getASTNode();
         CompilationUnitDeclaration RAstnode = (CompilationUnitDeclaration)RR.getASTNode();
-        for (ImportReference i :LAstnode.imports){
+
+        ImportReference[] LimportLst = new ImportReference[0];
+        if (LAstnode.imports != null){
+            LimportLst = LAstnode.imports;
+        }
+
+        ImportReference[] RimportLst = new ImportReference[0];
+        if (RAstnode.imports != null){
+            RimportLst = RAstnode.imports;
+        }
+
+        for (ImportReference i :LimportLst){
             boolean has = false;
             StringBuffer L = new StringBuffer();
             i.print(0,L);
-            for (ImportReference j :RAstnode.imports){
+            for (ImportReference j :RimportLst){
                 StringBuffer R = new StringBuffer();
                 j.print(0,R);
                 if (L.toString().equals(R.toString())){
@@ -168,11 +179,11 @@ public class FileDistiller {
             }
         }
 
-        for (ImportReference i :RAstnode.imports){
+        for (ImportReference i :RimportLst){
             boolean has = false;
             StringBuffer L = new StringBuffer();
             i.print(0,L);
-            for (ImportReference j :LAstnode.imports){
+            for (ImportReference j :LimportLst){
                 StringBuffer R = new StringBuffer();
                 j.print(0,R);
                 if (L.toString().equals(R.toString())){

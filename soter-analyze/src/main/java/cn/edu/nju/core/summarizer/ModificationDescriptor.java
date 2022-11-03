@@ -137,7 +137,7 @@ public class ModificationDescriptor {
                 }
             }
             if(addedRemovedFunctionalities != null && addedRemovedFunctionalities.size() > 0) {
-                describeCollateralChanges(desc);
+                describeCollateralChanges(desc);//这个函数没用 依赖未实现
             }
             if(!localDescription.toString().equals(Constants.EMPTY_STRING)) {
                 if(changes != null && changes.size() > 0) {
@@ -197,6 +197,8 @@ public class ModificationDescriptor {
                             if(!descTmp.toString().equals(Constants.EMPTY_STRING) && (change instanceof Update || change instanceof Insert || change instanceof Delete)) {
                                 desc.append(Constants.NEW_LINE);
                             }
+                        } else {
+                            desc.append(" +1 ");//应对重载
                         }
                     }
                 }
