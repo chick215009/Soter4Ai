@@ -122,6 +122,9 @@ public class JavaStructureNode implements StructureNode {
     @Override
     public String getContent() {
         if (!fChildren.isEmpty() && fASTNode instanceof CompilationUnitDeclaration){
+            if (((CompilationUnitDeclaration)fASTNode).currentPackage == null){
+                return " ";
+            }
             StringBuffer output = new StringBuffer("package ");
             ((CompilationUnitDeclaration)fASTNode).currentPackage.print(0, output, false).append(";\n");
             return output.toString();

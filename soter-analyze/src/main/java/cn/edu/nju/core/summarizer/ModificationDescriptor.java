@@ -613,8 +613,7 @@ public class ModificationDescriptor {
         //如果变化类型是条件表达式改变
         } else if(update.getChangeType() == ChangeType.CONDITION_EXPRESSION_CHANGE) {
             desc.append("Modify conditional expression from " +
-                    update.getChangedEntity().getName().substring(1,
-                            update.getChangedEntity().getName().length() - 1) +
+                    update.getChangedEntity().getName() +
                     " to " + update.getNewEntity().getUniqueName() +
                     " at " + getParentEntityName(update) + " method");
         //如果变化类型是增加可获得性
@@ -635,9 +634,18 @@ public class ModificationDescriptor {
             String entityType = update.getRootEntity().getJavaStructureNode().getType().name().toLowerCase();
             desc.append(fType +" at " + getRootEntityJavaStructureNodeName(update) + " " + entityType + " " + update.getNewEntity().getUniqueName());
         //如果变化类型是方法参数发生变化
-        } else if(update.getChangeType() == ChangeType.PARAMETER_TYPE_CHANGE) {
-            desc.append("Type's " + update.getChangedEntity().getUniqueName().substring(0, update.getChangedEntity().getUniqueName().indexOf(":") - 1).trim() + " paramater change of " + update.getChangedEntity().getUniqueName().substring(update.getChangedEntity().getUniqueName().indexOf(":") + 1, update.getChangedEntity().getUniqueName().length()).trim()  + " to " + update.getNewEntity().getUniqueName().substring(update.getNewEntity().getUniqueName().indexOf(":") + 1, update.getNewEntity().getUniqueName().length()).trim() + " for " + getRootEntityJavaStructureNodeName(update) + " " + update.getRootEntity().getType().name().toLowerCase());
-        //如果变化类型是返回值类型发生变化
+        } else if(update.getChangeType() == ChangeType.PARAMETER_TYPE_CHANGE) {//需要观察？！
+            if (update.getParentEntity().getType() == JavaEntityType.PARAMETER){
+                desc.append("Type's " + update.getParentEntity().getUniqueName() + " paramater change of " + update.getChangedEntity().getUniqueName().substring(update.getChangedEntity().getUniqueName().indexOf(":") + 1).trim()  + " to " + update.getNewEntity().getUniqueName().substring(update.getNewEntity().getUniqueName().indexOf(":") + 1).trim() + " for " + getRootEntityJavaStructureNodeName(update) + " " + update.getRootEntity().getType().name().toLowerCase());
+            } else {
+                String changedParameter = "UnkParameter";
+                if (update.getChangedEntity().getUniqueName().indexOf(":") != -1){
+                    changedParameter = update.getChangedEntity().getUniqueName().substring(0, update.getChangedEntity().getUniqueName().indexOf(":")).trim();
+                } else if (update.getNewEntity().getUniqueName().indexOf(":") != -1) {
+                    changedParameter = update.getNewEntity().getUniqueName().substring(0, update.getNewEntity().getUniqueName().indexOf(":")).trim();
+                }
+                desc.append("Type's " + changedParameter + " paramater change of " + update.getChangedEntity().getUniqueName().substring(update.getChangedEntity().getUniqueName().indexOf(":") + 1, update.getChangedEntity().getUniqueName().length()).trim() + " to " + update.getNewEntity().getUniqueName().substring(update.getNewEntity().getUniqueName().indexOf(":") + 1, update.getNewEntity().getUniqueName().length()).trim() + " for " + getRootEntityJavaStructureNodeName(update) + " " + update.getRootEntity().getType().name().toLowerCase());
+            }//如果变化类型是返回值类型发生变化
         } else if(update.getChangeType() == ChangeType.RETURN_TYPE_CHANGE) {
             desc.append(fType + " " + update.getChangedEntity().getUniqueName().substring(update.getChangedEntity().getUniqueName().indexOf(":") + 1).trim() + " with " + update.getNewEntity().getUniqueName().substring(update.getNewEntity().getUniqueName().indexOf(":") + 1, update.getNewEntity().getUniqueName().length()).trim()  + " for " + getRootEntityJavaStructureNodeName(update) + " " + update.getRootEntity().getType().name().toLowerCase());
         } else if (update.getChangeType() == ChangeType.ANNOTATION_CHANGE) {

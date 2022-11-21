@@ -125,7 +125,7 @@ public class FileDistiller {
         	fChanges = new LinkedList<SourceCodeChange>();
             // first node is (usually) the compilation unit
             processRootChildren(structureDiff);
-            System.out.println(1);
+            //System.out.println(1);
         } else {
         	fChanges = Collections.emptyList();
         }

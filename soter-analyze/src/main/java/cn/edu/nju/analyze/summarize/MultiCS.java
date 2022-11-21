@@ -43,6 +43,10 @@ public class MultiCS extends Thread {
             Scanner sc = new Scanner(fis);    //file to be scanned
             while(sc.hasNextLine()) {
                 String tmp = sc.nextLine();
+                if (tmp.indexOf("处理异常") != -1){
+                    continue;
+                }
+
                 int i = tmp.indexOf(" ");
                 if (i == -1){
                     continue;
@@ -86,13 +90,14 @@ public class MultiCS extends Thread {
 
         long startTime = System.currentTimeMillis();
         int cnt = 0;
+        System.out.println(repoName + " remain tasks: " + this.shaCodeLst.size());
         for (String shacode:this.shaCodeLst) {
             System.out.println(shacode);
             String describes = "处理异常";
             try {
                 describes = localGit.ProjectCommitPath(shacode, "C:\\ProjectFileStore\\FileRecv\\" + prefixpath).replaceAll("[\n\r\t]", " ");
             } catch (Exception e) {
-                System.out.println(e.toString());
+                System.out.println("处理异常 In Repo: " + repoName + " ShaCode: " + shacode + " " + e.toString());
             }
             try {
                 // 写入内容
@@ -101,15 +106,15 @@ public class MultiCS extends Thread {
                 outputWriter.write("\n");
 
                 outputWriter.flush();
-                System.out.println("写入完毕");
+                //System.out.println("写入完毕");
             } catch (Exception e) {
-                System.out.println("写入异常");
+                System.out.println("写入异常 In Repo: " + repoName + " ShaCode: " + shacode);
             }
 
             cnt++;
             if (cnt % 100 == 0) {
                 System.out.println("------------------ " + cnt + " ---------------------");
-                System.out.println("已运行 " + (System.currentTimeMillis() - startTime) / 1000 + "s");
+                System.out.println(repoName + " 已运行 " + (System.currentTimeMillis() - startTime) / 1000 + "s");
             }
         }
         System.out.println("End repo "+repoName);

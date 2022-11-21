@@ -392,9 +392,13 @@ public class ChangeAnalyzer {
         for (Map.Entry<String, StereotypeIdentifier> entry : summarized.entrySet()) {
             String key = entry.getKey();
             StereotypeIdentifier identifier = entry.getValue();
+            String packageName = "NonePackage";
+            if (identifier.getParser().getCompilationUnit().getPackage() != null){
+                packageName = identifier.getParser().getCompilationUnit().getPackage().getName().getFullyQualifiedName();
+            }
             if (currentPackage.trim().equals("") //第一次遍历
-            || !currentPackage.trim().equals(identifier.getParser().getCompilationUnit().getPackage().getName().getFullyQualifiedName())) { //遍历到新的包
-                currentPackage = identifier.getParser().getCompilationUnit().getPackage().getName().getFullyQualifiedName();
+            || !currentPackage.trim().equals(packageName)) { //遍历到新的包
+                currentPackage = packageName;
                 PackageEntity packageEntity = new PackageEntity();
                 packageEntity.setPackageName(currentPackage);
                 summaryEntity.getPackageEntityList().add(packageEntity);
@@ -523,7 +527,11 @@ public class ChangeAnalyzer {
                     for (StereotypedElement element : identifier.getStereotypedElements()) {
                         String key = element.getQualifiedName();
                         if (!key.contains(".")) {
-                            key = identifier.getParser().getCompilationUnit().getPackage().getName() + "." + element.getQualifiedName();
+                            if (identifier.getParser().getCompilationUnit().getPackage() == null){
+                                key = "NonePackage" + "." + element.getQualifiedName();
+                            } else {
+                                key = identifier.getParser().getCompilationUnit().getPackage().getName() + "." + element.getQualifiedName();
+                            }
                         }
                         if (!summarized.containsKey(key) && !summarized.containsValue(identifier)) {
                             summarized.put(key, identifier);

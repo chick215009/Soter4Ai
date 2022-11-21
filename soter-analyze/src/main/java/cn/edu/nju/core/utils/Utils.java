@@ -36,7 +36,7 @@ public class Utils {
         RevCommit commit = revWalk.parseCommit(lastCommitId);
         // and using commit's tree find the path
         RevTree tree = commit.getTree();
-        System.out.println("Having tree: " + tree);
+        // System.out.println("Having tree: " + tree);
 
         // now try to find a specific file
         TreeWalk treeWalk = new TreeWalk(repository);
@@ -69,7 +69,7 @@ public class Utils {
         RevCommit commit = revWalk.parseCommit(lastCommitId);
         // and using commit's tree find the path
         RevTree tree = commit.getTree();
-        System.out.println("Having tree: " + tree);
+        // System.out.println("Having tree: " + tree);
         // now try to find a specific file
         TreeWalk treeWalk = new TreeWalk(repository);
         treeWalk.addTree(tree);
@@ -98,7 +98,7 @@ public class Utils {
         RevCommit commit = revWalk.parseCommit(lastCommitId);
         // and using commit's tree find the path
         RevTree tree = commit.getTree();
-        System.out.println("Having tree: " + tree);
+        // System.out.println("Having tree: " + tree);
 
         // now try to find a specific file
         TreeWalk treeWalk = new TreeWalk(repository);
@@ -126,11 +126,11 @@ public class Utils {
         RevCommit commit = revWalk.parseCommit(lastCommitId);
         // and using commit's tree find the path
         RevTree tree = commit.getTree();
-        System.out.println("Having tree: " + tree);
+        // System.out.println("Having tree: " + tree);
         TreeWalk treeWalk = new TreeWalk(repository);
         treeWalk.addTree(tree);
         treeWalk.setRecursive(true);
-        //treeWalk.setPostOrderTraversal(true);
+        // treeWalk.setPostOrderTraversal(true);
         treeWalk.setFilter(PathFilter.create(filePath.substring(filePath.indexOf("/") + 1)));
 
         if (!treeWalk.next()) {

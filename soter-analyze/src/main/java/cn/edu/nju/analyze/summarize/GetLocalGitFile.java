@@ -61,7 +61,7 @@ public class GetLocalGitFile {
                 summaryEntity.setCommitStereotype("INITIAL COMMIT");
             }
         }
-        System.out.println("End analyze.");
+        //System.out.println("End analyze.");
 
         return changeAnalyzer.getDescribe(summaryEntity);
     }
@@ -71,7 +71,7 @@ public class GetLocalGitFile {
 
         git.reset().setMode(ResetCommand.ResetType.HARD).setRef(shaCode).call();
         git.reset().setMode(ResetCommand.ResetType.SOFT).setRef("HEAD~1").call();
-        System.out.println("End After Version Copy.");
+        //System.out.println("End After Version Copy.");
 
         String sf = getFinalDescribe(baseProjectPath);
 
