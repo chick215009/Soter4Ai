@@ -106,7 +106,7 @@ public class SCMRepository {
 		List<String> renamedFile = new ArrayList<>();
 		for (DiffEntry de : lde) {
 			if (de.getScore() >= rd.getRenameScore()) {
-				System.out.println("file: " + de.getOldPath() + " copied/moved to: " + de.getNewPath());
+				//System.out.println("file: " + de.getOldPath() + " copied/moved to: " + de.getNewPath());
 				renamedFile.add(de.getOldPath());
 				ChangedFile changedFile = new ChangedFile(de.getNewPath(), TypeChange.MODIFIED.name(), projectPath);
 				changedFile.setRenamed(true);

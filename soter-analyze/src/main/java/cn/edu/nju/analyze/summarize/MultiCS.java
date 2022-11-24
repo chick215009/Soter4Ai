@@ -92,7 +92,7 @@ public class MultiCS extends Thread {
         int cnt = 0;
         System.out.println(repoName + " remain tasks: " + this.shaCodeLst.size());
         for (String shacode:this.shaCodeLst) {
-            System.out.println(shacode);
+            //System.out.println(shacode);
             String describes = "处理异常";
             try {
                 describes = localGit.ProjectCommitPath(shacode, "C:\\ProjectFileStore\\FileRecv\\" + prefixpath).replaceAll("[\n\r\t]", " ");

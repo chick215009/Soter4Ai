@@ -85,6 +85,7 @@ public class FileDistiller {
      */
     public void extractClassifiedSourceCodeChanges(File left, File right) {
     	extractClassifiedSourceCodeChanges(left, "default", right, "default");
+        left.delete();
     }
 
     /**
