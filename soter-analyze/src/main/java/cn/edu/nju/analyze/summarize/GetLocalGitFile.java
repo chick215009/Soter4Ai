@@ -10,6 +10,8 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.CredentialsProvider;
@@ -19,6 +21,7 @@ import org.kohsuke.github.GitHub;
 import com.squareup.okhttp.*;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -51,7 +54,7 @@ public class GetLocalGitFile {
         ChangeAnalyzer changeAnalyzer = new ChangeAnalyzer(baseProjectPath);
         boolean hasRes = changeAnalyzer.analyze();
         SummaryEntity summaryEntity = null;
-        if (!hasRes) {
+        if (!hasRes && changeAnalyzer.getOtherFiles().isEmpty()) {
             summaryEntity = new SummaryEntity();
             summaryEntity.setCommitStereotype("无明显变化");
             summaryEntity.setSimpleDescribe("无明显变化");
@@ -69,6 +72,7 @@ public class GetLocalGitFile {
     public String ProjectCommitPath(String shaCode,String baseProjectPath) throws GitAPIException, IOException {
         Git git = openRpo(baseProjectPath);
 
+
         git.reset().setMode(ResetCommand.ResetType.HARD).setRef(shaCode).call();
         git.reset().setMode(ResetCommand.ResetType.SOFT).setRef("HEAD~1").call();
         //System.out.println("End After Version Copy.");
@@ -78,6 +82,5 @@ public class GetLocalGitFile {
         System.out.println(sf);
         return sf;
     }
-
 
 }

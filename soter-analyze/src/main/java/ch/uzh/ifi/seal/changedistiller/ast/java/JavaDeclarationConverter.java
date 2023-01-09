@@ -283,6 +283,17 @@ public class JavaDeclarationConverter extends ASTVisitor {
         if (methodDeclaration.javadoc != null) {
             methodDeclaration.javadoc.traverse(this, scope);
         }
+
+        int length;
+        int i;
+        if (methodDeclaration.annotations != null) {
+            length = methodDeclaration.annotations.length;
+
+            for(i = 0; i < length; ++i) {
+                methodDeclaration.annotations[i].traverse(this, methodDeclaration.scope);
+            }
+        }
+
         fInMethodDeclaration = true;
         visitMethodDeclarationModifiers(methodDeclaration);
         visitReturnType(methodDeclaration, scope);
@@ -361,6 +372,16 @@ public class JavaDeclarationConverter extends ASTVisitor {
     }
 
     public void endVisit(MarkerAnnotation type,BlockScope scope){
+        pop();
+    }
+
+    @Override
+    public boolean visit(NormalAnnotation type,BlockScope scope){
+        push(fASTHelper.convertNode(type), String.valueOf(type.toString()), type.sourceStart(), type.sourceEnd());
+        return false;
+    }
+
+    public void endVisit(NormalAnnotation type,BlockScope scope){
         pop();
     }
 

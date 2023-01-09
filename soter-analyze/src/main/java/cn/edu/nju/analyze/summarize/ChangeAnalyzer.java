@@ -30,7 +30,10 @@ import org.eclipse.jgit.api.CheckoutCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.diff.DiffFormatter;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -194,6 +197,30 @@ public class ChangeAnalyzer {
 
         if (summaryEntity.getPackageEntityList().size() > 0) {
             des.append("ChangeScribeStart \n");
+        }
+
+        if (!otherFiles.isEmpty()){//直接输出非java文件的diff
+            List<DiffEntry> diffs = null;
+            try {
+                diffs = git.diff().setCached(true).call();
+
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                DiffFormatter df = new DiffFormatter(out);
+                df.setRepository(git.getRepository());
+
+                for (DiffEntry diffEntry : diffs) {
+                    for (ChangedFile cf : otherFiles){
+                        if (diffEntry.getNewPath().equals(cf.getPath()) || diffEntry.getOldPath().equals(cf.getPath())){
+                            df.format(diffEntry);
+                            des.append("Here are some none java files diff: \n");
+                            des.append(out);
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                System.err.println(e);
+            }
         }
 
         if (!typesProblem.isEmpty()){
