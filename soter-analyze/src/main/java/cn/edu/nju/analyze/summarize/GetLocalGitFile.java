@@ -54,7 +54,7 @@ public class GetLocalGitFile {
         ChangeAnalyzer changeAnalyzer = new ChangeAnalyzer(baseProjectPath);
         boolean hasRes = changeAnalyzer.analyze();
         SummaryEntity summaryEntity = null;
-        if (!hasRes && changeAnalyzer.getOtherFiles().isEmpty()) {
+        if (!hasRes && changeAnalyzer.getOtherFiles().isEmpty() && changeAnalyzer.getTypesProblem().isEmpty()) {
             summaryEntity = new SummaryEntity();
             summaryEntity.setCommitStereotype("无明显变化");
             summaryEntity.setSimpleDescribe("无明显变化");
