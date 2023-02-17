@@ -86,7 +86,8 @@ public class JavaASTHelper implements ASTHelper<JavaStructureNode> {
     }
 
     private void prepareComments() {
-        cleanComments(collectComments());
+        fComments = collectComments();
+        //cleanComments(collectComments());
     }
 
     private void cleanComments(List<Comment> comments) {

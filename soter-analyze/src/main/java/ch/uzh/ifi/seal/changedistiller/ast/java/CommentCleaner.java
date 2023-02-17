@@ -107,9 +107,9 @@ public class CommentCleaner {
      *            to process
      */
     public void process(Comment comment) {
-        if (comment.isJavadocComment()) {
-            return;
-        }
+        //if (comment.isJavadocComment()) {
+        //    return;
+        //}
         fCommentsCount++;
         joinAndStoreConsecutiveLineComments(comment);
     }

@@ -144,6 +144,10 @@ public class JavaSourceCodeChangeClassifier implements SourceCodeChangeClassifie
                 result = handleInheritanceChange(insert);
             }
         }
+
+        if (result == null){
+            return insert;
+        }
         return result;
     }
 
@@ -659,6 +663,10 @@ public class JavaSourceCodeChangeClassifier implements SourceCodeChangeClassifie
                 result = handleInheritanceChange(delete);
             }
         }
+
+        if (result == null){
+            return delete;
+        }
         return result;
     }
 
@@ -853,6 +861,10 @@ public class JavaSourceCodeChangeClassifier implements SourceCodeChangeClassifie
                 result = handleNormalMove(move);
             }
         }
+
+        if (result == null){//兜底策略
+            return move;
+        }
         return result;
     }
 
@@ -920,6 +932,10 @@ public class JavaSourceCodeChangeClassifier implements SourceCodeChangeClassifie
             if (result == null) {
                 result = handleFieldDeclarationChange(update);
             }
+        }
+
+        if (result == null){
+            return update;
         }
         return result;
     }

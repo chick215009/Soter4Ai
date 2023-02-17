@@ -24,6 +24,7 @@ import ch.uzh.ifi.seal.changedistiller.ast.java.Comment;
 import ch.uzh.ifi.seal.changedistiller.ast.java.JavaASTHelper;
 import ch.uzh.ifi.seal.changedistiller.model.classifiers.SourceRange;
 import ch.uzh.ifi.seal.changedistiller.structuredifferencing.java.JavaStructureNode;
+import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -206,6 +207,12 @@ public class StructureDifferencer {
         if ((left.getContent() == null) && (right.getContent() == null)) {
             return true;
         }
+//        try {
+//        System.out.println(IOUtils.toString(getStream(left)));
+//        System.out.println(IOUtils.toString(getStream(right)));}
+//        catch (Exception e){
+//
+//        }
         StringReader leftContent = getStream(left);
         StringReader rightContent = getStream(right);
         try {

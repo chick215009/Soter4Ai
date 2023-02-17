@@ -651,7 +651,8 @@ public class ModificationDescriptor {
         } else if (update.getChangeType() == ChangeType.ANNOTATION_CHANGE) {
             desc.append("Update annotation " + update.getChangedEntity().getUniqueName() + " at " + update.getRootEntity().getType().toString() + " " + update.getRootEntity().getUniqueName().substring(update.getRootEntity().getUniqueName().lastIndexOf(".") + 1));
         } else {
-            desc.append(" The Case Has some problem. TAGUPDATEDES");
+            desc.append("TAGUPDATEDES ");
+            desc.append("Update change field from " + update.getChangedEntity().getUniqueName() + " to " + update.getNewEntity().getUniqueName() + " at " + update.getRootEntity().getUniqueName().substring(update.getRootEntity().getUniqueName().lastIndexOf(".") + 1));
         }
 
     }

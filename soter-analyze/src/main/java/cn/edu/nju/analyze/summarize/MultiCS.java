@@ -96,7 +96,7 @@ public class MultiCS extends Thread {
             String describes = "处理异常";
             try {
                 describes = localGit.ProjectCommitPath(shacode, "C:\\ProjectFileStore\\FileRecv\\" + prefixpath).replaceAll("[\n\r\t]", " ");
-                if (describes.split("[\n\r\t]+").length > 500){
+                if (describes.split("[\n\r\t ]+").length > 500){
                     describes = "输出超长";
                 }
             } catch (Exception e) {

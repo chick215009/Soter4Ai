@@ -385,6 +385,16 @@ public class JavaDeclarationConverter extends ASTVisitor {
         pop();
     }
 
+    @Override
+    public boolean visit(SingleMemberAnnotation type,BlockScope scope){
+        push(fASTHelper.convertNode(type), String.valueOf(type.toString()), type.sourceStart(), type.sourceEnd());
+        return false;
+    }
+
+    public void endVisit(SingleMemberAnnotation type,BlockScope scope){
+        pop();
+    }
+
     private void adjustEndPositionOfParameterizedType(ParameterizedQualifiedTypeReference type) {
         if (hasTypeParameter(type)) {
             visitList(JavaEntityType.TYPE_PARAMETERS, type.typeArguments[type.typeArguments.length - 1]);

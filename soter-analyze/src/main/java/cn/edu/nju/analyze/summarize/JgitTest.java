@@ -27,8 +27,16 @@ public class JgitTest {
 
         //localGit.ProjectCommitPath("ea29affc21b3b71751accdcb9754614250adfb72","C:\\ProjectFileStore\\FileRecv\\Android-CleanArchitecture").replaceAll("\n"," ");
         //System.out.println(srr);
-        localGit.ProjectCommitPath("9570068484655f8b1b60e1fc013fda7d0137211e","C:\\ProjectFileStore\\FileRecv\\interviews").replaceAll("\n"," ");
+        //String describes = localGit.ProjectCommitPath("e24a75c2bcf1a05990e0cadf1efb6ed65874d3bc","C:\\ProjectFileStore\\FileRecv\\nacos").replaceAll("[\n\r\t]"," ");
+        String describes = localGit.ProjectCommitPath("355ed11a3cd6d90eb02d9f773a546561884324b3","C:\\ProjectFileStore\\FileRecv\\ExoPlayer").replaceAll("[\n\r\t]"," ");
 
+        //String describes = localGit.ProjectCommitPath("9e9e450211681a0ac7d9c4c3200dd19327362494","C:\\ProjectFileStore\\FileRecv\\spring-boot").replaceAll("[\n\r\t]"," ");
+        System.out.println(describes.split("[\n\r\t ]+").length);
+
+        if (describes.split("[\n\r\t ]+").length > 500){
+            describes = "输出超长";
+        }
+        System.out.println(describes);
         //localGit.ProjectCommitPath("a3899891281a9040912cd1a904d68487587e8512","C:\\ProjectFileStore\\FileRecv\\QMUI_Android").replaceAll("\n"," ");
         //localGit.ProjectCommitPath("35e130207d3944c856a62a20e8eef7f5a7171bb0","C:\\ProjectFileStore\\FileRecv\\apollo").replaceAll("\n"," ");
         //localGit.ProjectCommitPath("6b29f2d736eb9320469f59e3b4318bc260a061a8","C:\\ProjectFileStore\\FileRecv\\dbeaver").replaceAll("\n"," ");
