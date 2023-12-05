@@ -524,6 +524,16 @@ public class JavaDeclarationConverter extends ASTVisitor {
             }
         }
 
+        if (typeDeclaration.fields != null) {
+            length = typeDeclaration.fields.length;
+
+            for(i = 0; i < length; ++i) {
+                if (typeDeclaration.fields[i] instanceof Initializer){
+                    typeDeclaration.fields[i].traverse(this, typeDeclaration.staticInitializerScope);
+                }
+            }
+        }
+
 //        if (typeDeclaration.typeParameters != null) {
 //            length = typeDeclaration.typeParameters.length;
 //

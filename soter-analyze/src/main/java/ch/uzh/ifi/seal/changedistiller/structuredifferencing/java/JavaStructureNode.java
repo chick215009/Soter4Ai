@@ -139,6 +139,12 @@ public class JavaStructureNode implements StructureNode {
             if ((fASTNode.bits & 512) == 0) {
                 ((TypeDeclaration)fASTNode).printHeader(0, output);
             }
+
+            for (FieldDeclaration field:((TypeDeclaration) fASTNode).fields){
+                if (field instanceof Initializer){
+                    field.printStatement(0,output);
+                }
+            }
             return output.toString();
         }
 

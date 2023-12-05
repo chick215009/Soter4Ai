@@ -105,24 +105,26 @@ public class ModificationDescriptor {
                 StringBuilder descTmp = new StringBuilder(Constants.EMPTY_STRING);
                 if(change instanceof Update) {
                     Update update = (Update) change;
-                    if(isStructuralChange(update.getChangeType())) {
-                        describeUpdate(descTmp, change, update);
-                    }
+                    //if(isStructuralChange(update.getChangeType())) {
+                    describeUpdate(descTmp, change, update);
+                    //}
 
                 } else if(change instanceof Insert) {
                     Insert insert = (Insert) change;
-                    if(isStructuralChange(insert.getChangeType())) {
-                        describeInsert(descTmp, insert);
-                    }
+                    //if(isStructuralChange(insert.getChangeType())) {
+                    describeInsert(descTmp, insert);
+                    //}
                 } else if(change instanceof Delete) {
                     Delete delete = (Delete) change;
-                    if(isStructuralChange(delete.getChangeType())) {
-                        describeDelete(descTmp, delete);
-                    }
+                    //if(isStructuralChange(delete.getChangeType())) {
+                    describeDelete(descTmp, delete);
+                    //}
                 } else if(change instanceof Move) {
+                    Move move = (Move) change;
+                    describeMove(descTmp,move);
                 }
 
-                if(!descTmp.toString().equals(Constants.EMPTY_STRING) && (change instanceof Update || change instanceof Insert || change instanceof Delete)) {
+                if(!descTmp.toString().equals(Constants.EMPTY_STRING) && (change instanceof Update || change instanceof Insert || change instanceof Delete || change instanceof Move)) {
 
                     if(!localDescription.toString().toLowerCase().contains(descTmp.toString().toLowerCase())) {
                         desc.append(Constants.TAB);
@@ -130,7 +132,7 @@ public class ModificationDescriptor {
                         desc.append(descTmp.toString());
                         localDescription.append(descTmp.toString());
 
-                        if(!descTmp.toString().equals(Constants.EMPTY_STRING) && (change instanceof Update || change instanceof Insert || change instanceof Delete)) {
+                        if(!descTmp.toString().equals(Constants.EMPTY_STRING) && (change instanceof Update || change instanceof Insert || change instanceof Delete || change instanceof Move)) {
                             desc.append(Constants.NEW_LINE);
                         }
                     }
@@ -169,24 +171,26 @@ public class ModificationDescriptor {
                     StringBuilder descTmp = new StringBuilder(Constants.EMPTY_STRING);
                     if(change instanceof Update) {
                         Update update = (Update) change;
-                        if(isStructuralChange(update.getChangeType())) {
-                            describeUpdate(descTmp, change, update);
-                        }
+                        //if(isStructuralChange(update.getChangeType())) {
+                        describeUpdate(descTmp, change, update);
+                        //}
 
                     } else if(change instanceof Insert) {
                         Insert insert = (Insert) change;
-                        if(isStructuralChange(insert.getChangeType())) {
-                            describeInsert(descTmp, insert);
-                        }
+                        //if(isStructuralChange(insert.getChangeType())) {
+                        describeInsert(descTmp, insert);
+                        //}
                     } else if(change instanceof Delete) {
                         Delete delete = (Delete) change;
-                        if(isStructuralChange(delete.getChangeType())) {
-                            describeDelete(descTmp, delete);
-                        }
+                        //if(isStructuralChange(delete.getChangeType())) {
+                        describeDelete(descTmp, delete);
+                        //}
                     } else if(change instanceof Move) {
+                        Move move = (Move) change;
+                        describeMove(descTmp,move);
                     }
 
-                    if(!descTmp.toString().equals(Constants.EMPTY_STRING) && (change instanceof Update || change instanceof Insert || change instanceof Delete)) {
+                    if(!descTmp.toString().equals(Constants.EMPTY_STRING) && (change instanceof Update || change instanceof Insert || change instanceof Delete || change instanceof Move)) {
 
                         if(!localDescription.toString().toLowerCase().contains(descTmp.toString().toLowerCase())) {
                             desc.append(Constants.TAB);
@@ -194,7 +198,7 @@ public class ModificationDescriptor {
                             desc.append(descTmp.toString());
                             localDescription.append(descTmp.toString());
 
-                            if(!descTmp.toString().equals(Constants.EMPTY_STRING) && (change instanceof Update || change instanceof Insert || change instanceof Delete)) {
+                            if(!descTmp.toString().equals(Constants.EMPTY_STRING) && (change instanceof Update || change instanceof Insert || change instanceof Delete || change instanceof Move)) {
                                 desc.append(Constants.NEW_LINE);
                             }
                         } else {
@@ -413,9 +417,21 @@ public class ModificationDescriptor {
         }
     }
 
+    public void describeMove(StringBuilder desc, Move move) throws IOException, ClassNotFoundException{
+        if (move.getChangeType() == ChangeType.STATEMENT_ORDERING_CHANGE){
+            desc.append("Move ");
+            desc.append(move.getChangedEntity().getUniqueName() + " statement ordering in ");
+            desc.append(move.getRootEntity().getUniqueName().substring(move.getRootEntity().getUniqueName().lastIndexOf(".") + 1) + " " + move.getRootEntity().getType().name() + " ");
+        } else {
+            desc.append("Move ");
+            desc.append(move.getChangedEntity().getUniqueName() + " in ");
+            desc.append(move.getRootEntity().getUniqueName().substring(move.getRootEntity().getUniqueName().lastIndexOf(".") + 1) + " " + move.getRootEntity().getType().name() + " ");
+        }
+    }
+
     private boolean isStructuralChange(ChangeType changeType) {
         boolean isStructural = true;
-        if(isOnlyStructuralChanges()) {
+        if(isOnlyStructuralChanges()) { // 永远false？
 //            System.out.println("CHANGE TYPE: " + changeType.toString() + " ISSTRUCTURAL: " + changeType.isBodyChange());
             if(!changeType.isBodyChange()) {
                 isStructural = false;
