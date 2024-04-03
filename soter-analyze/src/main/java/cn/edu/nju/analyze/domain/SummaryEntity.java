@@ -16,6 +16,8 @@ public class SummaryEntity {
     private List<String> properties;
     private String commitStereotype;
     private String methodStatisticJson;
+    public List<String> methodName;
+    public List<String> className;
 
     private Integer fileNum;
     private Integer addNum;
@@ -32,6 +34,8 @@ public class SummaryEntity {
         this.properties = new ArrayList<>();
         this.commitStereotype = "";
         this.methodStatisticJson = "";
+        this.methodName = new ArrayList<>();
+        this.className = new ArrayList<>();
         fileNum = 0;
         addNum = 0;
         removeNum = 0;

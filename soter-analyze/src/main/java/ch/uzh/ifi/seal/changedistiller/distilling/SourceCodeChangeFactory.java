@@ -111,6 +111,9 @@ public class SourceCodeChangeFactory {
     }
 
     private boolean isUsableForChangeExtraction(Node node) {
+        if (node == null || node.getLabel() == null){
+            return false;
+        }
         return node.getLabel().isUsableForChangeExtraction();
     }
 

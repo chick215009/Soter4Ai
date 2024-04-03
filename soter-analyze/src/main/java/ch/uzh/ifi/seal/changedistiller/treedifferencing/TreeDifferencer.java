@@ -138,7 +138,7 @@ public class TreeDifferencer {
 
                 // ii. If v(w) != v(x)
                 boolean equals = true;
-                if (l(w).isComment()) {
+                if (l(w) != null && l(w).isComment()) {
                     TokenBasedCalculator tbc = new TokenBasedCalculator();
                     double sim = tbc.calculateSimilarity(v(w), v(x));
                     equals = sim == 1.0;

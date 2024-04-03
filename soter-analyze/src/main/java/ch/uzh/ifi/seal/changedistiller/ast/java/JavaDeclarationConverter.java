@@ -89,12 +89,18 @@ public class JavaDeclarationConverter extends ASTVisitor {
 
     @Override
     public boolean visit(Argument node, BlockScope scope) {
-        boolean isNotParam = getCurrentParent().getLabel() != JavaEntityType.PARAMETERS;
+        boolean isNotParam = false;
+        if (getCurrentParent() != null && getCurrentParent().getLabel() != JavaEntityType.PARAMETERS){
+            isNotParam = true;
+        }
+        //boolean isNotParam = getCurrentParent().getLabel() != JavaEntityType.PARAMETERS;
         pushValuedNode(node, String.valueOf(node.name));
         if (isNotParam) {
             visitModifiers(node.modifiers);
         }
-        node.type.traverse(this, scope);
+        if (node.type != null) {
+            node.type.traverse(this, scope);
+        }
         return false;
     }
 
@@ -692,15 +698,21 @@ public class JavaDeclarationConverter extends ASTVisitor {
     private void push(EntityType label, String value, int start, int end) {
         Node n = new Node(label, value.trim());
         n.setEntity(new SourceCodeEntity(value.trim(), label, new SourceRange(start, end)));
-        getCurrentParent().add(n);
+        if (getCurrentParent() != null) {
+            getCurrentParent().add(n);
+        }
         fNodeStack.push(n);
     }
 
     private void pop() {
+        if (fNodeStack.isEmpty())
+            return;
         fNodeStack.pop();
     }
 
     private Node getCurrentParent() {
+        if (fNodeStack.isEmpty())
+            return null;
         return fNodeStack.peek();
     }
 

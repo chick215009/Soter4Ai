@@ -152,8 +152,10 @@ public class BestLeafTreeMatcher implements TreeMatcher {
                     Node y = (Node) rightNodes.nextElement();
                     if (y.isLeaf() && haveSameLabel(x, y)) {
                         double similarity = 0;
+//                        System.out.println(x.getValue());
+//                        System.out.println(x.getLabel());
 
-                        if (x.getLabel().isComment()) {
+                        if (x.getLabel() != null && x.getLabel().isComment()) {
                             similarity =
                                     fLeafCommentStringSimilarityCalculator.calculateSimilarity(
                                             x.getValue(),

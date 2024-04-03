@@ -59,6 +59,8 @@ public class FileDistiller {
 
     private List<SourceCodeChange> fChanges;
     private List<HeadChange> fHeadChanges;
+    public List<String> methodName;
+    public List<String> className;
     private ASTHelper<StructureNode> fLeftASTHelper;
     private ASTHelper<StructureNode> fRightASTHelper;
     private ClassHistory fClassHistory;
@@ -122,6 +124,8 @@ public class FileDistiller {
 
         extractHeadDiff(fLeftASTHelper.createStructureTree(), fRightASTHelper.createStructureTree());
         StructureDiffNode structureDiff = structureDifferencer.getDifferences();//找到不相同的节点
+        this.methodName = structureDifferencer.methodName;
+        this.className = structureDifferencer.className;
         if (structureDiff != null) {
         	fChanges = new LinkedList<SourceCodeChange>();
             // first node is (usually) the compilation unit

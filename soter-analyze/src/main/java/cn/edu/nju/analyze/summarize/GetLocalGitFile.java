@@ -12,6 +12,7 @@ import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
+import org.eclipse.jgit.lib.Config;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.CredentialsProvider;
@@ -50,7 +51,7 @@ public class GetLocalGitFile {
         return git;
     }
 
-    public String getFinalDescribe(String baseProjectPath){
+    public String getFinalDescribe(String baseProjectPath,List<String> methodName,List<String> className){
         ChangeAnalyzer changeAnalyzer = new ChangeAnalyzer(baseProjectPath);
         boolean hasRes = changeAnalyzer.analyze();
         SummaryEntity summaryEntity = null;
@@ -64,12 +65,14 @@ public class GetLocalGitFile {
                 summaryEntity.setCommitStereotype("INITIAL COMMIT");
             }
         }
+        methodName.addAll(summaryEntity.methodName);
+        className.addAll(summaryEntity.className);
         //System.out.println("End analyze.");
 
         return changeAnalyzer.getDescribe(summaryEntity);
     }
 
-    public String ProjectCommitPath(String shaCode,String baseProjectPath) throws GitAPIException, IOException {
+    public String ProjectCommitPath(String shaCode,String baseProjectPath,List<String> methodName,List<String> className) throws GitAPIException, IOException {
         Git git = openRpo(baseProjectPath);
 
 
@@ -77,9 +80,9 @@ public class GetLocalGitFile {
         git.reset().setMode(ResetCommand.ResetType.SOFT).setRef("HEAD~1").call();
         //System.out.println("End After Version Copy.");
 
-        String sf = getFinalDescribe(baseProjectPath);
+        String sf = getFinalDescribe(baseProjectPath,methodName,className);
 
-        System.out.println(sf);
+        //System.out.println(sf);
         return sf;
     }
 

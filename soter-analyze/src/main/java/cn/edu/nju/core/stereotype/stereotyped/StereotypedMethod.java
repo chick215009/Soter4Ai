@@ -332,7 +332,7 @@ public class StereotypedMethod extends MethodStereotypeRules implements
 			namepiece.add(((TypeDeclaration)tmp).getName().toString());
 			tmp = tmp.getParent();
 		}
-		if (tmp instanceof CompilationUnit) {
+		if (tmp instanceof CompilationUnit && ((CompilationUnit) tmp).getPackage() != null && ((CompilationUnit) tmp).getPackage().getName() != null) {
 			namepiece.add(((CompilationUnit) tmp).getPackage().getName().getFullyQualifiedName());
 		}
 		return namepiece;

@@ -814,6 +814,8 @@ public class JavaMethodBodyConverter extends ASTVisitor {
     }
 
     private void visitNodes(ASTNode[] nodes, BlockScope scope) {
+        if (nodes == null)
+            return;
         for (ASTNode element : nodes) {
             element.traverse(this, scope);
         }

@@ -140,9 +140,11 @@ public class JavaStructureNode implements StructureNode {
                 ((TypeDeclaration)fASTNode).printHeader(0, output);
             }
 
-            for (FieldDeclaration field:((TypeDeclaration) fASTNode).fields){
-                if (field instanceof Initializer){
-                    field.printStatement(0,output);
+            if (((TypeDeclaration) fASTNode).fields != null){
+                for (FieldDeclaration field:((TypeDeclaration) fASTNode).fields){
+                    if (field instanceof Initializer){
+                        field.printStatement(0,output);
+                    }
                 }
             }
             return output.toString();

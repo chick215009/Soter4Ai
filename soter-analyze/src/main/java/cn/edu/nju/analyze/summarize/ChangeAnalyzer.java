@@ -199,29 +199,29 @@ public class ChangeAnalyzer {
             des.append("ChangeScribeStart \n");
         }
 
-        if (!otherFiles.isEmpty()){//直接输出非java文件的diff
-            List<DiffEntry> diffs = null;
-            try {
-                diffs = git.diff().setCached(true).call();
-
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                DiffFormatter df = new DiffFormatter(out);
-                df.setRepository(git.getRepository());
-
-                for (DiffEntry diffEntry : diffs) {
-                    for (ChangedFile cf : otherFiles){
-                        if (diffEntry.getNewPath().equals(cf.getPath()) || diffEntry.getOldPath().equals(cf.getPath())){
-                            df.format(diffEntry);
-                            des.append("Here are some none java files diff: \n");
-                            des.append(out);
-                        }
-                    }
-                }
-
-            } catch (Exception e) {
-                System.err.println(e);
-            }
-        }
+//        if (!otherFiles.isEmpty()){//直接输出非java文件的diff
+//            List<DiffEntry> diffs = null;
+//            try {
+//                diffs = git.diff().setCached(true).call();
+//
+//                ByteArrayOutputStream out = new ByteArrayOutputStream();
+//                DiffFormatter df = new DiffFormatter(out);
+//                df.setRepository(git.getRepository());
+//
+//                for (DiffEntry diffEntry : diffs) {
+//                    for (ChangedFile cf : otherFiles){
+//                        if (diffEntry.getNewPath().equals(cf.getPath()) || diffEntry.getOldPath().equals(cf.getPath())){
+//                            df.format(diffEntry);
+//                            des.append("Here are some none java files diff: \n");
+//                            des.append(out);
+//                        }
+//                    }
+//                }
+//
+//            } catch (Exception e) {
+//                System.err.println(e);
+//            }
+//        }
 
         if (!typesProblem.isEmpty()){
             for (StereotypeIdentifier Si:typesProblem){
@@ -237,6 +237,7 @@ public class ChangeAnalyzer {
             int j = 1;
             for (FileEntity fileEntity : packageEntity.getFileEntityList()) {
                 StringBuilder fileDes = new StringBuilder();
+//                fileDes.append(" |%| ");
                 //fileDes.append(i + "." + j + ". ");
                 if (fileEntity.getOperation().equals(ChangedFile.TypeChange.MODIFIED.name())) {
                     fileDes.append("Modifications to " + fileEntity.getFileName() + "\n");
@@ -279,9 +280,9 @@ public class ChangeAnalyzer {
                         }
 
                     }
-
                     fileDes.append(typeDes);
                 }
+//                fileDes.append(" |%%| ");
                 packageDes.append(fileDes);
                 j++;
             }
@@ -442,6 +443,8 @@ public class ChangeAnalyzer {
                 modificationDescriptor.extractDifferences(identifier.getChangedFile(), git);//获得该文件changes
                 modificationDescriptor.extractModifiedMethods();//获取发生变化的函数
                 String describe = modificationDescriptor.describe();//字符串结果 核心
+                summaryEntity.className.addAll(modificationDescriptor.className);
+                summaryEntity.methodName.addAll(modificationDescriptor.methodName);
                 fileEntity.setChangeDescribe(describe);
                 String absolutePath = identifier.getChangedFile().getAbsolutePath();
                 fileEntity.setAbsolutePath(absolutePath);
