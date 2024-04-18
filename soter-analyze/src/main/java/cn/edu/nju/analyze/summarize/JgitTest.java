@@ -30,9 +30,10 @@ public class JgitTest {
         //localGit.ProjectCommitPath("222ad01fbbcc2b92a1eb2506a049cd19d4fd3685","/home/cuiyunqi/repo/WordPress-Android").replaceAll("\n"," ");
         //localGit.ProjectCommitPath("a44131af5cfd21e180be0805e07c1416e62a6e6f","F:\\codisumrepo\\Activiti").replaceAll("[\n\r\t]"," ");
         //System.out.println(srr);
-//        String describes = localGit.ProjectCommitPath("f47634edfe08fcebbf564a5df12a0a96906032c3","F:\\codisumrepo\\platform_frameworks_base",methodName,className).replaceAll("[\n\r\t]"," ");
+//        String describes = localGit.ProjectCommitPath("b4be2e0d3bbe4f7d2885f00be6c017921ca46d8f","F:\\codisumrepo\\grails-core",methodName,className).replaceAll("[\n\r\t]"," ");
 //        System.out.println(methodName);
 //        System.out.println(className);
+//        System.out.println(describes);
 //        String describes = localGit.ProjectCommitPath("ed09d345effc459aa7e3dab3061a4150079b906e","F:\\FileRecv\\apollo").replaceAll("[\n\r\t]"," ");
 //
 //        //String describes = localGit.ProjectCommitPath("9e9e450211681a0ac7d9c4c3200dd19327362494","F:\\FileRecv\\spring-boot").replaceAll("[\n\r\t]"," ");
@@ -146,7 +147,7 @@ public class JgitTest {
         Executor executors2= Executors.newFixedThreadPool(12);
 
         for (Map.Entry<String, List<String>> entry: mpLst){
-            executors2.execute(new MultiCS(entry.getKey(),entry.getValue(),"F:\\output7\\"));
+            executors2.execute(new MultiCS(entry.getKey(),entry.getValue(),"F:\\output8\\"));
             //executors2.execute(new MultiCS(entry.getKey(),entry.getValue(),"/home/cuiyunqi/output/"));
         }
 

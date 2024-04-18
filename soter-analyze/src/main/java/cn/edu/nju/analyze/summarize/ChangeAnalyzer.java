@@ -225,7 +225,7 @@ public class ChangeAnalyzer {
 
         if (!typesProblem.isEmpty()){
             for (StereotypeIdentifier Si:typesProblem){
-                des.append(Si.getChangedFile().getChangeType() + " a almost empty file " + Si.getChangedFile().getName() + " with zero ast node ");
+                des.append(Si.getChangedFile().getChangeType() + " a almost empty file " + Si.getChangedFile().getName() + " with zero ast node  ");
             }
         }
 

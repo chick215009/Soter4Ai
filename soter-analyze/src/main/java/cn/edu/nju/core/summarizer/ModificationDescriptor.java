@@ -610,8 +610,8 @@ public class ModificationDescriptor {
                 } else {
                     name = update.getChangedEntity().getName();
                 }
-                desc.append(StringUtils.capitalize(fType) + " " + name);
-                desc.append(update.getChangedEntity().getUniqueName());
+                desc.append(StringUtils.capitalize(fType) + " " + name + " ");
+                desc.append(update.getChangedEntity().getUniqueName() + " to " + update.getNewEntity().getUniqueName());
                 if(!update.getParentEntity().getName().equals(Constants.EMPTY_STRING)) {
                     desc.append(" at " + getParentEntityName(update)  + " method");
                 }
