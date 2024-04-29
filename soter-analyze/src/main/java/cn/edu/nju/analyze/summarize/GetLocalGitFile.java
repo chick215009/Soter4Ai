@@ -51,7 +51,7 @@ public class GetLocalGitFile {
         return git;
     }
 
-    public String getFinalDescribe(String baseProjectPath,List<String> methodName,List<String> className){
+    public String getFinalDescribe(String baseProjectPath,List<String> methodName,List<String> className,List<String> fieldName){
         ChangeAnalyzer changeAnalyzer = new ChangeAnalyzer(baseProjectPath);
         boolean hasRes = changeAnalyzer.analyze();
         SummaryEntity summaryEntity = null;
@@ -67,12 +67,13 @@ public class GetLocalGitFile {
         }
         methodName.addAll(summaryEntity.methodName);
         className.addAll(summaryEntity.className);
+        fieldName.addAll(summaryEntity.fieldName);
         //System.out.println("End analyze.");
 
         return changeAnalyzer.getDescribe(summaryEntity);
     }
 
-    public String ProjectCommitPath(String shaCode,String baseProjectPath,List<String> methodName,List<String> className) throws GitAPIException, IOException {
+    public String ProjectCommitPath(String shaCode,String baseProjectPath,List<String> methodName,List<String> className,List<String> fieldName) throws GitAPIException, IOException {
         Git git = openRpo(baseProjectPath);
 
 
@@ -80,7 +81,7 @@ public class GetLocalGitFile {
         git.reset().setMode(ResetCommand.ResetType.SOFT).setRef("HEAD~1").call();
         //System.out.println("End After Version Copy.");
 
-        String sf = getFinalDescribe(baseProjectPath,methodName,className);
+        String sf = getFinalDescribe(baseProjectPath,methodName,className,fieldName);
 
         //System.out.println(sf);
         return sf;

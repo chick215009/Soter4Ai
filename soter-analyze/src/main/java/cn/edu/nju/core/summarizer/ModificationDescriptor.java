@@ -36,10 +36,7 @@ import org.eclipse.jgit.errors.RevisionSyntaxException;
 import javax.rmi.CORBA.Util;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ModificationDescriptor {
 
@@ -47,11 +44,15 @@ public class ModificationDescriptor {
     private List<HeadChange> HeadChanges;
     public List<String> methodName;
     public List<String> className;
+    public List<String> fieldName;
     private ChangedFile file;
     private Git git;
     private ChangedFile[] differences;
     private List<SourceCodeChange> addedRemovedFunctionalities;
     private boolean onlyStructuralChanges = false;
+
+    private Map<CmDescription,List<String>> classDesMap;
+    private Map<CmDescription,List<String>> methodDesMap;
 
 
     public void extractDifferences(ChangedFile file, Git git) {
@@ -65,6 +66,7 @@ public class ModificationDescriptor {
         HeadChanges = distiller.getfHeadChanges();
         methodName = distiller.methodName;
         className = distiller.className;
+        fieldName = distiller.fieldName;
     }
 
     public void extractDifferencesBetweenVersions(ChangedFile file, Git git, String olderID, String currentID) {
@@ -78,6 +80,7 @@ public class ModificationDescriptor {
         HeadChanges = distiller.getfHeadChanges();
         methodName = distiller.methodName;
         className = distiller.className;
+        fieldName = distiller.fieldName;
     }
 
     public void extractModifiedMethods() {
@@ -105,6 +108,22 @@ public class ModificationDescriptor {
     public void describe(int i, int j, StringBuilder desc, List<TypeDescribe> types) throws IOException, ClassNotFoundException {
         StringBuilder localDescription = new StringBuilder(Constants.EMPTY_STRING);
         addedRemovedFunctionalities = new ArrayList<SourceCodeChange>();
+//        methodDesMap = new TreeMap<>(new Comparator<CmDescription>(){
+//
+//            @Override
+//            public int compare(CmDescription o1, CmDescription o2) {
+//                return Integer.compare(o1.rangeLEnd, o2.rangeLEnd);
+//            }
+//        });
+//
+//        classDesMap = new TreeMap<>(new Comparator<CmDescription>(){
+//
+//            @Override
+//            public int compare(CmDescription o1, CmDescription o2) {
+//                return Integer.compare(o1.rangeLEnd, o2.rangeLEnd);
+//            }
+//        });
+
         if(changes != null) {
             for(SourceCodeChange change : changes) {
 
@@ -156,12 +175,35 @@ public class ModificationDescriptor {
                 }
                 desc.append(Constants.NEW_LINE);
             }
+
+            for (Map.Entry<CmDescription,List<String>> entry : methodDesMap.entrySet()){
+                desc.append("Change in " + entry.getKey().getDescription() + ": ");
+                desc.append(Constants.NEW_LINE);
+                for (String sdes:entry.getValue()){
+                    desc.append(sdes);
+                    desc.append(Constants.NEW_LINE);
+                }
+            }
         }
     }
 
     public String describe() {
         StringBuilder desc = new StringBuilder();
         try{
+
+            methodDesMap = new TreeMap<>(new Comparator<CmDescription>(){
+                @Override
+                public int compare(CmDescription o1, CmDescription o2) {
+                    return Integer.compare(o1.rangeLEnd, o2.rangeLEnd);
+                }
+            });
+
+            classDesMap = new TreeMap<>(new Comparator<CmDescription>(){
+                @Override
+                public int compare(CmDescription o1, CmDescription o2) {
+                    return Integer.compare(o1.rangeLEnd, o2.rangeLEnd);
+                }
+            });
             StringBuilder localDescription = new StringBuilder(Constants.EMPTY_STRING);
 
             if (HeadChanges.size() != 0){
@@ -196,32 +238,48 @@ public class ModificationDescriptor {
                         describeMove(descTmp,move);
                     }
 
+                    CmDescription changedes = getRootDescription(change);
+                    if (!methodDesMap.containsKey(changedes)){
+                        methodDesMap.put(changedes,new ArrayList<>());
+                    }
+
+
+
                     if(!descTmp.toString().equals(Constants.EMPTY_STRING) && (change instanceof Update || change instanceof Insert || change instanceof Delete || change instanceof Move)) {
-
-                        if(!localDescription.toString().toLowerCase().contains(descTmp.toString().toLowerCase())) {
-                            desc.append(Constants.TAB);
-
-                            desc.append(descTmp.toString());
-                            localDescription.append(descTmp.toString());
-
-                            if(!descTmp.toString().equals(Constants.EMPTY_STRING) && (change instanceof Update || change instanceof Insert || change instanceof Delete || change instanceof Move)) {
-                                desc.append(Constants.NEW_LINE);
-                            }
-                        } else {
-                            desc.append(" +1 ");//应对重载
-                        }
+                        methodDesMap.get(changedes).add(descTmp.toString());
+//                        if(!localDescription.toString().toLowerCase().contains(descTmp.toString().toLowerCase())) {
+//                            desc.append(Constants.TAB);
+//
+//                            desc.append(descTmp.toString());
+//                            localDescription.append(descTmp.toString());
+//
+//                            if(!descTmp.toString().equals(Constants.EMPTY_STRING) && (change instanceof Update || change instanceof Insert || change instanceof Delete || change instanceof Move)) {
+//                                desc.append(Constants.NEW_LINE);
+//                            }
+//                        } else {
+//                            desc.append(" +1 ");//应对重载
+//                        }
                     }
                 }
-                if(addedRemovedFunctionalities != null && addedRemovedFunctionalities.size() > 0) {
-                    describeCollateralChanges(desc);
-                }
-                if(!localDescription.toString().equals(Constants.EMPTY_STRING)) {
-                    if(changes != null && changes.size() > 0) {
-//                        desc.insert(0,  "Modifications to " + file.getName() + "\n\n");
-//                    desc.insert(0, "Modifications to " + file.getName() + "\n\n");
+//                if(addedRemovedFunctionalities != null && addedRemovedFunctionalities.size() > 0) {
+//                    describeCollateralChanges(desc);
+//                }
+//                if(!localDescription.toString().equals(Constants.EMPTY_STRING)) {
+//                    if(changes != null && changes.size() > 0) {
+////                        desc.insert(0,  "Modifications to " + file.getName() + "\n\n");
+////                    desc.insert(0, "Modifications to " + file.getName() + "\n\n");
+//                        desc.append(Constants.NEW_LINE);
+//                    }
+//                    desc.append(Constants.NEW_LINE);
+//                }
+
+                for (Map.Entry<CmDescription,List<String>> entry : methodDesMap.entrySet()){
+                    desc.append(" Change in " + entry.getKey().getDescription() + " : ");
+                    desc.append(Constants.NEW_LINE);
+                    for (String sdes:entry.getValue()){
+                        desc.append(sdes);
                         desc.append(Constants.NEW_LINE);
                     }
-                    desc.append(Constants.NEW_LINE);
                 }
             }
 
@@ -248,6 +306,7 @@ public class ModificationDescriptor {
                 NounPhrase phrase = new NounPhrase(Tokenizer.split(new String(localDec.name)));
                 phrase.generate();
                 desc.append(" to " + phrase.toString() + " at " + getRootEntityJavaStructureNodeName(delete) + " method");
+//                methodDesMap.get(getRootDescription(delete)).add()
             } else if(delete.getChangedEntity().getAstNode() != null && delete.getChangedEntity().getAstNode() instanceof ForeachStatement) {
                 ForeachStatement forDec = (ForeachStatement) delete.getChangedEntity().getAstNode();
                 NounPhrase phrase = null;
@@ -293,7 +352,7 @@ public class ModificationDescriptor {
                 desc.append(" at " + getRootEntityJavaStructureNodeName(delete) + " " + delete.getRootEntity().getJavaStructureNode().getType().name().toLowerCase());
             } else if (delete.getChangeType() == ChangeType.ANNOTATION_CHANGE) {
                 desc.append("Delete annotation " + delete.getChangedEntity().getUniqueName() + " at " + delete.getRootEntity().getType().toString() + " " + delete.getRootEntity().getUniqueName().substring(delete.getRootEntity().getUniqueName().lastIndexOf(".") + 1));
-            }else if(delete.getChangedEntity().getAstNode() != null && delete.getChangedEntity().getAstNode() instanceof ReturnStatement) {
+            } else if(delete.getChangedEntity().getAstNode() != null && delete.getChangedEntity().getAstNode() instanceof ReturnStatement) {
                 desc.append(" statement ");
                 desc.append(" at " + getRootEntityJavaStructureNodeName(delete) + " " + delete.getRootEntity().getJavaStructureNode().getType().name().toLowerCase());
             } else if(delete.getChangedEntity().getAstNode() != null && delete.getChangedEntity().getAstNode() instanceof IfStatement) {
@@ -341,7 +400,7 @@ public class ModificationDescriptor {
                 desc.append("Remove parameter " + phrase.toString() + " at " + getRootEntityJavaStructureNodeName(delete) + " " + delete.getRootEntity().getJavaStructureNode().getType().name().toLowerCase());
             }
         } else {
-            desc.append(" TAGREMOVEDES Remove ");
+            desc.append(" Remove ");
             desc.append(delete.getChangedEntity().getUniqueName() + " in ");
             desc.append(delete.getRootEntity().getUniqueName().substring(delete.getRootEntity().getUniqueName().lastIndexOf(".") + 1) + " " + delete.getRootEntity().getType().name() + " ");
         }
@@ -361,7 +420,7 @@ public class ModificationDescriptor {
         } else if(insert.getChangeType() == ChangeType.ADDITIONAL_OBJECT_STATE ) {
             desc.append("Add (Object state) " + insert.getChangedEntity().getName().substring(0, insert.getChangedEntity().getName().indexOf(":")) + " attribute");
         } else if(insert.getChangeType() == ChangeType.INCREASING_ACCESSIBILITY_CHANGE) {
-            desc.append("Increasing accessibility change " + insert.getChangedEntity().toString().substring(insert.getChangedEntity().toString().indexOf(":") + 1) + Constants.EMPTY_STRING);
+            desc.append("Make new " + insert.getRootEntity().getUniqueName().substring(insert.getRootEntity().getUniqueName().lastIndexOf(".") + 1) + " " +  insert.getChangedEntity().toString().substring(insert.getChangedEntity().toString().indexOf(":") + 1) + Constants.EMPTY_STRING);
         } else if(insert.getChangeType() == ChangeType.COMMENT_INSERT || insert.getChangeType() == ChangeType.DOC_INSERT) {
             String entityType = insert.getRootEntity().getJavaStructureNode().getType().name().toLowerCase();
             desc.append(StringUtils.capitalize(fType) +" at " + getRootEntityJavaStructureNodeName(insert) + " " + entityType + " " + insert.getChangedEntity().getUniqueName());
@@ -423,7 +482,7 @@ public class ModificationDescriptor {
                 desc.append(" at " + getRootEntityJavaStructureNodeName(insert) + " method");
             }
         } else {
-            desc.append(" TAGINSERTDES Insert ");
+            desc.append(" Insert ");
             desc.append(insert.getChangedEntity().getUniqueName() + " in ");
             desc.append(insert.getRootEntity().getUniqueName().substring(insert.getRootEntity().getUniqueName().lastIndexOf(".") + 1) + " " + insert.getRootEntity().getType().name() + " ");
         }
@@ -492,7 +551,7 @@ public class ModificationDescriptor {
             }
             localDescriptor.insert(0, " " + PhraseUtils.getIndefiniteArticle(localDescriptor.toString().trim()));
             localDescriptor.insert(0, operation);
-            localDescriptor.append(" functionality to " + phrase.toString());
+            localDescriptor.append(" functionality " + change.getChangedEntity().getName() + " to " + phrase.toString());
             if(method.returnType != null && !method.returnType.toString().equals(Constants.EMPTY_STRING) && !method.returnType.toString().equals("void") && !hasLeadingVerb) {
                 localDescriptor.append(" (");
                 localDescriptor.append(Constants.EMPTY_STRING + method.returnType.toString());
@@ -534,36 +593,39 @@ public class ModificationDescriptor {
                 //根据调用者与被调用者之间的关系以及结构有不同的描述
                 if(!methodC.receiver.toString().equals(methodN.receiver.toString())) {
                     String receiverA = (!methodC.receiver.toString().equals(Constants.EMPTY_STRING)) ? new String(methodC.receiver.toString()) : new String(methodC.selector);
-                    desc.append(" " + receiverA + " at " + getRootEntityJavaStructureNodeName(update) + " method");
+//                    desc.append(" " + receiverA + " at " + getRootEntityJavaStructureNodeName(update) + " method");
+                    desc.append(" " + receiverA);
                 } else if(!(new String(methodC.selector)).equals((new String(methodN.selector)))) {
-                    desc.append(new String(methodC.selector) + " at " + getParentEntityName(update) + " method");
+//                    desc.append(new String(methodC.selector) + " at " + getParentEntityName(update) + " method");
+                    desc.append(new String(methodC.selector));
                 } else if(methodC != null && methodC.arguments != null && !methodC.arguments.equals(methodN.arguments)) {
                     String name = !(new String(methodC.selector)).equals(Constants.EMPTY_STRING) ? (new String(methodC.selector)) : methodC.receiver.toString();
-                    String methodName = update.getRootEntity().getUniqueName().substring(update.getRootEntity().getUniqueName().lastIndexOf(".") + 1, update.getRootEntity().getUniqueName().length());
-
-                    ASTNode astNode = update.getRootEntity().getJavaStructureNode().getASTNode();
-                    if (astNode instanceof MethodDeclaration) {
-                        MethodDeclaration methodDeclaration = (MethodDeclaration) astNode;
-                        if (methodDeclaration.arguments != null && methodDeclaration.arguments.length >0) {
-                            StringBuilder methodNameStringBuilder = new StringBuilder(methodName.substring(0, methodName.indexOf("(") + 1));
-
-                            for (Argument argument : methodDeclaration.arguments) {
-                                methodNameStringBuilder.append(new String(argument.type.getLastToken()) +
-                                        " " +
-                                        new String(argument.name));
-                                methodNameStringBuilder.append(", ");
-                            }
-                            if (methodNameStringBuilder.toString().endsWith(", ")) {
-                                methodNameStringBuilder.delete(methodNameStringBuilder.length() - 2, methodNameStringBuilder.length());
-                                methodNameStringBuilder.append(")");
-                            }
-
-                            methodName = methodNameStringBuilder.toString();
-                        }
-                    }
+//                    String methodName = update.getRootEntity().getUniqueName().substring(update.getRootEntity().getUniqueName().lastIndexOf(".") + 1, update.getRootEntity().getUniqueName().length());
+//
+//                    ASTNode astNode = update.getRootEntity().getJavaStructureNode().getASTNode();
+//                    if (astNode instanceof MethodDeclaration) {
+//                        MethodDeclaration methodDeclaration = (MethodDeclaration) astNode;
+//                        if (methodDeclaration.arguments != null && methodDeclaration.arguments.length >0) {
+//                            StringBuilder methodNameStringBuilder = new StringBuilder(methodName.substring(0, methodName.indexOf("(") + 1));
+//
+//                            for (Argument argument : methodDeclaration.arguments) {
+//                                methodNameStringBuilder.append(new String(argument.type.getLastToken()) +
+//                                        " " +
+//                                        new String(argument.name));
+//                                methodNameStringBuilder.append(", ");
+//                            }
+//                            if (methodNameStringBuilder.toString().endsWith(", ")) {
+//                                methodNameStringBuilder.delete(methodNameStringBuilder.length() - 2, methodNameStringBuilder.length());
+//                                methodNameStringBuilder.append(")");
+//                            }
+//
+//                            methodName = methodNameStringBuilder.toString();
+//                        }
+//                    }
 
                     desc.replace(desc.lastIndexOf(fType), desc.lastIndexOf(fType) + fType.length(), Constants.EMPTY_STRING);
-                    desc.insert(0, "Modify arguments list when calling " + name + " method at " + methodName + " method");
+//                    desc.insert(0, "Modify arguments list when calling " + name + " method at " + methodName + " method");
+                    desc.insert(0, "Modify arguments list when calling " + name + " method ");
                 }
             //如果变化类型是赋值
             } else if(update.getChangedEntity().getType() == JavaEntityType.ASSIGNMENT) {
@@ -573,14 +635,14 @@ public class ModificationDescriptor {
 
                 if(asC.lhs != asN.lhs) {
                     desc.append(" of " + new String(asC.lhs.toString()) + " type");
-                    if(!update.getParentEntity().getName().equals(Constants.EMPTY_STRING)) {
-                        desc.append(" at " + getParentEntityName(update) + " method");
-                    }
+//                    if(!update.getParentEntity().getName().equals(Constants.EMPTY_STRING)) {
+//                        desc.append(" at " + getParentEntityName(update) + " method");
+//                    }
                 } else if(asC.expression != asN.expression) {
                     desc.append(" of " + new String(asC.expression.toString()) + " to " + new String(asN.expression.toString()));
-                    if(!update.getParentEntity().getName().equals(Constants.EMPTY_STRING)) {
-                        desc.append(" at " + getParentEntityName(update) + " method");
-                    }
+//                    if(!update.getParentEntity().getName().equals(Constants.EMPTY_STRING)) {
+//                        desc.append(" at " + getParentEntityName(update) + " method");
+//                    }
 
                 }
             //如果变化类型是前缀表达式
@@ -601,7 +663,7 @@ public class ModificationDescriptor {
                 if(!afterName.contains(Constants.NEW_LINE)) {
                     desc.append(" " + beforeName + " with " + afterName);
                 }
-                desc.append(" at " + getRootEntityJavaStructureNodeName(update) + " " + update.getRootEntity().getJavaStructureNode().getType().name().toLowerCase());
+//                desc.append(" at " + getRootEntityJavaStructureNodeName(update) + " " + update.getRootEntity().getJavaStructureNode().getType().name().toLowerCase());
             //其它类型
             } else {
                 String name = Constants.EMPTY_STRING;
@@ -612,9 +674,9 @@ public class ModificationDescriptor {
                 }
                 desc.append(StringUtils.capitalize(fType) + " " + name + " ");
                 desc.append(update.getChangedEntity().getUniqueName() + " to " + update.getNewEntity().getUniqueName());
-                if(!update.getParentEntity().getName().equals(Constants.EMPTY_STRING)) {
-                    desc.append(" at " + getParentEntityName(update)  + " method");
-                }
+//                if(!update.getParentEntity().getName().equals(Constants.EMPTY_STRING)) {
+//                    desc.append(" at " + getParentEntityName(update)  + " method");
+//                }
             }
         //如果变化类型是方法重命名
         } else if(update.getChangeType() == ChangeType.METHOD_RENAMING) {
@@ -643,12 +705,12 @@ public class ModificationDescriptor {
         } else if(update.getChangeType() == ChangeType.CONDITION_EXPRESSION_CHANGE) {
             desc.append("Modify conditional expression from " +
                     update.getChangedEntity().getName() +
-                    " to " + update.getNewEntity().getUniqueName() +
-                    " at " + getParentEntityName(update) + " method");
+                    " to " + update.getNewEntity().getUniqueName());
+//                    " at " + getParentEntityName(update) + " method");
         //如果变化类型是增加可获得性
         } else if(update.getChangeType() == ChangeType.INCREASING_ACCESSIBILITY_CHANGE) {
             String forValue = (update.getRootEntity().getJavaStructureNode().getName().indexOf(":") > - 1) ? update.getRootEntity().getJavaStructureNode().getName().substring(0, update.getRootEntity().getJavaStructureNode().getName().indexOf(":") - 1) : update.getRootEntity().getJavaStructureNode().getName();
-            desc.append("Increase accessibility of " + update.getChangedEntity().getUniqueName() + " to " + update.getNewEntity().getUniqueName() + " for " + forValue + " " + update.getRootEntity().getType().name().toLowerCase());
+            desc.append("Make "+ forValue + " " + update.getNewEntity().getUniqueName() + " from " + update.getChangedEntity().getUniqueName());
         //如果变化类型是父类发生改变
         } else if(update.getChangeType() == ChangeType.PARENT_CLASS_CHANGE) {
             desc.append("Modify the " + "parent class " + update.getChangedEntity().getUniqueName() + " with " + update.getNewEntity().getUniqueName());
@@ -657,11 +719,12 @@ public class ModificationDescriptor {
             desc.append("Modify the " + "parent interface " + update.getChangedEntity().getUniqueName() + " with " + update.getNewEntity().getUniqueName());
         //如果变化类型是减少可获得性
         } else if(update.getChangeType() == ChangeType.DECREASING_ACCESSIBILITY_CHANGE) {
-            desc.append("Decrease accessibility of " + update.getChangedEntity().getUniqueName() + " to " + update.getNewEntity().getUniqueName() + " for " + getRootEntityJavaStructureNodeName(update) + " " + update.getRootEntity().getType().name().toLowerCase());
+            desc.append("Make " + getRootEntityJavaStructureNodeName(update) + " " + update.getNewEntity().getUniqueName() + " from " + update.getChangedEntity().getUniqueName());
         //如果变化类型是注释或者Doc发生变化
         } else if(update.getChangeType() == ChangeType.COMMENT_UPDATE || update.getChangeType() == ChangeType.DOC_UPDATE) {
             String entityType = update.getRootEntity().getJavaStructureNode().getType().name().toLowerCase();
-            desc.append(fType +" at " + getRootEntityJavaStructureNodeName(update) + " " + entityType + " " + update.getNewEntity().getUniqueName());
+//            desc.append(fType +" at " + getRootEntityJavaStructureNodeName(update) + " " + entityType + " " + update.getNewEntity().getUniqueName());
+            desc.append(fType + " " + entityType + " " + update.getNewEntity().getUniqueName());
         //如果变化类型是方法参数发生变化
         } else if(update.getChangeType() == ChangeType.PARAMETER_TYPE_CHANGE) {//需要观察？！
             if (update.getParentEntity().getType() == JavaEntityType.PARAMETER){
@@ -673,14 +736,16 @@ public class ModificationDescriptor {
                 } else if (update.getNewEntity().getUniqueName().indexOf(":") != -1) {
                     changedParameter = update.getNewEntity().getUniqueName().substring(0, update.getNewEntity().getUniqueName().indexOf(":")).trim();
                 }
-                desc.append("Type's " + changedParameter + " paramater change of " + update.getChangedEntity().getUniqueName().substring(update.getChangedEntity().getUniqueName().indexOf(":") + 1, update.getChangedEntity().getUniqueName().length()).trim() + " to " + update.getNewEntity().getUniqueName().substring(update.getNewEntity().getUniqueName().indexOf(":") + 1, update.getNewEntity().getUniqueName().length()).trim() + " for " + getRootEntityJavaStructureNodeName(update) + " " + update.getRootEntity().getType().name().toLowerCase());
+//                desc.append("Type's " + changedParameter + " paramater change of " + update.getChangedEntity().getUniqueName().substring(update.getChangedEntity().getUniqueName().indexOf(":") + 1, update.getChangedEntity().getUniqueName().length()).trim() + " to " + update.getNewEntity().getUniqueName().substring(update.getNewEntity().getUniqueName().indexOf(":") + 1, update.getNewEntity().getUniqueName().length()).trim() + " for " + getRootEntityJavaStructureNodeName(update) + " " + update.getRootEntity().getType().name().toLowerCase());
+                desc.append("Type's " + changedParameter + " paramater change of " + update.getChangedEntity().getUniqueName().substring(update.getChangedEntity().getUniqueName().indexOf(":") + 1, update.getChangedEntity().getUniqueName().length()).trim() + " to " + update.getNewEntity().getUniqueName().substring(update.getNewEntity().getUniqueName().indexOf(":") + 1, update.getNewEntity().getUniqueName().length()).trim());
             }//如果变化类型是返回值类型发生变化
         } else if(update.getChangeType() == ChangeType.RETURN_TYPE_CHANGE) {
-            desc.append(fType + " " + update.getChangedEntity().getUniqueName().substring(update.getChangedEntity().getUniqueName().indexOf(":") + 1).trim() + " with " + update.getNewEntity().getUniqueName().substring(update.getNewEntity().getUniqueName().indexOf(":") + 1, update.getNewEntity().getUniqueName().length()).trim()  + " for " + getRootEntityJavaStructureNodeName(update) + " " + update.getRootEntity().getType().name().toLowerCase());
+//            desc.append(fType + " " + update.getChangedEntity().getUniqueName().substring(update.getChangedEntity().getUniqueName().indexOf(":") + 1).trim() + " with " + update.getNewEntity().getUniqueName().substring(update.getNewEntity().getUniqueName().indexOf(":") + 1, update.getNewEntity().getUniqueName().length()).trim()  + " for " + getRootEntityJavaStructureNodeName(update) + " " + update.getRootEntity().getType().name().toLowerCase());
+            desc.append(fType + " " + update.getChangedEntity().getUniqueName().substring(update.getChangedEntity().getUniqueName().indexOf(":") + 1).trim() + " with " + update.getNewEntity().getUniqueName().substring(update.getNewEntity().getUniqueName().indexOf(":") + 1, update.getNewEntity().getUniqueName().length()).trim());
         } else if (update.getChangeType() == ChangeType.ANNOTATION_CHANGE) {
-            desc.append("Update annotation " + update.getChangedEntity().getUniqueName() + " at " + update.getRootEntity().getType().toString() + " " + update.getRootEntity().getUniqueName().substring(update.getRootEntity().getUniqueName().lastIndexOf(".") + 1));
+//            desc.append("Update annotation " + update.getChangedEntity().getUniqueName() + " at " + update.getRootEntity().getType().toString() + " " + update.getRootEntity().getUniqueName().substring(update.getRootEntity().getUniqueName().lastIndexOf(".") + 1));
+            desc.append("Update annotation " + update.getChangedEntity().getUniqueName());
         } else {
-            desc.append("TAGUPDATEDES ");
             desc.append("Update change field from " + update.getChangedEntity().getUniqueName() + " to " + update.getNewEntity().getUniqueName() + " at " + update.getRootEntity().getUniqueName().substring(update.getRootEntity().getUniqueName().lastIndexOf(".") + 1));
         }
 
@@ -893,6 +958,61 @@ public class ModificationDescriptor {
         }
 
         return methodName;
+    }
+
+    private CmDescription getRootDescription(SourceCodeChange sourceCodeChange) {
+
+        //String methodName = sourceCodeChange.getParentEntity().getName();
+        String methodName = sourceCodeChange.getRootEntity().getUniqueName().substring(sourceCodeChange.getRootEntity().getUniqueName().lastIndexOf(".") + 1, sourceCodeChange.getRootEntity().getUniqueName().length());
+        ASTNode astNode = sourceCodeChange.getRootEntity().getJavaStructureNode().getASTNode();
+        CmDescription res = new CmDescription(methodName,"other",-1,-1);
+        if (astNode instanceof MethodDeclaration) {
+            MethodDeclaration methodDeclaration = (MethodDeclaration) astNode;
+            methodName = sourceCodeChange.getRootEntity().getUniqueName().substring(sourceCodeChange.getRootEntity().getUniqueName().substring(0,sourceCodeChange.getRootEntity().getUniqueName().indexOf("(")).lastIndexOf(".") + 1);
+            StringBuilder methodNameStringBuilder = new StringBuilder(" method " + methodName);
+//            StringBuilder methodNameStringBuilder = new StringBuilder(methodName.substring(0, methodName.indexOf("(") + 1));
+//            if (methodDeclaration.arguments != null && methodDeclaration.arguments.length >0) {
+//
+//                for (Argument argument : methodDeclaration.arguments) {
+//                    methodNameStringBuilder.append(new String(argument.type.getLastToken()) +
+//                            " " +
+//                            new String(argument.name));
+//                    methodNameStringBuilder.append(", ");
+//                }
+//                if (methodNameStringBuilder.toString().endsWith(", ")) {
+//                    methodNameStringBuilder.delete(methodNameStringBuilder.length() - 2, methodNameStringBuilder.length());
+//                    methodNameStringBuilder.append(")");
+//                }
+//
+//
+//            }
+
+            methodNameStringBuilder.append(" to ");
+            methodNameStringBuilder.append(Tokenizer.split(methodName.substring(0, methodName.indexOf("("))));
+            if (methodDeclaration.arguments != null && methodDeclaration.arguments.length > 0) {
+                methodNameStringBuilder.append(" with parameter ");
+                for (Argument argument : methodDeclaration.arguments) {
+                    methodNameStringBuilder.append(Tokenizer.split(new String(argument.name)));
+                    methodNameStringBuilder.append(", ");
+                }
+                methodNameStringBuilder.delete(methodNameStringBuilder.length() - 2, methodNameStringBuilder.length());
+            }
+
+            methodName = methodNameStringBuilder.toString();
+            res.setDescription(methodName);
+            res.setStype("method");
+            res.setRangeLEnd(methodDeclaration.declarationSourceStart);
+            res.setRangeLEnd(methodDeclaration.declarationSourceEnd);
+        }
+        else if (astNode instanceof TypeDeclaration) {
+            TypeDeclaration tpd = (TypeDeclaration) astNode;
+            res.setDescription(" class " + new String(tpd.name));
+            res.setStype("class");
+            res.setRangeLEnd(tpd.declarationSourceStart);
+            res.setRangeLEnd(tpd.declarationSourceEnd);
+        }
+
+        return res;
     }
 
     private String getParentEntityName(SourceCodeChange sourceCodeChange) {

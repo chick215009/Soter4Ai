@@ -7,6 +7,7 @@ import cn.edu.nju.core.Constants;
 import cn.edu.nju.core.entity.MyModule;
 import cn.edu.nju.core.git.ChangedFile;
 import cn.edu.nju.core.git.SCMRepository;
+import cn.edu.nju.core.impactanalysis.Impact;
 import cn.edu.nju.core.label.TypeLabel;
 import cn.edu.nju.core.stereotype.stereotyped.*;
 import cn.edu.nju.core.stereotype.taxonomy.CodeStereotype;
@@ -16,6 +17,7 @@ import cn.edu.nju.core.stereotype.taxonomy.TypeStereotype;
 import cn.edu.nju.core.summarizer.CommitStereotypeDescriptor;
 import cn.edu.nju.core.summarizer.ModificationDescriptor;
 import cn.edu.nju.core.textgenerator.phrase.MethodPhraseGenerator;
+import cn.edu.nju.core.textgenerator.tokenizer.Tokenizer;
 import cn.edu.nju.core.utils.JDTASTUtil;
 import cn.edu.nju.core.utils.Utils;
 import com.alibaba.fastjson.JSON;
@@ -115,6 +117,9 @@ public class ChangeAnalyzer {
                 simpleDescribe.append("BF \n");
             }
             simpleDescribe.append(result);
+
+//            Impact impact = new Impact(identifiers);
+//            impact.calculateImpactSet();
 
             summaryEntity.setSimpleDescribe(simpleDescribe.toString());
             summaryEntity.setNewModuleDescribe(describeNewModules());
@@ -240,7 +245,7 @@ public class ChangeAnalyzer {
 //                fileDes.append(" |%| ");
                 //fileDes.append(i + "." + j + ". ");
                 if (fileEntity.getOperation().equals(ChangedFile.TypeChange.MODIFIED.name())) {
-                    fileDes.append("Modifications to " + fileEntity.getFileName() + "\n");
+                    fileDes.append("Change in " + fileEntity.getFileName() + " for " + Tokenizer.split(fileEntity.getFileName().substring(0,fileEntity.getFileName().lastIndexOf("."))) + "\n");
                     fileDes.append(fileEntity.getChangeDescribe());
                 } else if (fileEntity.getOperation().equals(ChangedFile.TypeChange.ADDED.name()) ||
                         fileEntity.getOperation().equals(ChangedFile.TypeChange.REMOVED.name())) {
@@ -445,6 +450,7 @@ public class ChangeAnalyzer {
                 String describe = modificationDescriptor.describe();//字符串结果 核心
                 summaryEntity.className.addAll(modificationDescriptor.className);
                 summaryEntity.methodName.addAll(modificationDescriptor.methodName);
+                summaryEntity.fieldName.addAll(modificationDescriptor.fieldName);
                 fileEntity.setChangeDescribe(describe);
                 String absolutePath = identifier.getChangedFile().getAbsolutePath();
                 fileEntity.setAbsolutePath(absolutePath);

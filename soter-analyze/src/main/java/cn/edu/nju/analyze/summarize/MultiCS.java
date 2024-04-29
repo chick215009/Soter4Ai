@@ -117,10 +117,11 @@ public class MultiCS extends Thread {
             //System.out.println(shacode);
             List<String> methodName = new ArrayList<>();
             List<String> className = new ArrayList<>();
+            List<String> fieldName = new ArrayList<>();
             String describes = "处理异常";
             try {
                 //describes = localGit.ProjectCommitPath(shacode, "/home/cuiyunqi/repo/" + prefixpath).replaceAll("[\n\r\t]", " ");
-                describes = localGit.ProjectCommitPath(shacode, "F:\\codisumrepo\\" + prefixpath, methodName, className).replaceAll("[\n\r\t]", " ");
+                describes = localGit.ProjectCommitPath(shacode, "F:\\codisumrepo\\" + prefixpath, methodName, className,fieldName).replaceAll("[\n\r\t]", " ");
 //                if (describes.split("[\n\r\t ]+").length > 500){
 //                    describes = "输出超长";
 //                }
@@ -138,6 +139,8 @@ public class MultiCS extends Thread {
                 jsonWriter.write(JSON.toJSONString(methodName));
                 jsonWriter.write("\n");
                 jsonWriter.write(JSON.toJSONString(className));
+                jsonWriter.write("\n");
+                jsonWriter.write(JSON.toJSONString(fieldName));
                 jsonWriter.write("\n");
                 jsonWriter.flush();
                 //System.out.println("写入完毕");

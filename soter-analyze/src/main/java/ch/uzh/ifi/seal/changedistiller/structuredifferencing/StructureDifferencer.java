@@ -40,6 +40,7 @@ public class StructureDifferencer {
     private StructureDiffNode fDifferences;
     public List<String> methodName;
     public List<String> className;
+    public List<String> fieldName;
 
     public List<Comment> getLfComment() {
         return LfComment;
@@ -87,10 +88,12 @@ public class StructureDifferencer {
         }
         methodName = new ArrayList<>();
         className = new ArrayList<>();
+        fieldName = new ArrayList<>();
         fDifferences = traverse(left, right);
     }
 
     private StructureDiffNode traverse(StructureNode left, StructureNode right) {
+
         if (left != null && left.isClassOrInterface()){
             if (!className.contains(left.getName())){
                 className.add(left.getName());
@@ -98,6 +101,10 @@ public class StructureDifferencer {
         } else if (left != null && left.isMethodOrConstructor()){
             if (!methodName.contains(left.getName())){
                 methodName.add(left.getName());
+            }
+        } else if (left != null && left.isField()){
+            if (!fieldName.contains(left.getName())){
+                fieldName.add(left.getName());
             }
         }
 
@@ -108,6 +115,10 @@ public class StructureDifferencer {
         } else if (right != null && right.isMethodOrConstructor()){
             if (!methodName.contains(right.getName())){
                 methodName.add(right.getName());
+            }
+        } else if (right != null && right.isField()){
+            if (!fieldName.contains(right.getName())){
+                fieldName.add(right.getName());
             }
         }
         StructureNode[] leftChildren = getChildren(left);

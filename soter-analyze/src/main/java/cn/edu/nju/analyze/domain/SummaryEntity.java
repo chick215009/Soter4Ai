@@ -18,6 +18,7 @@ public class SummaryEntity {
     private String methodStatisticJson;
     public List<String> methodName;
     public List<String> className;
+    public List<String> fieldName;
 
     private Integer fileNum;
     private Integer addNum;
@@ -36,6 +37,7 @@ public class SummaryEntity {
         this.methodStatisticJson = "";
         this.methodName = new ArrayList<>();
         this.className = new ArrayList<>();
+        this.fieldName = new ArrayList<>();
         fileNum = 0;
         addNum = 0;
         removeNum = 0;

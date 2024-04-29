@@ -61,6 +61,7 @@ public class FileDistiller {
     private List<HeadChange> fHeadChanges;
     public List<String> methodName;
     public List<String> className;
+    public List<String> fieldName;
     private ASTHelper<StructureNode> fLeftASTHelper;
     private ASTHelper<StructureNode> fRightASTHelper;
     private ClassHistory fClassHistory;
@@ -126,6 +127,8 @@ public class FileDistiller {
         StructureDiffNode structureDiff = structureDifferencer.getDifferences();//找到不相同的节点
         this.methodName = structureDifferencer.methodName;
         this.className = structureDifferencer.className;
+        this.fieldName = structureDifferencer.fieldName;
+
         if (structureDiff != null) {
         	fChanges = new LinkedList<SourceCodeChange>();
             // first node is (usually) the compilation unit
