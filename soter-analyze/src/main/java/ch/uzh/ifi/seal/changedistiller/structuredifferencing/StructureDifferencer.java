@@ -25,6 +25,8 @@ import ch.uzh.ifi.seal.changedistiller.ast.java.JavaASTHelper;
 import ch.uzh.ifi.seal.changedistiller.model.classifiers.SourceRange;
 import ch.uzh.ifi.seal.changedistiller.structuredifferencing.java.JavaStructureNode;
 import org.apache.commons.io.IOUtils;
+import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
+import org.eclipse.jdt.internal.compiler.ast.Argument;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -92,6 +94,7 @@ public class StructureDifferencer {
         fDifferences = traverse(left, right);
     }
 
+    //todo methodlist add paraname
     private StructureDiffNode traverse(StructureNode left, StructureNode right) {
 
         if (left != null && left.isClassOrInterface()){
@@ -101,6 +104,13 @@ public class StructureDifferencer {
         } else if (left != null && left.isMethodOrConstructor()){
             if (!methodName.contains(left.getName())){
                 methodName.add(left.getName());
+            }
+            AbstractMethodDeclaration methodDeclaration = (AbstractMethodDeclaration) left;
+            for (Argument argument : methodDeclaration.arguments) {
+                String parameterName = new String(argument.name) + " : " + new String(argument.type.getLastToken());
+                if (!fieldName.contains(parameterName)){
+                    fieldName.add(parameterName);
+                }
             }
         } else if (left != null && left.isField()){
             if (!fieldName.contains(left.getName())){

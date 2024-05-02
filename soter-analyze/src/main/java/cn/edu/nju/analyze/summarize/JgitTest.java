@@ -149,7 +149,7 @@ public class JgitTest {
         Executor executors2= Executors.newFixedThreadPool(12);
 
         for (Map.Entry<String, List<String>> entry: mpLst){
-            executors2.execute(new MultiCS(entry.getKey(),entry.getValue(),"F:\\output10\\"));
+            executors2.execute(new MultiCS(entry.getKey(),entry.getValue(),"F:\\output12\\"));
             //executors2.execute(new MultiCS(entry.getKey(),entry.getValue(),"/home/cuiyunqi/output/"));
         }
 
