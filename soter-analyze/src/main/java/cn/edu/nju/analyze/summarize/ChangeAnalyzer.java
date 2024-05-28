@@ -94,6 +94,9 @@ public class ChangeAnalyzer {
 
             StereotypedCommit stereotypedCommit = getStereotypedCommit();
             if (summaryEntity.getPackageEntityList().size() > 0 && stereotypedCommit == null){
+                summaryEntity.setSimpleDescribe(
+                        "Ty11 "
+                );
                 return true;
             }
 

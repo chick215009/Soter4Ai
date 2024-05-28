@@ -31,11 +31,11 @@ public class JgitTest {
         //localGit.ProjectCommitPath("222ad01fbbcc2b92a1eb2506a049cd19d4fd3685","/home/cuiyunqi/repo/WordPress-Android").replaceAll("\n"," ");
         //localGit.ProjectCommitPath("a44131af5cfd21e180be0805e07c1416e62a6e6f","F:\\codisumrepo\\Activiti").replaceAll("[\n\r\t]"," ");
         //System.out.println(srr);
-//        String describes = localGit.ProjectCommitPath("4144e62995c27bda90109c95eea7f31a369a335f","F:\\codisumrepo\\WordPress-Android",methodName,className,fieldName).replaceAll("[\n\r\t]"," ");
-//        System.out.println(methodName);
-//        System.out.println(className);
-//        System.out.println(fieldName);
-//        System.out.println(describes);
+        String describes = localGit.ProjectCommitPath("d179fa33ab2b03bb3ddf5260426ce758fc97ad4c","F:\\codisumrepo\\android-async-http",methodName,className,fieldName).replaceAll("[\n\r\t]"," ");
+        System.out.println(methodName);
+        System.out.println(className);
+        System.out.println(fieldName);
+        System.out.println(describes);
 //        String describes = localGit.ProjectCommitPath("ed09d345effc459aa7e3dab3061a4150079b906e","F:\\FileRecv\\apollo").replaceAll("[\n\r\t]"," ");
 //
 //        //String describes = localGit.ProjectCommitPath("9e9e450211681a0ac7d9c4c3200dd19327362494","F:\\FileRecv\\spring-boot").replaceAll("[\n\r\t]"," ");
@@ -125,33 +125,33 @@ public class JgitTest {
 
 
 
-        String content = "";
-        StringBuilder builder = new StringBuilder();
-
-        File file = new File("F:\\njusotal\\sortedrepo2sha.json");
-        //File file = new File("/home/cuiyunqi/errorrepo2hash.json");
-        InputStreamReader streamReader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
-        BufferedReader bufferedReader = new BufferedReader(streamReader);
-
-        while ((content = bufferedReader.readLine()) != null)
-            builder.append(content);
-
-        Map<String, List<String>> map = (Map<String, List<String>>) JSON.parse(builder.toString());
-
-        List<Map.Entry<String,List<String>>> mpLst = new ArrayList<>(map.entrySet());
-        Collections.sort(mpLst, new Comparator<Map.Entry<String, List<String>>>() {
-            @Override
-            public int compare(Map.Entry<String, List<String>> o1, Map.Entry<String, List<String>> o2) {
-                return o2.getValue().size() - o1.getValue().size();
-            }
-        });
-
-        Executor executors2= Executors.newFixedThreadPool(12);
-
-        for (Map.Entry<String, List<String>> entry: mpLst){
-            executors2.execute(new MultiCS(entry.getKey(),entry.getValue(),"F:\\output12\\"));
-            //executors2.execute(new MultiCS(entry.getKey(),entry.getValue(),"/home/cuiyunqi/output/"));
-        }
+//        String content = "";
+//        StringBuilder builder = new StringBuilder();
+//
+//        File file = new File("F:\\njusotal\\sortedrepo2sha.json");
+//        //File file = new File("/home/cuiyunqi/errorrepo2hash.json");
+//        InputStreamReader streamReader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
+//        BufferedReader bufferedReader = new BufferedReader(streamReader);
+//
+//        while ((content = bufferedReader.readLine()) != null)
+//            builder.append(content);
+//
+//        Map<String, List<String>> map = (Map<String, List<String>>) JSON.parse(builder.toString());
+//
+//        List<Map.Entry<String,List<String>>> mpLst = new ArrayList<>(map.entrySet());
+//        Collections.sort(mpLst, new Comparator<Map.Entry<String, List<String>>>() {
+//            @Override
+//            public int compare(Map.Entry<String, List<String>> o1, Map.Entry<String, List<String>> o2) {
+//                return o2.getValue().size() - o1.getValue().size();
+//            }
+//        });
+//
+//        Executor executors2= Executors.newFixedThreadPool(12);
+//
+//        for (Map.Entry<String, List<String>> entry: mpLst){
+//            executors2.execute(new MultiCS(entry.getKey(),entry.getValue(),"F:\\output15\\"));
+//            //executors2.execute(new MultiCS(entry.getKey(),entry.getValue(),"/home/cuiyunqi/output/"));
+//        }
 
 
         return ;

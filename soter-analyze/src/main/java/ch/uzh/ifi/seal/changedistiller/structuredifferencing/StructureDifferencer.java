@@ -105,11 +105,15 @@ public class StructureDifferencer {
             if (!methodName.contains(left.getName())){
                 methodName.add(left.getName());
             }
-            AbstractMethodDeclaration methodDeclaration = (AbstractMethodDeclaration) left;
-            for (Argument argument : methodDeclaration.arguments) {
-                String parameterName = new String(argument.name) + " : " + new String(argument.type.getLastToken());
-                if (!fieldName.contains(parameterName)){
-                    fieldName.add(parameterName);
+            if (left instanceof  JavaStructureNode){
+                AbstractMethodDeclaration methodDeclaration = ((AbstractMethodDeclaration) ((JavaStructureNode)left).getASTNode());
+                if (methodDeclaration.arguments != null){
+                    for (Argument argument : methodDeclaration.arguments) {
+                        String parameterName = new String(argument.name) + " : " + new String(argument.type.getLastToken());
+                        if (!fieldName.contains(parameterName)){
+                            fieldName.add(parameterName);
+                        }
+                    }
                 }
             }
         } else if (left != null && left.isField()){
@@ -125,6 +129,17 @@ public class StructureDifferencer {
         } else if (right != null && right.isMethodOrConstructor()){
             if (!methodName.contains(right.getName())){
                 methodName.add(right.getName());
+            }
+            if (right instanceof  JavaStructureNode){
+                AbstractMethodDeclaration methodDeclaration = ((AbstractMethodDeclaration) ((JavaStructureNode)right).getASTNode());
+                if (methodDeclaration.arguments != null){
+                    for (Argument argument : methodDeclaration.arguments) {
+                        String parameterName = new String(argument.name) + " : " + new String(argument.type.getLastToken());
+                        if (!fieldName.contains(parameterName)){
+                            fieldName.add(parameterName);
+                        }
+                    }
+                }
             }
         } else if (right != null && right.isField()){
             if (!fieldName.contains(right.getName())){
